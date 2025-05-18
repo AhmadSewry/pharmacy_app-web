@@ -1,34 +1,41 @@
-import React from "react";
-import './login.css';
-// import {FaUser } from  "react-icons/fa";
+import React, { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import "./login.css";
+import HomePage from "../homePageScreen/homePage";
+const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate(); // Initialize navigation
 
+  const handleLogin = () => {
+    navigate("/home"); // Redirect to Homepage
+  };
 
-const Login =() =>{
+  return (
+    <div className="wrapper">
+      <h1>Login</h1>
+      <div className="input-box">
+        <input type="text" placeholder="Enter Username" required />
+      </div>
 
-return ( 
-    <div className ='wrapper'>
-            <h1>Login</h1>
-            <div className ="input-box">
-    <input type ="text" placeholder =' Enter Username'required/>
-    {/* <FaUser  /> */}
-            </div>
+      <div className="input-box">
+        <input type={showPassword ? "text" : "password"} placeholder="Enter Password" required />
+        <span onClick={() => setShowPassword((prev) => !prev)} className="toggle-password">
+          {showPassword ? <FaEyeSlash /> : <FaEye />}
+        </span>
+      </div>
 
-            <div className ="input-box">
-                <input type ="password " placeholder =' Enter Password' required/>
-                {/* <FaLock /> */}
-            </div>
-        <div className ="remember-forget"> 
-        <label> <input  type ="checkbox"/> Remember me</label>
-       
-        </div>
+      <div className="remember-forget">
+        <label><input type="checkbox" /> Remember me</label>
+      </div>
 
-<button type="submit">Login </button>
-<div className="email-link">
-   <p> Do you forget password?<a href="#">onclick</a></p> 
-</div>
+      <button type="submit" onClick={handleLogin}>Login</button> {/* Navigate to Homepage */}
+      
+      <div className="email-link">
+        <p>Do you forget password? <a href="#">onclick</a></p>
+      </div>
     </div>
-)
+  );
+};
 
-}
-
-export default Login
+export default Login;
