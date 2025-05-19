@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
-import HomePage from "../homePageScreen/homePage";
+import loginImage from "./assets/images/loginImage.jpg"
+
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate(); // Initialize navigation
@@ -13,6 +14,7 @@ const Login = () => {
 
   return (
     <div className="wrapper">
+      <img src={loginImage} alt="Login Logo" className="login-image" />
       <h1>Login</h1>
       <div className="input-box">
         <input type="text" placeholder="Enter Username" required />
