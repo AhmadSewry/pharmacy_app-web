@@ -13,7 +13,7 @@ const Login = () => {
   };
 
   return (
-    <div className="wrapper">
+    <form onSubmit={handleLogin} className="wrapper">
       <img src={loginImage} alt="Login Logo" className="login-image" />
       <h1>Login</h1>
       <div className="input-box">
@@ -23,7 +23,7 @@ const Login = () => {
       <div className="input-box">
         <input type={showPassword ? "text" : "password"} placeholder="Enter Password" required />
         <span onClick={() => setShowPassword((prev) => !prev)} className="toggle-password">
-          {showPassword ? <FaEyeSlash /> : <FaEye />}
+          {showPassword ? <FaEye />:<FaEyeSlash />  }
         </span>
       </div>
 
@@ -31,12 +31,12 @@ const Login = () => {
         <label><input type="checkbox" /> Remember me</label>
       </div>
 
-      <button type="submit" onClick={handleLogin}>Login</button> {/* Navigate to Homepage */}
+      <button type="submit">Login</button> {/* Navigate to Homepage */}
       
       <div className="email-link">
         <p>Do you forget password? <a href="#">onclick</a></p>
       </div>
-    </div>
+    </form>
   );
 };
 
