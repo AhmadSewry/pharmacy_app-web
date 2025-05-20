@@ -1,117 +1,133 @@
-
-.wrapper{
-    width:  420px;
-/* background-color: 16,113,99; */
-background-color: #A4A2A2;
-color :#ffffff;
-border-radius: 10px;
-padding: 30px 40px;
-
-}
-.wrapper h1{
-    font-size: 36px;
-    text-align: center;
+.container {
+   width: 100vw;
+   background-color: #107163;
+   height: 100vh;
+   display: flex;
+   justify-content: center;
+   align-items: center;
 }
 
-.wrapper .input-box{
-position: relative;
-width:  100%;
-height: 50px;
-margin:  30px 0;
-color: #078d38;
-background-color: white;
+.wrapper {
+   width: 420px;
+   background-color: #0000004a;
+   box-shadow: inset 10px black;
+   color: #ffffff;
+   border-radius: 10px;
+   padding: 30px 40px;
 }
 
-.input-box input{
-width: 100%;
-height: 100%;
-background: transparent;
-border: none;
-outline:  none;
-border: 2px solid rgba(255, 255, 255, 0.895);
-border-radius: 40px;
-font-size: 16px;
-color: #000000;
-padding: 20px 45px 20px 20px;
+.wrapper h1 {
+   font-size: 36px;
+   text-align: center;
 }
 
-.input-box input::placeholder{
-    color:#178a0c;
-
-}
-.wrapper .remember-forget{
-    display:flex;
-    justify-content: space-between;
-    font-size: 14.spx;
-    margin: -15px 0 15px;
-}
-.remember-forget label input{
-accent-color: #000000;
-margin-right: 4px;
-
- }
-
- .remember-forget a{
-    color: #fff;
-    text-decoration: none;
-
- }
- .remember-forget a:hover{
-    text-decoration: underline;
- }
-
- .wrapper button{
-    width: 100%;
-    height: 45px;
-    background: rgb(16, 113, 99);;
-    border: none;
-    outline: none;
-    border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
-    cursor: pointer;
-    font-size: 16px;
-    color: #ffffff;
-    font-weight: 700;
- }
-
- .wrapper .email-link{
-    font-size: 14.5px;
-    text-align: center;
-    margin: 20px 0 15px;
- }
-
- .email-link p a{
-    color:#fff;
-    text-decoration: none;
-    font-weight: 600;
-
- }
- .email-link p a:hover{
-    text-decoration:underline;
-
- }
- .input-box {
-  position: relative;
-  display: flex;
-  align-items: center;
+.wrapper .input-box {
+   position: relative;
+   width: 100%;
+   height: 50px;
+   margin: 30px 0;
+   color: #078d38;
+   background-color: white;
 }
 
 .input-box input {
-  width: 100%;
-  padding-right: 40px; /* Make space for icon */
+   width: 100%;
+   height: 100%;
+   background: transparent;
+   border: none;
+   outline: none;
+   border: 2px solid rgba(255, 255, 255, 0.895);
+   border-radius: 40px;
+   font-size: 16px;
+   color: #000000;
+   padding: 20px 45px 20px 20px;
+}
+
+.input-box input::placeholder {
+   color: #178a0c;
+}
+
+.wrapper .remember-forget {
+   display: flex;
+   justify-content: space-between;
+   font-size: 14spx;
+   margin: -15px 0 15px;
+}
+
+.remember-forget label input {
+   accent-color: #000000;
+   margin-right: 4px;
+}
+
+.remember-forget a {
+   color: #fff;
+   text-decoration: none;
+}
+
+.remember-forget a:hover {
+   text-decoration: underline;
+}
+
+.wrapper button {
+   width: 100%;
+   height: 45px;
+   background: #107163;
+   border: none;
+   outline: none;
+   border-radius: 40px;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   cursor: pointer;
+   font-size: 16px;
+   color: #ffffff;
+   font-weight: 700;
+}
+
+.wrapper .email-link {
+   font-size: 14.5px;
+   text-align: center;
+   margin: 20px 0 15px;
+}
+
+.email-link a {
+   color: #fff;
+   text-decoration: none;
+   font-weight: 600;
+}
+
+.email-link a:hover {
+   text-decoration: underline;
+}
+
+.input-box {
+   position: relative;
+   display: flex;
+   align-items: center;
+}
+
+.input-box input {
+   width: 100%;
+   padding-right: 40px;
+   /* Make space for icon */
 }
 
 .toggle-password {
-  position: absolute;
-  right: 10px; /* Position at end */
-  cursor: pointer;
-  font-size: 18px;
+   position: absolute;
+   right: 10px;
+   /* Position at end */
+   cursor: pointer;
+   font-size: 18px;
 }
+
 .login-image {
-  width: 150px; /* Keep it equal for a perfect circle */
-  height: 150px; /* Match width */
-  display: grid;
-  margin: 0 auto 20px; /* Center the image and add spacing */
-  border-radius: 50%; /* Make it circular */
-  overflow: hidden; /* Prevent any overflow */
+   width: 150px;
+   /* Keep it equal for a perfect circle */
+   height: 150px;
+   /* Match width */
+   display: grid;
+   margin: 0 auto 20px;
+   /* Center the image and add spacing */
+   border-radius: 50%;
+   /* Make it circular */
+   overflow: hidden;
+   /* Prevent any overflow */
 }
