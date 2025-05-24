@@ -10,7 +10,7 @@ import { Box, InputBase, Stack, useTheme } from "@mui/material";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-
+import { useThemeContext } from "../ThemeContext";
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -51,6 +51,7 @@ const Search = styled("div")(({ theme }) => ({
     width: "auto",
   },
 }));
+
 const SearchIconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 2),
   height: "100%",
@@ -65,7 +66,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -76,7 +76,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function TopBar({ open, handleDrawerOpen }) {
- const theme =useTheme()
+  const { mode, toggleTheme } = useThemeContext();
 
   return (
     <AppBar position="fixed" open={open}>
@@ -109,15 +109,9 @@ export default function TopBar({ open, handleDrawerOpen }) {
         <Box flexGrow={1} />
 
         <Stack direction={"row"}>
-          {theme.palette.mode ==="dark" ? (
-            <IconButton color="inherit">
-              <LightModeIcon />
-            </IconButton>
-          ) : (
-            <IconButton color="inherit">
-              <DarkModeIcon />
-            </IconButton>
-          )}
+          <IconButton color="inherit" onClick={toggleTheme}>
+            {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+          </IconButton>
 
           <IconButton color="inherit">
             <NotificationsIcon />
