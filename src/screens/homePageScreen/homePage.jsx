@@ -1,6 +1,7 @@
 import React from "react";
 import Sidebar from "../../components/Sidebar";
 import TopBar from "../../components/TopBar";
+import { Outlet } from "react-router-dom";
 
 const HomePage = () => {
   const [open, setOpen] = React.useState(false);
@@ -16,7 +17,6 @@ const HomePage = () => {
   return (
     <div>
       <TopBar open={open} handleDrawerOpen={handleDrawerOpen} />
-
       <Sidebar open={open} handleDrawerClose={handleDrawerClose} />
     </div>
   );

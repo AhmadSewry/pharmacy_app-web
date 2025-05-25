@@ -28,6 +28,7 @@ import {
 import { Avatar } from "@mui/material";
 import loginImage from "../screens/loginScreen/assets/images/loginImage.jpg";
 import { useThemeContext } from "../ThemeContext"; // Import theme context
+import { Outlet, useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -97,7 +98,8 @@ const chartItems = [
 
 export default function Sidebar({ open, handleDrawerClose }) {
   const theme = useTheme();
-  const { mode } = useThemeContext(); 
+  const navigate = useNavigate();
+  const { mode } = useThemeContext();
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -146,12 +148,14 @@ export default function Sidebar({ open, handleDrawerClose }) {
         </Typography>
 
         <Divider />
-
-        {/* Primary menu items */}
+        {/* arr1 */}
         <List>
           {menuItems.map((item) => (
             <ListItem key={item.path} disablePadding sx={{ display: "block" }}>
               <ListItemButton
+                onClick={() => {
+                  navigate(item.path);
+                }}
                 sx={{
                   minHeight: 48,
                   px: 2.5,
@@ -178,12 +182,14 @@ export default function Sidebar({ open, handleDrawerClose }) {
         </List>
 
         <Divider />
-
-        {/* Secondary menu items */}
+        {/* arr2 */}
         <List>
           {secondaryItems.map((item) => (
             <ListItem key={item.path} disablePadding sx={{ display: "block" }}>
               <ListItemButton
+                onClick={() => {
+                  navigate(item.path);
+                }}
                 sx={{
                   minHeight: 48,
                   px: 2.5,
@@ -211,11 +217,14 @@ export default function Sidebar({ open, handleDrawerClose }) {
 
         <Divider />
 
-        {/* Chart menu items */}
+        {/* arr3 */}
         <List>
           {chartItems.map((item) => (
             <ListItem key={item.path} disablePadding sx={{ display: "block" }}>
               <ListItemButton
+                onClick={() => {
+                  navigate(item.path);
+                }}
                 sx={{
                   minHeight: 48,
                   px: 2.5,
@@ -241,14 +250,6 @@ export default function Sidebar({ open, handleDrawerClose }) {
           ))}
         </List>
       </Drawer>
-
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-        <Typography sx={{ marginBottom: 2 }}>
-          Lorem ipsum dolor sit amet.
-        </Typography>
-        <Typography sx={{ marginBottom: 2 }}>Consequ</Typography>
-      </Box>
     </Box>
   );
 }
