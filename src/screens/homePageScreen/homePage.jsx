@@ -1,9 +1,6 @@
 import React from "react";
-import Sidebar from "../components/Sidebar"
-import TopBar from "../components/TopBar";
-
-
-
+import Sidebar from "../../components/Sidebar";
+import TopBar from "../../components/TopBar";
 
 const HomePage = () => {
   const [open, setOpen] = React.useState(false);
@@ -12,18 +9,15 @@ const HomePage = () => {
     setOpen(true);
   };
 
-  
   const handleDrawerClose = () => {
     setOpen(false);
   };
- 
+
   return (
     <div>
-      
-     <TopBar open ={open} handleDrawerOpen={handleDrawerOpen}/>
+      <TopBar open={open} handleDrawerOpen={handleDrawerOpen} />
 
-      <Sidebar open ={open} handleDrawerClose={handleDrawerClose} /> 
-
+      <Sidebar open={open} handleDrawerClose={handleDrawerClose} />
     </div>
   );
 };

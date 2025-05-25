@@ -2,7 +2,6 @@ import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
-
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
@@ -14,8 +13,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import {
   BarChartOutlined,
   CalendarTodayOutlined,
@@ -29,7 +26,8 @@ import {
   TimelineOutlined,
 } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
-import loginImage from "../loginScreen/assets/images/loginImage.jpg";
+import loginImage from "../screens/loginScreen/assets/images/loginImage.jpg";
+import { useThemeContext } from "../ThemeContext"; // Import theme context
 
 const drawerWidth = 240;
 
@@ -59,67 +57,47 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
-})(({ theme }) => ({
+})(({ theme, open }) => ({
   width: drawerWidth,
   flexShrink: 0,
   whiteSpace: "nowrap",
   boxSizing: "border-box",
-  variants: [
-    {
-      props: ({ open }) => open,
-      style: {
-        ...openedMixin(theme),
-        "& .MuiDrawer-paper": openedMixin(theme),
-      },
-    },
-    {
-      props: ({ open }) => !open,
-      style: {
-        ...closedMixin(theme),
-        "& .MuiDrawer-paper": closedMixin(theme),
-      },
-    },
-  ],
+  ...(open
+    ? { ...openedMixin(theme), "& .MuiDrawer-paper": openedMixin(theme) }
+    : { ...closedMixin(theme), "& .MuiDrawer-paper": closedMixin(theme) }),
 }));
-const Array1 = [
-  { "text ": "Dashboard", icon: <HomeOutlined />, "path ": "/home" },
-  { "text ": "Manage team", icon: <PeopleAltOutlined />, "path ": "/team" },
+
+const menuItems = [
+  { text: "Dashboard", icon: <HomeOutlined />, path: "/home" },
+  { text: "Manage Team", icon: <PeopleAltOutlined />, path: "/team" },
   {
-    "text ": "Conacts Information",
+    text: "Contacts Information",
     icon: <ContactsOutlined />,
-    "path ": "/contacts",
+    path: "/contacts",
   },
-  {
-    "text ": "Involes Balances",
-    icon: <ReceiptOutlined />,
-    "path ": "/invoices",
-  },
+  { text: "Invoices Balances", icon: <ReceiptOutlined />, path: "/invoices" },
 ];
 
-const Array2 = [
-  { "text ": "Profile Form", icon: <PersonOutline />, "path ": "/form" },
-  {
-    "text ": "Calendar",
-    icon: <CalendarTodayOutlined />,
-    "path ": "/calender",
-  },
-  { "text ": " FAG Page", icon: <HelpOutlineOutlined />, "path ": "/faq" },
+const secondaryItems = [
+  { text: "Profile Form", icon: <PersonOutline />, path: "/form" },
+  { text: "Calendar", icon: <CalendarTodayOutlined />, path: "/calendar" },
+  { text: "FAQ Page", icon: <HelpOutlineOutlined />, path: "/faq" },
 ];
 
-const Array3 = [
-  { "text ": "Bar Chart", icon: <BarChartOutlined />, "path ": "/bar" },
-  { "text ": "Pie Chart", icon: <PieChartOutlineOutlined />, "path ": "/pie" },
-  { "text ": "Line Chart", icon: <TimelineOutlined />, "path ": "/line" },
+const chartItems = [
+  { text: "Bar Chart", icon: <BarChartOutlined />, path: "/bar" },
+  { text: "Pie Chart", icon: <PieChartOutlineOutlined />, path: "/pie" },
+  { text: "Line Chart", icon: <TimelineOutlined />, path: "/line" },
 ];
 
 export default function Sidebar({ open, handleDrawerClose }) {
   const theme = useTheme();
+  const { mode } = useThemeContext(); // Get theme mode
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -143,10 +121,9 @@ export default function Sidebar({ open, handleDrawerClose }) {
             width: open ? 80 : 50,
             transition: "1s",
             height: open ? 80 : 50,
-            transition: "1s",
             mt: 1,
             my: 1,
-            border: " 2px gray",
+            border: "2px gray",
           }}
           alt="Remy Sharp"
           src={loginImage}
@@ -155,218 +132,122 @@ export default function Sidebar({ open, handleDrawerClose }) {
           align="center"
           sx={{ fontSize: open ? 15 : 0, transition: "1s" }}
         >
-          ahmed
+          Ahmed
         </Typography>
         <Typography
           align="center"
-          sx={{ fontSize: open ? 13 : 0, transition: "1s" ,color:theme.palette.info.main }}
+          sx={{
+            fontSize: open ? 13 : 0,
+            transition: "1s",
+            color: theme.palette.info.main,
+          }}
         >
-          admin
+          Admin
         </Typography>
 
         <Divider />
 
+        {/* Primary menu items */}
         <List>
-          {Array1.map((item) => (
-            <ListItem
-              key={item["path "]}
-              disablePadding
-              sx={{ display: "block" }}
-            >
+          {menuItems.map((item) => (
+            <ListItem key={item.path} disablePadding sx={{ display: "block" }}>
               <ListItemButton
-                sx={[
-                  {
-                    minHeight: 48,
-                    px: 2.5,
-                  },
-                  open
-                    ? {
-                        justifyContent: "initial",
-                      }
-                    : {
-                        justifyContent: "center",
-                      },
-                ]}
+                sx={{
+                  minHeight: 48,
+                  px: 2.5,
+                  justifyContent: open ? "initial" : "center",
+                }}
               >
                 <ListItemIcon
-                  sx={[
-                    {
-                      minWidth: 0,
-                      justifyContent: "center",
-                    },
-                    open
-                      ? {
-                          mr: 3,
-                        }
-                      : {
-                          mr: "auto",
-                        },
-                  ]}
+                  sx={{
+                    minWidth: 0,
+                    justifyContent: "center",
+                    color: mode === "dark" ? "gold" : "green",
+                  }}
+                  style={{ paddingRight: "12px" }}
                 >
                   {item.icon}
                 </ListItemIcon>
                 <ListItemText
-                  primary={item["text "]}
-                  sx={[
-                    open
-                      ? {
-                          opacity: 1,
-                        }
-                      : {
-                          opacity: 0,
-                        },
-                  ]}
+                  primary={item.text}
+                  sx={{ opacity: open ? 1 : 0 }}
                 />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
+
         <Divider />
 
+        {/* Secondary menu items */}
         <List>
-          {Array2.map((item) => (
-            <ListItem
-              key={item["path "]}
-              disablePadding
-              sx={{ display: "block" }}
-            >
+          {secondaryItems.map((item) => (
+            <ListItem key={item.path} disablePadding sx={{ display: "block" }}>
               <ListItemButton
-                sx={[
-                  {
-                    minHeight: 48,
-                    px: 2.5,
-                  },
-                  open
-                    ? {
-                        justifyContent: "initial",
-                      }
-                    : {
-                        justifyContent: "center",
-                      },
-                ]}
+                sx={{
+                  minHeight: 48,
+                  px: 2.5,
+                  justifyContent: open ? "initial" : "center",
+                }}
               >
                 <ListItemIcon
-                  sx={[
-                    {
-                      minWidth: 0,
-                      justifyContent: "center",
-                    },
-                    open
-                      ? {
-                          mr: 3,
-                        }
-                      : {
-                          mr: "auto",
-                        },
-                  ]}
+                  sx={{
+                    minWidth: 0,
+                    justifyContent: "center",
+                    color: mode === "dark" ? "gold" : "green",
+                  }}
+                  style={{ paddingRight: "12px" }}
                 >
                   {item.icon}
                 </ListItemIcon>
                 <ListItemText
-                  primary={item["text "]}
-                  sx={[
-                    open
-                      ? {
-                          opacity: 1,
-                        }
-                      : {
-                          opacity: 0,
-                        },
-                  ]}
+                  primary={item.text}
+                  sx={{ opacity: open ? 1 : 0 }}
                 />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
+
         <Divider />
 
+        {/* Chart menu items */}
         <List>
-          {Array3.map((item) => (
-            <ListItem
-              key={item["path "]}
-              disablePadding
-              sx={{ display: "block" }}
-            >
+          {chartItems.map((item) => (
+            <ListItem key={item.path} disablePadding sx={{ display: "block" }}>
               <ListItemButton
-                sx={[
-                  {
-                    minHeight: 48,
-                    px: 2.5,
-                  },
-                  open
-                    ? {
-                        justifyContent: "initial",
-                      }
-                    : {
-                        justifyContent: "center",
-                      },
-                ]}
+                sx={{
+                  minHeight: 48,
+                  px: 2.5,
+                  justifyContent: open ? "initial" : "center",
+                }}
               >
                 <ListItemIcon
-                  sx={[
-                    {
-                      minWidth: 0,
-                      justifyContent: "center",
-                    },
-                    open
-                      ? {
-                          mr: 3,
-                        }
-                      : {
-                          mr: "auto",
-                        },
-                  ]}
+                  sx={{
+                    minWidth: 0,
+                    justifyContent: "center",
+                    color: mode === "dark" ? "gold" : "green",
+                  }}
+                  style={{ paddingRight: "12px" }}
                 >
                   {item.icon}
                 </ListItemIcon>
                 <ListItemText
-                  primary={item["text "]}
-                  sx={[
-                    open
-                      ? {
-                          opacity: 1,
-                        }
-                      : {
-                          opacity: 0,
-                        },
-                  ]}
+                  primary={item.text}
+                  sx={{ opacity: open ? 1 : 0 }}
                 />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
       </Drawer>
+
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Typography sx={{ marginBottom: 2 }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
-          dolor purus non enim praesent elementum facilisis leo vel. Risus at
-          ultrices mi tempus imperdiet. Semper risus in hendrerit gravida rutrum
-          quisque non tellus. Convallis convallis tellus id interdum velit
-          laoreet id donec ultrices. Odio morbi quis commodo odio aenean sed
-          adipiscing. Amet nisl suscipit adipiscing bibendum est ultricies
-          integer quis. Cursus euismod quis viverra nibh cras. Metus vulputate
-          eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo
-          quis imperdiet massa tincidunt. Cras tincidunt lobortis feugiat
-          vivamus at augue. At augue eget arcu dictum varius duis at consectetur
-          lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa sapien
-          faucibus et molestie ac.
+          Lorem ipsum dolor sit amet.
         </Typography>
-        <Typography sx={{ marginBottom: 2 }}>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-          ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-          elementum integer enim neque volutpat ac tincidunt. Ornare suspendisse
-          sed nisi lacus sed viverra tellus. Purus sit amet volutpat consequat
-          mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis
-          risus sed vulputate odio. Morbi tincidunt ornare massa eget egestas
-          purus viverra accumsan in. In hendrerit gravida rutrum quisque non
-          tellus orci ac. Pellentesque nec nam aliquam sem et tortor. Habitant
-          morbi tristique senectus et. Adipiscing elit duis tristique
-          sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-          eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-          posuere sollicitudin aliquam ultrices sagittis orci a.
-        </Typography>
+        <Typography sx={{ marginBottom: 2 }}>Consequ</Typography>
       </Box>
     </Box>
   );

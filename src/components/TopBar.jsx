@@ -3,37 +3,34 @@ import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import Typography from "@mui/material/Typography";
-import { styled, alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import { Box, InputBase, Stack, useTheme } from "@mui/material";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import { styled, alpha } from "@mui/material/styles";
+import { Box, InputBase, Stack } from "@mui/material";
 import { useThemeContext } from "../ThemeContext";
+
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
-})(({ theme }) => ({
+})(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  variants: [
-    {
-      props: ({ open }) => open,
-      style: {
+  ...(open
+    ? {
         marginLeft: drawerWidth,
         width: `calc(100% - ${drawerWidth}px)`,
         transition: theme.transitions.create(["width", "margin"], {
           easing: theme.transitions.easing.sharp,
           duration: theme.transitions.duration.enteringScreen,
         }),
-      },
-    },
-  ],
+      }
+    : {}),
 }));
 
 const Search = styled("div")(({ theme }) => ({
@@ -76,10 +73,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function TopBar({ open, handleDrawerOpen }) {
-  const { mode, toggleTheme } = useThemeContext();
+  const { mode, toggleTheme } = useThemeContext(); // Get theme mode
 
   return (
-    <AppBar position="fixed" open={open}>
+    <AppBar
+      position="fixed"
+      open={open}
+      sx={{
+        backgroundColor: mode === "dark" ? "" : "#107163",
+        color: mode === "dark" ? "gold" : "white",
+      }}
+    >
       <Toolbar>
         <IconButton
           color="inherit"
