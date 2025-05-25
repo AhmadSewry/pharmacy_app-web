@@ -97,7 +97,7 @@ const chartItems = [
 
 export default function Sidebar({ open, handleDrawerClose }) {
   const theme = useTheme();
-  const { mode } = useThemeContext(); // Get theme mode
+  const { mode } = useThemeContext(); 
 
   return (
     <Box sx={{ display: "flex" }}>
