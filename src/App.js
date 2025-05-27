@@ -12,7 +12,7 @@ import BarChart from "./screens/barChart/BarChart";
 import PieChart from "./screens/pieChart/PieChart";
 import LineChart from "./screens/lineChart/LineChart";
 import MainLayout from "./components/mainLayout";
-import HomePage from "./screens/homePageScreen/HomePage";
+import HomePage from "./screens/homePage/HomePage";
 
 function App() {
   return (
