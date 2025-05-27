@@ -61,6 +61,7 @@ function ManageTeam() {
       flex: 1,
       width: 160,
       headerAlign: "center",
+      display: "flex",
       renderCell: ({ row: { access } }) => {
         return (
           <Box
@@ -71,9 +72,11 @@ function ManageTeam() {
               width: "99px",
               textAlign: "center",
               borderRadius: "3px",
-              display: "flex", // Enables flexbox
-              alignItems: "center", // Centers vertically
-              justifyContent: "space-evenly", // Centers horizontally
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              justifySelf: "center",
+              alignSelf: "center",
             }}
           >
             {access === "Admin" && (
@@ -100,7 +103,7 @@ function ManageTeam() {
   ];
   return (
     <div style={{ height: "100%", width: "100%" }}>
-      <Box style={{ mx: "auto" }}>
+      <Box style={{ mx: "auto", my: "auto" }}>
         <DataGrid rows={rows} columns={columns}></DataGrid>
       </Box>
     </div>
