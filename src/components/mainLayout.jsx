@@ -18,7 +18,9 @@ const MainLayout = () => {
     <div>
       <TopBar open={open} handleDrawerOpen={handleDrawerOpen} />
       <Sidebar open={open} handleDrawerClose={handleDrawerClose} />
-      <Outlet />
+      <div className="main">
+        <Outlet />
+      </div>
     </div>
   );
 };
