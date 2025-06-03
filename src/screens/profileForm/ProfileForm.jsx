@@ -20,6 +20,8 @@ function ProfileForm() {
   const onSubmit = () => {
     console.log("dddddddddddd");
   };
+  const regphone = /^(?:\+963|00963)\d{9}$/;
+  const regCertificate=/^\d{7}$/;
   return (
     <Box
       onSubmit={handleSubmit(onSubmit)}
@@ -39,7 +41,7 @@ function ProfileForm() {
           error={Boolean(errors.firstName)}
           helperText={
             Boolean(errors.firstName)
-              ? "Enter FirstName Please but It needs to be more than four characters."
+              ? "Enter FirstName Please but It needs to be more than 3 characters."
               : null
           }
           {...register("firstName", { required: true, minLength: 3 })}
@@ -47,13 +49,68 @@ function ProfileForm() {
           label="FirstName"
           variant="filled"
         />
-        <TextField sx={{ flex: 1 }} label="LastName" variant="filled" />
+        <TextField
+          error={Boolean(errors.lastName)}
+          helperText={
+            Boolean(errors.lastName)
+              ? "Enter LastName Please but It needs to be more than 3 characters."
+              : null
+          }
+          {...register("lastName", { required: true, minLength: 3 })}
+          sx={{ flex: 1 }}
+          label="LastName"
+          variant="filled"
+        />
       </Stack>
 
-      <TextField label="Phone" variant="filled" />
-      <TextField label="NumberCertificate" variant="filled" />
-      <TextField label="Enter UserName Employe" variant="filled" />
-      <TextField label="Enter PassWord Employe" variant="filled" />
+      <TextField
+        error={Boolean(errors.phone)}
+        helperText={
+          Boolean(errors.phone)
+            ? "Enter a number starting with +963 or 00963 followed by 9 numbers"
+            : null
+        }
+        {...register("phone", {
+          required: true,
+          minLength: 3,
+          pattern: regphone,
+        })}
+        label="Phone"
+        variant="filled"
+      />
+      <TextField
+        error={Boolean(errors.numberCertificate)}
+        helperText={
+          Boolean(errors.numberCertificate)
+            ? "Enter a 7-digit number only please"
+            : null
+        }
+        {...register("numberCertificate", { required: true, pattern:regCertificate })}
+        label="NumberCertificate"
+        variant="filled"
+      />
+      <TextField
+        error={Boolean(errors.username)}
+        helperText={
+          Boolean(errors.username)
+            ? "Enter FirstName Please but It needs to be more than four characters."
+            : null
+        }
+        {...register("username", { required: true, minLength: 3 })}
+        label="Enter UserName Employe"
+        variant="filled"
+      />
+      <TextField
+        error={Boolean(errors.password)}
+        helperText={
+          Boolean(errors.password)
+            ? "Enter FirstName Please but It needs to be more than four characters."
+            : null
+        }
+        {...register("password", { required: true, minLength: 3 })}
+        label="Enter PassWord Employe"
+        variant="filled"
+      />
 
       <FormControl fullWidth variant="filled">
         <InputLabel id="role-label">Role</InputLabel>
