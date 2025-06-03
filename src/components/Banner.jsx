@@ -14,13 +14,12 @@ function Banner() {
       <BannerContainer>
         <BannerImage src={bannerImage}></BannerImage>
         <BannerContent>
-          <Typography variant="h6">Huge Collection</Typography>
-          <BannerTitle variant="h2">New Bags</BannerTitle>
+          <Typography variant="h6">Pharmacy Simplified</Typography>
+          <BannerTitle variant="h2">Medicenes</BannerTitle>
           <BannerDescription variant="subtitle">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. In ab ut
-            voluptas, tenetur sit quos amet repudiandae, adipisci delectus
-            repellendus cum sed blanditiis eius praesentium maiores totam
-            sapiente exercitationem quibusdam.
+            Get prescriptions refilled, schedule medication reminders, and
+            access pharmacist consultations - all in one place. Fast, discreet
+            delivery to your doorstep.
           </BannerDescription>
         </BannerContent>
       </BannerContainer>

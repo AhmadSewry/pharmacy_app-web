@@ -8,7 +8,7 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { styled, alpha } from "@mui/material/styles";
-import { Box, InputBase, Stack } from "@mui/material";
+import { Box, Divider, InputBase, Stack } from "@mui/material";
 import { useThemeContext } from "../ThemeContext";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 
@@ -117,10 +117,11 @@ export default function TopBar({ open, handleDrawerOpen }) {
           <IconButton color="inherit" onClick={toggleTheme}>
             {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
           </IconButton>
-
+          <Divider orientation="vertical" flexItem></Divider>
           <IconButton color="inherit">
             <ShoppingCartOutlinedIcon />
           </IconButton>
+          <Divider orientation="vertical" flexItem></Divider>
           <IconButton color="inherit">
             <NotificationsIcon />
           </IconButton>
