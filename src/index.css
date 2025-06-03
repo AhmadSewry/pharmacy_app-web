@@ -2,8 +2,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  --dark-green: #107163;
-  --light-green: #078d38;
+  --light-green: #107163;
+  --dark-green: #078d38;
+  --light-gray: #3d3d3d;
+  --white: "white";
 }
 
 
