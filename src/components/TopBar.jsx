@@ -10,6 +10,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { styled, alpha } from "@mui/material/styles";
 import { Box, InputBase, Stack } from "@mui/material";
 import { useThemeContext } from "../ThemeContext";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 
 const drawerWidth = 240;
 
@@ -117,6 +118,9 @@ export default function TopBar({ open, handleDrawerOpen }) {
             {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
           </IconButton>
 
+          <IconButton color="inherit">
+            <ShoppingCartOutlinedIcon />
+          </IconButton>
           <IconButton color="inherit">
             <NotificationsIcon />
           </IconButton>

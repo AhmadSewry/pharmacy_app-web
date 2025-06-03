@@ -1,7 +1,8 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
-import TopBar from "../components/TopBar";
 import { Outlet } from "react-router-dom";
+import TopBar from "./TopBar";
+import Banner from "../components/Banner";
 
 const MainLayout = () => {
   const [open, setOpen] = React.useState(false);
