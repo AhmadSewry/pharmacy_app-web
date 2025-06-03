@@ -15,6 +15,7 @@ import MainLayout from "./components/mainLayout";
 import HomePage from "./screens/homePage/HomePage";
 
 function App() {
+  document.title = "Pharmacy App";
   return (
     <CustomThemeProvider>
       <Router>
