@@ -7,7 +7,7 @@ export const FooterTitle = styled(Typography)(() => ({
 }));
 export const SubscribeTf = styled(TextField)(() => ({
   ".MuiInputLabel-root": {
-    color: "black",
+    color: "white",
   },
   ".MuiInputLabel-root::before": {
     borderBottom: `1px solid ${"red"}`,
