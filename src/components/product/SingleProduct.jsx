@@ -3,9 +3,10 @@ import { Product, ProductImage } from "../../screens/homePage/styles/Products";
 import ProductMeta from "./ProductMeta";
 
 export default function SingleProduct({ product }) {
+  // const imagePath = require(`../../images/medicine1.jpg`);
   return (
     <Product>
-      <ProductImage src={product.Image}></ProductImage>
+      <ProductImage src={product.image} alt={product.name}></ProductImage>
       <ProductMeta product={product}></ProductMeta>
     </Product>
   );

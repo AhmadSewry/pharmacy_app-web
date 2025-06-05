@@ -10,8 +10,9 @@ export function Promotion() {
   const [show, setShow] = useState(true);
   const containerRef = useRef();
   const messages = [
-    "20% off on your first order!",
-    "Summer sale starts now, visit any store.",
+    "Welcome to our Pharmacy App.",
+    "Summer sale starts now.",
+    "Get 20% off on prescriptions today!",
   ];
 
   useEffect(() => {
