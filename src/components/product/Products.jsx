@@ -9,10 +9,12 @@ import SingleProduct from "./SingleProduct";
 
 export default function Products() {
   const theme = useTheme();
-  const renderProdcuts = ProductsData.map((product) => (
+
+  // Ensure ProductsData is defined and not empty
+  const renderProducts = (ProductsData || []).map((product = {}) => (
     <Grid
       item
-      key={product.id}
+      key={product.id || Math.random()} // Fallback key
       xs={2}
       sm={4}
       md={4}
@@ -20,9 +22,10 @@ export default function Products() {
       flexDirection={"column"}
       alignItems={"center"}
     >
-      <SingleProduct product={product}></SingleProduct>
+      <SingleProduct product={product} />
     </Grid>
   ));
+
   return (
     <Container>
       <Grid
@@ -32,7 +35,7 @@ export default function Products() {
         sx={{ margin: "20px 4px 10px 4px" }}
         columns={{ xs: 4, sm: 8, md: 12 }}
       >
-        {renderProdcuts}
+        {renderProducts}
       </Grid>
     </Container>
   );

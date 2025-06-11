@@ -50,7 +50,7 @@ export default function Footer() {
             ></InstagramIcon>
           </Box>
         </Grid>
-        <Grid item md={6} lg={2}>
+        <Grid item md={6} lg={2} ml={"30px"}>
           <FooterTitle variant="body1">information</FooterTitle>
           <List>
             <ListItemText>
@@ -75,7 +75,7 @@ export default function Footer() {
             </ListItemText>
           </List>
         </Grid>
-        <Grid item md={6} lg={2}>
+        <Grid item md={6} lg={2} ml={"30px"}>
           <FooterTitle variant="body1">my account</FooterTitle>
           <List>
             <ListItemText>
@@ -100,7 +100,7 @@ export default function Footer() {
             </ListItemText>
           </List>
         </Grid>
-        <Grid item md={6} lg={4}>
+        <Grid item md={6} lg={4} ml={"30px"}>
           <FooterTitle variant="body1"> newsLetter</FooterTitle>
           <Stack>
             <SubscribeTf

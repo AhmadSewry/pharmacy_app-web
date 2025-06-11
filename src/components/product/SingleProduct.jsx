@@ -6,19 +6,31 @@ import {
   ProductActionButton,
   ProductActionsWrapper,
   ProductAddToCart,
-  ProductFavButton,
   ProductImage,
 } from "../../screens/homePage/styles/Products";
 import ProductMeta from "./ProductMeta";
 import { Stack } from "@mui/material";
+import useDialogModel from "../../screens/homePage/hooks/useDialogModel";
+import ProductDetails from "../../components/productDetails/ProductDetails";
 
-export default function SingleProduct({ product }) {
-  // const imagePath = require(`../../images/medicine1.jpg`);
+export default function SingleProduct({ product = {} }) {
+  // Default empty object
+
+  const [
+    ProductDetailDialog,
+    showProductDetailDialog,
+    closeProductDetailDialog,
+  ] = useDialogModel(ProductDetails);
+
   return (
     <>
       <Product>
-        <ProductImage src={product.image} alt={product.name}></ProductImage>
-        <ProductMeta product={product}></ProductMeta>
+        <ProductImage
+          onClick={() => showProductDetailDialog(product)}
+          src={product.image || "/default-product-image.png"}
+          alt={product.name || "Product"}
+        />
+        <ProductMeta product={product} />
         <ProductActionsWrapper>
           <Stack direction={"column"}>
             <ProductActionButton>
@@ -28,6 +40,7 @@ export default function SingleProduct({ product }) {
         </ProductActionsWrapper>
       </Product>
       <ProductAddToCart variant="contained">Add to Cart</ProductAddToCart>
+      <ProductDetailDialog product={product} />
     </>
   );
 }
