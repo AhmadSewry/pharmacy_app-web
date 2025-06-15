@@ -12,21 +12,22 @@ import ProductMeta from "./ProductMeta";
 import { Stack } from "@mui/material";
 import useDialogModel from "../../screens/homePage/hooks/useDialogModel";
 import ProductDetails from "../../components/productDetails/ProductDetails";
+import { useNavigate } from "react-router-dom";
 
 export default function SingleProduct({ product = {} }) {
-  // Default empty object
-
   const [
     ProductDetailDialog,
     showProductDetailDialog,
     closeProductDetailDialog,
   ] = useDialogModel(ProductDetails);
 
+  const navigate = useNavigate();
+
   return (
     <>
       <Product>
         <ProductImage
-          onClick={() => showProductDetailDialog(product)}
+          onClick={() => navigate("/product-details", { state: product })}
           src={product.image || "/default-product-image.png"}
           alt={product.name || "Product"}
         />
@@ -39,7 +40,7 @@ export default function SingleProduct({ product = {} }) {
           </Stack>
         </ProductActionsWrapper>
       </Product>
-      <ProductAddToCart variant="contained">Add to Cart</ProductAddToCart>
+      <ProductAddToCart sx={{}} variant="contained">Add to Cart</ProductAddToCart>
       <ProductDetailDialog product={product} />
     </>
   );
