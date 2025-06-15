@@ -32,7 +32,9 @@ export const ProductFavButton = styled(ProductActionButton)(
 export const ProductAddToCart = styled(Button)(({ show, theme }) => ({
   width: "120px",
   fontSize: "12px",
-  backgroundColor: "pink",
+  backgroundColor: theme.palette.mode === "light" ? "#107163" : "#5c5c5c",
+  color: "#fff",
+
   opacity: 0.9,
   animation:
     show && `${slideInBottom} 0.5s cubic-bezier(0.250,0.460,0.450,0.940) both`,
@@ -46,7 +48,7 @@ export const ProductMetaWrapper = styled(Box)(({ theme }) => ({
 
 export const ProductActionsWrapper = styled(Box)(({ show, theme }) => ({
   display: show ? "block" : "none",
-  wid:"20px",
+  wid: "20px",
   zIndex: 10,
   position: "absolute",
   right: 0,

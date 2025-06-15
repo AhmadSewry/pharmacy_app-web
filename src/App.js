@@ -13,6 +13,7 @@ import PieChart from "./screens/pieChart/PieChart";
 import LineChart from "./screens/lineChart/LineChart";
 import MainLayout from "./components/mainLayout";
 import HomePage from "./screens/homePage/HomePage";
+import ProductDetails from "./components/productDetails/ProductDetails";
 
 function App() {
   document.title = "Pharmacy App";
@@ -27,6 +28,7 @@ function App() {
             <Route path="contacts" element={<Contacts />} />
             <Route path="invoices" element={<Invoices />} />
             <Route path="form" element={<ProfileForm />} />
+            <Route path="/product-details" element={<ProductDetails />} />
             <Route path="calendar" element={<Calendar />} />
             <Route path="faq" element={<Faq />} />
             <Route path="bar" element={<BarChart />} />
