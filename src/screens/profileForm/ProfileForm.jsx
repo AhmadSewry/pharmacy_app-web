@@ -1,7 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { Button, Stack } from "@mui/material";
+import { Alert, Button, Snackbar, Stack } from "@mui/material";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Select, MenuItem, InputLabel, FormControl } from "@mui/material";
@@ -17,11 +17,26 @@ function ProfileForm() {
     watch,
     formState: { errors },
   } = useForm();
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+  const handleClick = () => {
+    setOpen(true);
+  };
+
   const onSubmit = () => {
     console.log("dddddddddddd");
+    handleClick();
   };
+
   const regphone = /^(?:\+963|00963)\d{9}$/;
-  const regCertificate=/^\d{7}$/;
+  const regCertificate = /^\d{7}$/;
   return (
     <Box
       onSubmit={handleSubmit(onSubmit)}
@@ -85,7 +100,10 @@ function ProfileForm() {
             ? "Enter a 7-digit number only please"
             : null
         }
-        {...register("numberCertificate", { required: true, pattern:regCertificate })}
+        {...register("numberCertificate", {
+          required: true,
+          pattern: regCertificate,
+        })}
         label="NumberCertificate"
         variant="filled"
       />
@@ -131,6 +149,21 @@ function ProfileForm() {
         >
           Create New Employe
         </Button>
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          open={open}
+          autoHideDuration={3000}
+          onClose={handleClose}
+        >
+          <Alert
+            onClose={handleClose}
+            severity="success"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            Account created Successfully
+          </Alert>
+        </Snackbar>
       </Box>
     </Box>
   );
