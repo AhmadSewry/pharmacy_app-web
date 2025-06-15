@@ -11,7 +11,7 @@ import { styled, alpha } from "@mui/material/styles";
 import { Box, Divider, InputBase, Stack } from "@mui/material";
 import { useThemeContext } from "../ThemeContext";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-
+import {useState} from "react"
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -75,6 +75,25 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function TopBar({ open, handleDrawerOpen }) {
   const { mode, toggleTheme } = useThemeContext(); // Get theme mode
+const [searchText, setSearchText] = useState("");
+
+const handleInputChange = (e) => {
+  setSearchText(e.target.value);
+};
+
+const handleKeyDown = (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    handleSearch();
+  }
+};
+
+const handleSearch = () => {
+  console.log("🔍 Searching for:", searchText);
+  // هنا يمكنك تنفيذ أي منطق بحث إضافي حسب حاجتك
+};
+
+
 
   return (
     <AppBar
@@ -107,7 +126,10 @@ export default function TopBar({ open, handleDrawerOpen }) {
           </SearchIconWrapper>
           <StyledInputBase
             placeholder="Search…"
-            inputProps={{ "aria-label": "search" }}
+          inputProps={{ "aria-label": "search" }}
+onChange={handleInputChange}
+onKeyDown={handleKeyDown} // 💡 يفعل البحث عند الضغط على Enter
+
           />
         </Search>
 
@@ -130,3 +152,4 @@ export default function TopBar({ open, handleDrawerOpen }) {
     </AppBar>
   );
 }
+
