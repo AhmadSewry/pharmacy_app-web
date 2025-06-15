@@ -1,14 +1,13 @@
 import React from "react";
 import loginImage from "../loginScreen/assets/images/loginImage.jpg";
-import PrintIcon from '@mui/icons-material/Print';
-import DownloadIcon from '@mui/icons-material/Download';
+import PrintIcon from "@mui/icons-material/Print";
 
-function printInvoice(){
+function printInvoice() {
   window.print();
 }
 function Invoices() {
   return (
-    <div className="invoice-wrapper" id ="print-area">
+    <div className="invoice-wrapper" id="print-area">
       <div className="invoice">
         <div className="invoice-container">
           <div className="invoice-head">
@@ -56,78 +55,87 @@ function Invoices() {
               </div>
             </div>
           </div>
-          <div class ="overflow-view">
-            <div class ="invoice-body">
+          <div class="overflow-view">
+            <div class="invoice-body">
               <table>
                 <thead>
                   <tr>
-                    <td class ="text-bold">Services</td>
-                    <td class ="text-bold>">Description</td>
-                    <td className="text-bold"> Rate</td>
-                    <td className="text-bold"> QTY</td>
+                    <td class="text-bold">Products</td>
+                    <td class="text-bold>">Description</td>
+                    <td className="text-bold"> Price</td>
+                    <td className="text-bold"> Quantity</td>
                     <td className="text-bold"> Amount</td>
-
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Desigin</td>
-                    <td>creating a website design </td>
+                    <td>Cetamol</td>
+                    <td> </td>
                     <td>$50.00</td>
                     <td>10</td>
-                    <td calss ="text-end">$500.00</td>
+                    <td calss="text-end">$500.00</td>
                   </tr>
 
                   <tr>
-                    <td>Development</td>
-                    <td> website Development </td>
+                    <td>Imodium</td>
+                    <td> </td>
                     <td>$50.00</td>
                     <td>10</td>
-                    <td calss ="text-end">$500.00</td>
+                    <td calss="text-end">$500.00</td>
                   </tr>
 
                   <tr>
-                    <td>SEO</td>
-                    <td>Optimize the site ffor searchh engines </td>
+                    <td>Snip</td>
+                    <td> </td>
                     <td>$50.00</td>
                     <td>10</td>
-                    <td calss ="text-end">$500.00</td>
+                    <td calss="text-end">$500.00</td>
                   </tr>
                 </tbody>
-
               </table>
               <div className="invoice-body-bottom">
                 <div className="invoice-body-info-item border-bottom">
-                  <div className="info-item-td text-end text-end text-bold"> Sub Total :</div>
+                  <div className="info-item-td text-end text-end text-bold">
+                    {" "}
+                    Sub Total :
+                  </div>
                   <div className="info-item-td text-end">$22150.00</div>
                 </div>
               </div>
               <div className="invoice-body-info-item border-bottom">
-                  <div className="info-item-td text-end text-end text-bold"> Tax :</div>
-                  <div className="info-item-td text-end">$22150.00</div>
+                <div className="info-item-td text-end text-end text-bold">
+                  {" "}
+                  Tax :
                 </div>
-              
+                <div className="info-item-td text-end">$22150.00</div>
+              </div>
+
               <div className="invoice-body-info-item">
-                  <div className="info-item-td text-end text-end text-bold"> Sub Total :</div>
-                  <div className="info-item-td text-end">$22150.00</div>
+                <div className="info-item-td text-end text-end text-bold">
+                  {" "}
+                  Total :
                 </div>
-              
+                <div className="info-item-td text-end">$22150.00</div>
+              </div>
             </div>
           </div>
           <div className="invoice-foot text-center">
-            <p> <span class ="text-bold text-center">NOTE:
-            </span>
-            this is computer generatedd receipt and dose not require physical signaature</p>
+            <p>
+              {" "}
+              <span class="text-bold text-center">NOTE:</span>
+              this is computer generatedd receipt and dose not require physical
+              signaature
+            </p>
             <div className="invoice-btns">
-              <button  type="button" className="invoice-btn" onClick={printInvoice}>
+              <button
+                type="button"
+                className="invoice-btn"
+                onClick={printInvoice}
+              >
                 <PrintIcon></PrintIcon>
                 <span>print</span>
-                </button>
-                <button  type="button" className="invoice-btn">
-                <DownloadIcon></DownloadIcon>
-                <span class ="print-text">download</span>
-                </button>
-                 </div>
+              </button>
+            </div>
           </div>
         </div>
       </div>
