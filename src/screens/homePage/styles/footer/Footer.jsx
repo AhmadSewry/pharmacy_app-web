@@ -1,4 +1,4 @@
-import { colors, styled, TextField, Typography } from "@mui/material";
+import { styled, TextField, Typography } from "@mui/material";
 import React from "react";
 
 export const FooterTitle = styled(Typography)(() => ({
@@ -10,6 +10,6 @@ export const SubscribeTf = styled(TextField)(() => ({
     color: "white",
   },
   ".MuiInputLabel-root::before": {
-    borderBottom: `1px solid ${"red"}`,
+    borderBottom: `1px solid`,
   },
 }));
