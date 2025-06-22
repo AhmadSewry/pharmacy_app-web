@@ -13,7 +13,9 @@ function HomePage() {
       <Banner></Banner>
       <Promotion></Promotion>
       <Box display={"flex"} justifyContent={"center"} sx={{ p: 4 }}>
-        <Typography variant="h4">Our Products</Typography>
+        <Typography variant="h4" fontFamily='"Montez", cursive'>
+          Our Products
+        </Typography>
       </Box>
       <Products></Products>
       <Footer></Footer>

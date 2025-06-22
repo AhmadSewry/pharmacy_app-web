@@ -11,11 +11,18 @@ import {
 function Banner() {
   return (
     <>
-      <BannerContainer>
+      <BannerContainer
+        display={"flex"}
+        position={"relative"}
+        overflow={"hidden"}
+        borderRadius="16px"
+      >
         <BannerImage src={bannerImage}></BannerImage>
         <BannerContent>
           <Typography variant="h6">Pharmacy Simplified</Typography>
-          <BannerTitle variant="h2">Medicenes</BannerTitle>
+          <BannerTitle variant="h2" fontFamily='"Montez", cursive'>
+            Medicenes
+          </BannerTitle>
           <BannerDescription variant="subtitle">
             Get prescriptions refilled, schedule medication reminders, and
             access pharmacist consultations - all in one place. Fast, discreet

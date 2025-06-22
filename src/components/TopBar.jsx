@@ -11,7 +11,9 @@ import { styled, alpha } from "@mui/material/styles";
 import { Box, Divider, InputBase, Stack } from "@mui/material";
 import { useThemeContext } from "../ThemeContext";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import {useState} from "react"
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -74,26 +76,28 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function TopBar({ open, handleDrawerOpen }) {
+  const navigate = useNavigate();
   const { mode, toggleTheme } = useThemeContext(); // Get theme mode
-const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState("");
 
-const handleInputChange = (e) => {
-  setSearchText(e.target.value);
-};
+  const handleInputChange = (e) => {
+    setSearchText(e.target.value);
+  };
+  const handleCartClick = () => {
+    navigate("/cart");
+  };
 
-const handleKeyDown = (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    handleSearch();
-  }
-};
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearch();
+    }
+  };
 
-const handleSearch = () => {
-  console.log("🔍 Searching for:", searchText);
-  // هنا يمكنك تنفيذ أي منطق بحث إضافي حسب حاجتك
-};
-
-
+  const handleSearch = () => {
+    console.log("🔍 Searching for:", searchText);
+    // هنا يمكنك تنفيذ أي منطق بحث إضافي حسب حاجتك
+  };
 
   return (
     <AppBar
@@ -126,10 +130,9 @@ const handleSearch = () => {
           </SearchIconWrapper>
           <StyledInputBase
             placeholder="Search…"
-          inputProps={{ "aria-label": "search" }}
-onChange={handleInputChange}
-onKeyDown={handleKeyDown} // 💡 يفعل البحث عند الضغط على Enter
-
+            inputProps={{ "aria-label": "search" }}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown} // 💡 يفعل البحث عند الضغط على Enter
           />
         </Search>
 
@@ -140,7 +143,7 @@ onKeyDown={handleKeyDown} // 💡 يفعل البحث عند الضغط على E
             {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
           </IconButton>
           <Divider orientation="vertical" flexItem></Divider>
-          <IconButton color="inherit">
+          <IconButton color="inherit" onClick={handleCartClick}>
             <ShoppingCartOutlinedIcon />
           </IconButton>
           <Divider orientation="vertical" flexItem></Divider>
@@ -152,4 +155,3 @@ onKeyDown={handleKeyDown} // 💡 يفعل البحث عند الضغط على E
     </AppBar>
   );
 }
-

@@ -14,6 +14,7 @@ import LineChart from "./screens/lineChart/LineChart";
 import MainLayout from "./components/mainLayout";
 import HomePage from "./screens/homePage/HomePage";
 import ProductDetails from "./components/productDetails/ProductDetails";
+import Cart from "./screens/cart/Cart";
 
 function App() {
   document.title = "Pharmacy App";
@@ -34,6 +35,7 @@ function App() {
             <Route path="bar" element={<BarChart />} />
             <Route path="pie" element={<PieChart />} />
             <Route path="line" element={<LineChart />} />
+            <Route path="/cart" element={<Cart />} />
           </Route>
         </Routes>
       </Router>

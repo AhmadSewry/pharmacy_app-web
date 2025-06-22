@@ -28,7 +28,14 @@ export function Promotion() {
   }, [messages.length]);
 
   return (
-    <PromotionContainer ref={containerRef}>
+    <PromotionContainer
+      ref={containerRef}
+      display={"flex"}
+      position={"relative"}
+      overflow={"hidden"}
+      borderRadius="16px"
+      mt={"5px"}
+    >
       <Slide
         container={containerRef.current}
         direction={show ? "left" : "right"}

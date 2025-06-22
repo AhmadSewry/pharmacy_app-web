@@ -6,6 +6,7 @@ import {
   ListItemText,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
 import InstagramIcon from "@mui/icons-material/Instagram";
@@ -18,9 +19,11 @@ import {
 } from "../../screens/homePage/styles/footer/Footer";
 
 export default function Footer() {
+  const theme = useTheme();
   return (
     <Box
       sx={{
+        mt: 5,
         backgroundColor: "gray",
         color: "white",
         p: { xs: 4, md: 10 },
@@ -110,7 +113,12 @@ export default function Footer() {
             />
             <Button
               startIcon={<SendIcon />}
-              sx={{ mt: 4, mb: 4 }}
+              sx={{
+                mt: 4,
+                mb: 4,
+                backgroundColor:
+                  theme.palette.mode === "light" ? "#107163" : "gold",
+              }}
               variant="contained"
             >
               Subscribe

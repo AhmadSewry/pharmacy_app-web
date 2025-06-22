@@ -1,7 +1,9 @@
-import { Box, Typography, styled, useTheme } from "@mui/material";
+import { Box, Typography, Button, styled, useTheme } from "@mui/material";
 import React from "react";
 import { Product, ProductImage } from "../../screens/homePage/styles/Products";
 import { useLocation } from "react-router-dom";
+import IncDec from "../ui";
+import { lightGreen } from "@mui/material/colors";
 
 const ProductDetailsWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -48,6 +50,23 @@ function ProductDetails() {
           <Typography variant="body1">
             {product?.description || "No description available."}
           </Typography>
+          <Box
+            sx={{ mt: 4 }}
+            display="flex"
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          ></Box>
+          <IncDec></IncDec>
+          <Button
+            variant="contained"
+            sx={{
+              mt: "5px",
+              backgroundColor:
+                theme.palette.mode === "light" ? "#107163" : "gold",
+            }}
+          >
+            Add to cart
+          </Button>
         </ProductDetailsInfoWrapper>
       </ProductDetailsWrapper>
     </Box>
