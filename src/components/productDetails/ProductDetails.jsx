@@ -1,9 +1,7 @@
 import { Box, Typography, Button, styled, useTheme } from "@mui/material";
-import React from "react";
-import { Product, ProductImage } from "../../screens/homePage/styles/Products";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import IncDec from "../ui";
-import { lightGreen } from "@mui/material/colors";
 
 const ProductDetailsWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -20,27 +18,24 @@ const ProductDetailsInfoWrapper = styled(Box)(({ theme }) => ({
 }));
 
 function ProductDetails() {
+  const [quantity, setQuantity] = useState(1);
   const theme = useTheme();
   const location = useLocation();
   const product = location.state;
+
   return (
-    <Box
-      sx={{
-        padding: theme.spacing(4),
-      }}
-    >
+    <Box sx={{ padding: theme.spacing(4) }}>
       <Typography variant="h4">{product?.name || "Product Details"}</Typography>
       <ProductDetailsWrapper>
-        <Product sx={{ mb: 4, width: "100%" }}>
-          <ProductImage
+        <Box sx={{ mb: 4 }}>
+          <img
             src={product?.image || "/default-product-image.png"}
             alt={product?.name || "Product image"}
+            style={{ maxWidth: "100%", height: "auto" }}
           />
-        </Product>
+        </Box>
         <ProductDetailsInfoWrapper>
-          <Typography variant="subtitle1">
-            SKU: {product?.sku || "N/A"}
-          </Typography>
+          <Typography variant="subtitle1">SKU: {product?.sku || "N/A"}</Typography>
           <Typography variant="subtitle1">
             Availability: {product?.stock || 0} in stock
           </Typography>
@@ -50,19 +45,18 @@ function ProductDetails() {
           <Typography variant="body1">
             {product?.description || "No description available."}
           </Typography>
-          <Box
-            sx={{ mt: 4 }}
-            display="flex"
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          ></Box>
-          <IncDec></IncDec>
+          <Box sx={{ mt: 4 }}>
+            <IncDec
+              quantity={quantity}
+              onIncrement={() => setQuantity(prev => Math.min(prev + 1, 100))}
+              onDecrement={() => setQuantity(prev => Math.max(prev - 1, 1))}
+            />
+          </Box>
           <Button
             variant="contained"
             sx={{
-              mt: "5px",
-              backgroundColor:
-                theme.palette.mode === "light" ? "#107163" : "gold",
+              mt: 2,
+              backgroundColor: theme.palette.mode === "light" ? "#107163" : "gold",
             }}
           >
             Add to cart

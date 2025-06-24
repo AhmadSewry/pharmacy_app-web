@@ -1,41 +1,47 @@
-import { Box, colors, IconButton, Typography, useTheme } from "@mui/material";
-import React, { useState } from "react";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import React from "react";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { clamp } from "./clamp";
-import { lightGreen } from "@mui/material/colors";
 
-function IncDec() {
+function IncDec({ quantity, onIncrement, onDecrement }) {
   const theme = useTheme();
-  const clampValue = clamp(1, 10);
-  const [value, setValue] = useState(1);
+
   return (
-    <Box display={"flex"}>
+    <Box display="flex" alignItems="center">
       <IconButton
         sx={{
           borderRadius: 0,
           backgroundColor:
             theme.palette.mode === "light" ? "#107163" : "#3d3d3d",
+          color: "white",
         }}
-        onClick={() => setValue(clampValue(value - 1))}
+        onClick={onDecrement}
+        disabled={quantity <= 1}
       >
-        <RemoveIcon></RemoveIcon>
+        <RemoveIcon />
       </IconButton>
       <Typography
         variant="h6"
-        sx={{ border: `1px solid ${colors.blue}`, p: 2 }}
+        sx={{
+          px: 2,
+          border: `1px solid ${theme.palette.divider}`,
+          minWidth: "40px",
+          textAlign: "center",
+        }}
       >
-        {value}
+        {quantity}
       </Typography>
       <IconButton
         sx={{
           borderRadius: 0,
           backgroundColor:
             theme.palette.mode === "light" ? "#107163" : "#3d3d3d",
+          color: "white",
         }}
-        onClick={() => setValue(clampValue(value + 1))}
+        onClick={onIncrement}
+        disabled={quantity >= 100}
       >
-        <AddIcon></AddIcon>
+        <AddIcon />
       </IconButton>
     </Box>
   );

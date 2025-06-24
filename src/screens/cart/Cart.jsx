@@ -9,29 +9,33 @@ import {
   TableCell,
   useTheme,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import IncDec from "../../components/ui";
 import CartData from "./CartData";
+
 function Cart() {
   const [cartItems, setCartItems] = useState(CartData);
+  const theme = useTheme();
 
-  // const [cartItems, setCartItems] = useState([
-  //   { id: 1, name: "Cetamol", price: 0.99, quantity: 2 },
-  //   { id: 2, name: "Imodium", price: 1.99, quantity: 2 },
-  // ]);
   const handleRemove = (id) => {
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
+
+  const updateQuantity = (id, newQuantity) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
   const total = cartItems
     .reduce((sum, item) => sum + item.price * item.quantity, 0)
     .toFixed(2);
 
-  const theme = useTheme();
   return (
     <div style={{ width: "100%", marginLeft: "5%", marginRight: "5%" }}>
-      <h1 style={{ marginLeft: "48%", fontFamily: '"Montez", cursive' }}>
+      <h1 style={{ textAlign: "center", fontFamily: '"Montez", cursive' }}>
         Your Cart
       </h1>
       <Card sx={{ mt: "10px" }}>
@@ -42,16 +46,13 @@ function Cart() {
               <TableCell align="center" sx={{ fontWeight: "bold" }}>
                 Price
               </TableCell>
-              <TableCell
-                align="center"
-                sx={{ verticalAlign: "middle", fontWeight: "bold" }}
-              >
+              <TableCell align="center" sx={{ fontWeight: "bold" }}>
                 Quantity
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold" }} align="center">
+              <TableCell align="center" sx={{ fontWeight: "bold" }}>
                 Total
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold" }} align="center">
+              <TableCell align="center" sx={{ fontWeight: "bold" }}>
                 Remove
               </TableCell>
             </TableRow>
@@ -62,60 +63,63 @@ function Cart() {
                 <TableCell>{item.name}</TableCell>
                 <TableCell align="center">{item.price}</TableCell>
                 <TableCell align="center">
-                  <IncDec />
+                  <IncDec
+                    quantity={item.quantity}
+                    onIncrement={() =>
+                      updateQuantity(item.id, item.quantity + 1)
+                    }
+                    onDecrement={() =>
+                      updateQuantity(item.id, item.quantity - 1)
+                    }
+                  />
                 </TableCell>
                 <TableCell align="center">
                   {(item.price * item.quantity).toFixed(2)}
                 </TableCell>
                 <TableCell align="center">
-                  <div
-                    style={{
-                      fontSize: "25px",
-                      color: "red",
-                      cursor: "pointer",
-                    }}
+                  <HighlightOffIcon
+                    sx={{ fontSize: "25px", color: "red", cursor: "pointer" }}
                     onClick={() => handleRemove(item.id)}
-                  >
-                    <HighlightOffIcon />
-                  </div>
+                  />
                 </TableCell>
               </TableRow>
             ))}
             <TableRow>
               <TableCell
+                colSpan={5}
+                align="center"
                 sx={{ fontWeight: "bold", fontSize: "20px" }}
-                colSpan={5}
-                align="center"
-              >
-                Total
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell
-                sx={{ fontWeight: "bold", fontSize: "18px" }}
-                colSpan={5}
-                align="center"
               >
                 Total: ${total}
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={5} align="center">
-                <div>
-                  <Button
-                    style={{
-                      fontFamily: '"Montez", cursive',
+                <Button
+                  variant="contained"
+                  sx={{
+                    mt: 2,
+                    px: 5,
+                    py: 1.5,
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    fontFamily: '"Montez", cursive',
+                    borderRadius: "30px",
+                    backgroundColor:
+                      theme.palette.mode === "light" ? "#107163" : "#ffd700",
+                    color: theme.palette.mode === "light" ? "white" : "black",
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                    "&:hover": {
                       backgroundColor:
-                        theme.palette.mode === "light" ? "#107163" : "gold",
-                      color: theme.palette.mode === "light" ? "black" : "white",
-                      borderRadius: "50%",
-                      fontSize: "20px",
-                    }}
-                    size="large"
-                  >
-                    Checkout
-                  </Button>
-                </div>
+                        theme.palette.mode === "light" ? "#0d5f53" : "#f5c400",
+                      transform: "scale(1.05)",
+                      boxShadow: "0 6px 18px rgba(0, 0, 0, 0.25)",
+                    },
+                  }}
+                >
+                  🛒 Checkout
+                </Button>
               </TableCell>
             </TableRow>
           </TableBody>
