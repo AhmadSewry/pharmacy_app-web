@@ -13,39 +13,39 @@ const Login = () => {
   const handleLogin = async (event) => {
     event.preventDefault(); // Prevent default form submission
 
-    // try {
-    //   const response = await fetch(
-    //     "http://176.27.1.10:5200/api/Account/login",
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify({
-    //         userName: username,
-    //         password: password,
-    //       }),
-    //     }
-    //   );
+    try {
+      const response = await fetch(
+        "http://localhost:5200/api/Account/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userName: username,
+            password: password,
+          }),
+        }
+      );
 
-    //   if (!response.ok) {
-    //   //  throw new Error("Login failed");
+      if (!response.ok) {
+        throw new Error("Login failed");
+        // Redirect to homepage
+
+      }
+
+      const data = await response.json();
+
+      if (data.token) {
+        localStorage.setItem("token", data.token); // Store token
         navigate("/home"); // Redirect to homepage
-
-    //   }
-
-    //   const data = await response.json();
-
-    //   if (data.token) {
-    //     localStorage.setItem("token", data.token); // Store token
-    //     navigate("/home"); // Redirect to homepage
-    //   } else {
-    //     alert("Invalid credentials. Please try again.");
-    //   }
-    // } catch (error) {
-    //   console.error("Login failed:", error);
-    //   alert("Login failed. Please check your credentials and try again.");
-    // }
+      } else {
+        alert("Invalid credentials. Please try again.");
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Login failed. Please check your credentials and try again.");
+    }
   };
   return (
     <div className="container">
