@@ -1,30 +1,39 @@
 // src/i18n.js
-import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
-import HttpApi from "i18next-http-backend";
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+// كل الترجمات ستكون هنا مباشرة (Frontend فقط)
+const resources = {
+  en: {
+    translation: {
+      "Welcome to React": "Welcome to React",
+      "Medications": "Medications",
+      "Our Products": "Our Products"
+    }
+  },
+  ar: {
+    translation: {
+      "Welcome to React": "مرحبًا بك في React",
+      "Medications": "الأدوية",
+      "Our Products": "منتجاتنا"
+    }
+  }
+};
 
 i18n
   .use(initReactI18next)
-  .use(LanguageDetector)
-  .use(HttpApi)
   .init({
-    fallbackLng: "en",
+    resources, // نستخدم الموارد المضمنة
+    lng: "en", // اللغة الافتراضية
+    fallbackLng: "en", // اللغة الاحتياطية
+    interpolation: {
+      escapeValue: false
+    },
+    // لحفظ إعدادات اللغة
     detection: {
-      order: [
-        "cookie",
-        "htmlTag",
-        "localStorage",
-        "sessionStorage",
-        "navigator",
-        "path",
-        "subdomain",
-      ],
-      caches: ["cookie"],
-    },
-    backend: {
-      loadPath: "/locales/{{lng}}/Translation.json",
-    },
+      order: ['localStorage'],
+      caches: ['localStorage']
+    }
   });
 
 export default i18n;
