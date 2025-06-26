@@ -34,7 +34,7 @@ function App() {
             <Route path="faq" element={<Faq />} />
             <Route path="bar" element={<BarChart />} />
             <Route path="pie" element={<PieChart />} />
-            <Route path="line" element={<LineChart />} />
+            <Route path="line" element={<LineChart />} /> 
             <Route path="/cart" element={<Cart />} />
           </Route>
         </Routes>

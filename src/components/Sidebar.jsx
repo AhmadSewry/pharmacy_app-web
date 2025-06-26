@@ -19,6 +19,7 @@ import {
   ContactsOutlined,
   HelpOutlineOutlined,
   HomeOutlined,
+  Logout,
   PeopleAltOutlined,
   PersonOutline,
   PieChartOutlineOutlined,
@@ -27,8 +28,10 @@ import {
 } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
 import loginImage from "../screens/loginScreen/assets/images/loginImage.jpg";
-import { useThemeContext } from "../ThemeContext"; // Import theme context
-import { Outlet, useNavigate } from "react-router-dom";
+import { useThemeContext } from "../ThemeContext";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Cookies } from "react-cookie";
 
 const drawerWidth = 240;
 
@@ -90,21 +93,41 @@ const secondaryItems = [
   { text: "FAQ Page", icon: <HelpOutlineOutlined />, path: "/faq" },
 ];
 
-const chartItems = [
-  { text: "Bar Chart", icon: <BarChartOutlined />, path: "/bar" },
-  { text: "Pie Chart", icon: <PieChartOutlineOutlined />, path: "/pie" },
-  { text: "Line Chart", icon: <TimelineOutlined />, path: "/line" },
-];
+const cookies = new Cookies();
+
+// ... نفس باقي الاستيرادات والكود كما هو ...
 
 export default function Sidebar({ open, handleDrawerClose }) {
   const theme = useTheme();
   const navigate = useNavigate();
   const { mode } = useThemeContext();
 
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.get("http://localhost:5200/api/Account/logout", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      localStorage.removeItem("token");
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  const chartItems = [
+    { text: "Bar Chart", icon: <BarChartOutlined />, path: "/bar" },
+    { text: "Pie Chart", icon: <PieChartOutlineOutlined />, path: "/pie" },
+    { text: "Logout", icon: <Logout />, action: handleLogout },
+  ];
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
@@ -148,14 +171,11 @@ export default function Sidebar({ open, handleDrawerClose }) {
         </Typography>
 
         <Divider />
-        {/* arr1 */}
         <List>
           {menuItems.map((item) => (
             <ListItem key={item.path} disablePadding sx={{ display: "block" }}>
               <ListItemButton
-                onClick={() => {
-                  navigate(item.path);
-                }}
+                onClick={() => navigate(item.path)}
                 sx={{
                   minHeight: 48,
                   px: 2.5,
@@ -182,14 +202,11 @@ export default function Sidebar({ open, handleDrawerClose }) {
         </List>
 
         <Divider />
-        {/* arr2 */}
         <List>
           {secondaryItems.map((item) => (
             <ListItem key={item.path} disablePadding sx={{ display: "block" }}>
               <ListItemButton
-                onClick={() => {
-                  navigate(item.path);
-                }}
+                onClick={() => navigate(item.path)}
                 sx={{
                   minHeight: 48,
                   px: 2.5,
@@ -216,14 +233,16 @@ export default function Sidebar({ open, handleDrawerClose }) {
         </List>
 
         <Divider />
-
-        {/* arr3 */}
         <List>
-          {chartItems.map((item) => (
-            <ListItem key={item.path} disablePadding sx={{ display: "block" }}>
+          {chartItems.map((item, index) => (
+            <ListItem key={index} disablePadding sx={{ display: "block" }}>
               <ListItemButton
                 onClick={() => {
-                  navigate(item.path);
+                  if (item.action) {
+                    item.action();
+                  } else {
+                    navigate(item.path);
+                  }
                 }}
                 sx={{
                   minHeight: 48,
@@ -253,3 +272,4 @@ export default function Sidebar({ open, handleDrawerClose }) {
     </Box>
   );
 }
+
