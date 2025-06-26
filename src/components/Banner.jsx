@@ -7,8 +7,10 @@ import {
   BannerDescription,
   BannerImage,
 } from "../screens/homePage/styles/BannerContainer";
+import { useTranslation } from "react-i18next";
 
 function Banner() {
+  const { t } = useTranslation();
   return (
     <>
       <BannerContainer
@@ -19,14 +21,16 @@ function Banner() {
       >
         <BannerImage src={bannerImage}></BannerImage>
         <BannerContent>
-          <Typography variant="h6">Pharmacy Simplified</Typography>
+          <Typography variant="h6">
+            {t(" “The tools, the meds, the control — — all in one place.”")}
+          </Typography>
           <BannerTitle variant="h2" fontFamily='"Montez", cursive'>
-            Medicenes
+            {t("PharmaCore")}
           </BannerTitle>
           <BannerDescription variant="subtitle">
-            Get prescriptions refilled, schedule medication reminders, and
-            access pharmacist consultations - all in one place. Fast, discreet
-            delivery to your doorstep.
+            {t(
+              "A smart platform for effortless drug and inventory management, built specifically for pharmacy owners and managers — full control, greater efficiency."
+            )}
           </BannerDescription>
         </BannerContent>
       </BannerContainer>

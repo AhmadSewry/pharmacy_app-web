@@ -4,15 +4,16 @@ import {
   PromotionContainer,
 } from "../screens/homePage/styles/PromotionContainer";
 import { Box, Slide } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 export function Promotion() {
+  const { t } = useTranslation();
   const [messageIndex, setMessageIndex] = useState(0);
   const [show, setShow] = useState(true);
   const containerRef = useRef();
   const messages = [
-    "Welcome to our Pharmacy App.",
-    "Summer sale starts now.",
-    "Get 20% off on prescriptions today!",
+    t("Welcome to our Pharmacy App."),
+    t("Where pharmacy meets simplicity."),
   ];
 
   useEffect(() => {

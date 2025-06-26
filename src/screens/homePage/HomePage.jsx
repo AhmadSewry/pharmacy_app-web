@@ -12,9 +12,9 @@ function HomePage() {
   const { t } = useTranslation();
   return (
     <Container>
-      <LanguageSwitcher />
+     
 
-      <AppBarHeader>{t("Medications")}</AppBarHeader>
+      <AppBarHeader>{t("PharmaCore")}</AppBarHeader>
       <Banner></Banner>
       <Promotion></Promotion>
       <Box display={"flex"} justifyContent={"center"} sx={{ p: 4 }}>

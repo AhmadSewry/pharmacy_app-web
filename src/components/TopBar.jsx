@@ -13,6 +13,7 @@ import { useThemeContext } from "../ThemeContext";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const drawerWidth = 240;
 
@@ -150,6 +151,7 @@ export default function TopBar({ open, handleDrawerOpen }) {
           <IconButton color="inherit">
             <NotificationsIcon />
           </IconButton>
+          <LanguageSwitcher />
         </Stack>
       </Toolbar>
     </AppBar>
