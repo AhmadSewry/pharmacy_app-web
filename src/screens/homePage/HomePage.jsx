@@ -12,8 +12,6 @@ function HomePage() {
   const { t } = useTranslation();
   return (
     <Container>
-     
-
       <AppBarHeader>{t("PharmaCore")}</AppBarHeader>
       <Banner></Banner>
       <Promotion></Promotion>
