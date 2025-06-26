@@ -13,7 +13,7 @@ function HomePage() {
   return (
     <Container>
       <LanguageSwitcher />
-
+<></>
       <AppBarHeader>{t("Medications")}</AppBarHeader>
       <Banner></Banner>
       <Promotion></Promotion>
