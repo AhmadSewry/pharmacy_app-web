@@ -1,34 +1,29 @@
-import React, { useEffect } from "react";
-import i18n from "i18next";
-import { useTranslation, initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
-import HttpApi from "i18next-http-backend";
-import cookies from "js-cookie";
+// src/pages/Localization.js
+import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
-function Localiztion() {
-  const { t } = useTranslation();
-  const lng = cookies.get("i18next") || "en";
+function Localization() {
+  const { t, i18n } = useTranslation();
+
   useEffect(() => {
-    window.document.direction = i18n.dir();
-  }, [lng]);
+    // تغيير اتجاه الصفحة عند تغيير اللغة
+    document.documentElement.lang = i18n.language;
+    document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
+  }, [i18n.language]);
+
   return (
-    <>
-      <h2>{t("Welcome to React")}</h2>;
-      <button
-        onClick={() => {
-          i18n.changeLanguage("ar");
-        }}
-      >
-        Ar
-      </button>
-      <button
-        onClick={() => {
-          i18n.changeLanguage("En");
-        }}
-      >
-        En
-      </button>
-    </>
+    <div style={{ 
+      padding: '2rem',
+      textAlign: i18n.language === 'ar' ? 'right' : 'left',
+      fontFamily: i18n.language === 'ar' ? 'Tahoma, sans-serif' : 'Arial, sans-serif'
+    }}>
+      <h2>{t('Medications')}</h2>
+      <LanguageSwitcher />
+      <p>{t('Welcome to React')}</p>
+      <p>{t('Our Products')}</p>
+    </div>
   );
 }
-export default Localiztion;
+
+export default Localization;
