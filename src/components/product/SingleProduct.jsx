@@ -13,8 +13,10 @@ import { Stack } from "@mui/material";
 import useDialogModel from "../../screens/homePage/hooks/useDialogModel";
 import ProductDetails from "../../components/productDetails/ProductDetails";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function SingleProduct({ product = {} }) {
+  const { t } = useTranslation();
   const [
     ProductDetailDialog,
     showProductDetailDialog,
@@ -40,7 +42,9 @@ export default function SingleProduct({ product = {} }) {
           </Stack>
         </ProductActionsWrapper>
       </Product>
-      <ProductAddToCart sx={{}} variant="contained">Add to Cart</ProductAddToCart>
+      <ProductAddToCart sx={{}} variant="contained">
+        {t("Add to Cart")}
+      </ProductAddToCart>
       <ProductDetailDialog product={product} />
     </>
   );
