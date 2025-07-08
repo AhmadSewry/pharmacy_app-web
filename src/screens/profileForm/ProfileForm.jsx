@@ -109,7 +109,7 @@ function ProfileForm() {
         error={Boolean(errors.phone)}
         helperText={
           Boolean(errors.phone)
-            ? "Phone must start with +963 or 00963 followed by 9 digits"
+            ? "Phone must start   with +963 or 00963 followed by 9 digits"
             : null
         }
         {...register("phone", {
