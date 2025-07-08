@@ -3,20 +3,22 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { Alert, Button, Snackbar, Stack } from "@mui/material";
 import { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Select, MenuItem, InputLabel, FormControl } from "@mui/material";
+
 function ProfileForm() {
   const [selectedRole, setSelectedRole] = useState("");
 
   const handleSelectChange = (event) => {
     setSelectedRole(event.target.value);
   };
+
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
+
   const [open, setOpen] = React.useState(false);
 
   const handleClose = (event, reason) => {
@@ -26,17 +28,29 @@ function ProfileForm() {
 
     setOpen(false);
   };
+
   const handleClick = () => {
     setOpen(true);
   };
 
-  const onSubmit = () => {
-    console.log("dddddddddddd");
+  const onSubmit = (data) => {
+    console.log("🚀 بيانات النموذج:", {
+      userName: data.username,
+      personName: `${data.firstName} ${data.lastName}`,
+      email: data.email,
+      phone: data.phone,
+      hireDate: new Date().toISOString(),
+      salary: data.salary,
+      numberOfCertificate: data.numberCertificate,
+      role: selectedRole,
+    });
     handleClick();
   };
 
   const regphone = /^(?:\+963|00963)\d{9}$/;
   const regCertificate = /^\d{7}$/;
+  const regEmail = /^\S+@\S+\.\S+$/;
+
   return (
     <Box
       onSubmit={handleSubmit(onSubmit)}
@@ -56,77 +70,104 @@ function ProfileForm() {
           error={Boolean(errors.firstName)}
           helperText={
             Boolean(errors.firstName)
-              ? "Enter FirstName Please but It needs to be more than 3 characters."
+              ? "Enter FirstName with at least 3 characters."
               : null
           }
           {...register("firstName", { required: true, minLength: 3 })}
           sx={{ flex: 1 }}
-          label="FirstName"
+          label="First Name"
           variant="filled"
         />
         <TextField
           error={Boolean(errors.lastName)}
           helperText={
             Boolean(errors.lastName)
-              ? "Enter LastName Please but It needs to be more than 3 characters."
+              ? "Enter LastName with at least 3 characters."
               : null
           }
           {...register("lastName", { required: true, minLength: 3 })}
           sx={{ flex: 1 }}
-          label="LastName"
+          label="Last Name"
           variant="filled"
         />
       </Stack>
 
       <TextField
+        error={Boolean(errors.email)}
+        helperText={
+          Boolean(errors.email) ? "Enter a valid email address" : null
+        }
+        {...register("email", {
+          required: true,
+          pattern: regEmail,
+        })}
+        label="Email"
+        variant="filled"
+      />
+
+      <TextField
         error={Boolean(errors.phone)}
         helperText={
           Boolean(errors.phone)
-            ? "Enter a number starting with +963 or 00963 followed by 9 numbers"
+            ? "Phone must start with +963 or 00963 followed by 9 digits"
             : null
         }
         {...register("phone", {
           required: true,
-          minLength: 3,
           pattern: regphone,
         })}
         label="Phone"
         variant="filled"
       />
+
       <TextField
         error={Boolean(errors.numberCertificate)}
         helperText={
           Boolean(errors.numberCertificate)
-            ? "Enter a 7-digit number only please"
+            ? "Certificate number must be exactly 7 digits"
             : null
         }
         {...register("numberCertificate", {
           required: true,
           pattern: regCertificate,
         })}
-        label="NumberCertificate"
+        label="Certificate Number"
         variant="filled"
       />
+
       <TextField
         error={Boolean(errors.username)}
         helperText={
           Boolean(errors.username)
-            ? "Enter FirstName Please but It needs to be more than four characters."
+            ? "Username must be at least 3 characters"
             : null
         }
         {...register("username", { required: true, minLength: 3 })}
-        label="Enter UserName Employe"
+        label="Username"
         variant="filled"
       />
+
       <TextField
         error={Boolean(errors.password)}
         helperText={
           Boolean(errors.password)
-            ? "Enter FirstName Please but It needs to be more than four characters."
+            ? "Password must be at least 3 characters"
             : null
         }
         {...register("password", { required: true, minLength: 3 })}
-        label="Enter PassWord Employe"
+        label="Password"
+        type="password"
+        variant="filled"
+      />
+
+      <TextField
+        error={Boolean(errors.salary)}
+        helperText={
+          Boolean(errors.salary) ? "Enter salary as a number" : null
+        }
+        {...register("salary", { required: true, valueAsNumber: true })}
+        label="Salary"
+        type="number"
         variant="filled"
       />
 
@@ -136,18 +177,20 @@ function ProfileForm() {
           labelId="role-label"
           value={selectedRole}
           onChange={handleSelectChange}
+          required
         >
           <MenuItem value="Admin">Admin</MenuItem>
           <MenuItem value="User">User</MenuItem>
         </Select>
       </FormControl>
+
       <Box sx={{ textAlign: "right" }}>
         <Button
           type="submit"
           sx={{ textTransform: "capitalize" }}
           variant="contained"
         >
-          Create New Employe
+          Create New Employee
         </Button>
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -161,7 +204,7 @@ function ProfileForm() {
             variant="filled"
             sx={{ width: "100%" }}
           >
-            Account created Successfully
+            Account created successfully
           </Alert>
         </Snackbar>
       </Box>
