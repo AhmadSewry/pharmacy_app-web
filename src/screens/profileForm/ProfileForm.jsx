@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { Alert, Button, Snackbar, Stack } from "@mui/material";
-import { useState } from "react";
+import {
+  Alert,
+  Button,
+  Snackbar,
+  Stack,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 import { useForm } from "react-hook-form";
-import { Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 
 function ProfileForm() {
   const [selectedRole, setSelectedRole] = useState("");
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [openError, setOpenError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSelectChange = (event) => {
     setSelectedRole(event.target.value);
@@ -19,23 +30,19 @@ function ProfileForm() {
     formState: { errors },
   } = useForm();
 
-  const [open, setOpen] = React.useState(false);
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
+  const handleCloseSuccess = (event, reason) => {
+    if (reason === "clickaway") return;
+    setOpenSuccess(false);
   };
 
-  const handleClick = () => {
-    setOpen(true);
+  const handleCloseError = (event, reason) => {
+    if (reason === "clickaway") return;
+    setOpenError(false);
   };
 
-  const onSubmit = (data) => {
-    console.log("🚀 بيانات النموذج:", {
-      userName: data.username,
+  const onSubmit = async (data) => {
+    const requestPayload = {
+      password: data.password,
       personName: `${data.firstName} ${data.lastName}`,
       email: data.email,
       phone: data.phone,
@@ -43,8 +50,21 @@ function ProfileForm() {
       salary: data.salary,
       numberOfCertificate: data.numberCertificate,
       role: selectedRole,
-    });
-    handleClick();
+      userName: data.username, // ✅ هذا ضروري لـ Identity
+      uesrId: "00000000-0000-0000-0000-000000000000" // أو احذفه إذا لا يستخدم فعليًا
+    };
+
+    try {
+      const response = await axios.post("http://localhost:5200/api/Employee", requestPayload);
+      console.log("✅ تم إنشاء المستخدم:", response.data);
+      setOpenSuccess(true);
+    } catch (error) {
+      console.log("❌ خطأ في الإرسال:", error.response?.data);
+      const errorDetails = error.response?.data?.errors;
+      const firstError = errorDetails ? Object.values(errorDetails)[0][0] : "حدث خطأ أثناء الإرسال.";
+      setErrorMessage(firstError);
+      setOpenError(true);
+    }
   };
 
   const regphone = /^(?:\+963|00963)\d{9}$/;
@@ -68,11 +88,7 @@ function ProfileForm() {
       <Stack direction={"row"} gap={2}>
         <TextField
           error={Boolean(errors.firstName)}
-          helperText={
-            Boolean(errors.firstName)
-              ? "Enter FirstName with at least 3 characters."
-              : null
-          }
+          helperText={errors.firstName ? "Enter FirstName with at least 3 characters." : null}
           {...register("firstName", { required: true, minLength: 3 })}
           sx={{ flex: 1 }}
           label="First Name"
@@ -80,11 +96,7 @@ function ProfileForm() {
         />
         <TextField
           error={Boolean(errors.lastName)}
-          helperText={
-            Boolean(errors.lastName)
-              ? "Enter LastName with at least 3 characters."
-              : null
-          }
+          helperText={errors.lastName ? "Enter LastName with at least 3 characters." : null}
           {...register("lastName", { required: true, minLength: 3 })}
           sx={{ flex: 1 }}
           label="Last Name"
@@ -94,54 +106,31 @@ function ProfileForm() {
 
       <TextField
         error={Boolean(errors.email)}
-        helperText={
-          Boolean(errors.email) ? "Enter a valid email address" : null
-        }
-        {...register("email", {
-          required: true,
-          pattern: regEmail,
-        })}
+        helperText={errors.email ? "Enter a valid email address" : null}
+        {...register("email", { required: true, pattern: regEmail })}
         label="Email"
         variant="filled"
       />
 
       <TextField
         error={Boolean(errors.phone)}
-        helperText={
-          Boolean(errors.phone)
-            ? "Phone must start   with +963 or 00963 followed by 9 digits"
-            : null
-        }
-        {...register("phone", {
-          required: true,
-          pattern: regphone,
-        })}
+        helperText={errors.phone ? "Phone must start with +963 or 00963 followed by 9 digits" : null}
+        {...register("phone", { required: true, pattern: regphone })}
         label="Phone"
         variant="filled"
       />
 
       <TextField
         error={Boolean(errors.numberCertificate)}
-        helperText={
-          Boolean(errors.numberCertificate)
-            ? "Certificate number must be exactly 7 digits"
-            : null
-        }
-        {...register("numberCertificate", {
-          required: true,
-          pattern: regCertificate,
-        })}
+        helperText={errors.numberCertificate ? "Certificate number must be exactly 7 digits" : null}
+        {...register("numberCertificate", { required: true, pattern: regCertificate })}
         label="Certificate Number"
         variant="filled"
       />
 
       <TextField
         error={Boolean(errors.username)}
-        helperText={
-          Boolean(errors.username)
-            ? "Username must be at least 3 characters"
-            : null
-        }
+        helperText={errors.username ? "Username must be at least 3 characters" : null}
         {...register("username", { required: true, minLength: 3 })}
         label="Username"
         variant="filled"
@@ -149,11 +138,7 @@ function ProfileForm() {
 
       <TextField
         error={Boolean(errors.password)}
-        helperText={
-          Boolean(errors.password)
-            ? "Password must be at least 3 characters"
-            : null
-        }
+        helperText={errors.password ? "Password must be at least 3 characters" : null}
         {...register("password", { required: true, minLength: 3 })}
         label="Password"
         type="password"
@@ -162,9 +147,7 @@ function ProfileForm() {
 
       <TextField
         error={Boolean(errors.salary)}
-        helperText={
-          Boolean(errors.salary) ? "Enter salary as a number" : null
-        }
+        helperText={errors.salary ? "Enter salary as a number" : null}
         {...register("salary", { required: true, valueAsNumber: true })}
         label="Salary"
         type="number"
@@ -185,26 +168,31 @@ function ProfileForm() {
       </FormControl>
 
       <Box sx={{ textAlign: "right" }}>
-        <Button
-          type="submit"
-          sx={{ textTransform: "capitalize" }}
-          variant="contained"
-        >
+        <Button type="submit" sx={{ textTransform: "capitalize" }} variant="contained">
           Create New Employee
         </Button>
+
+        {/* Success Snackbar */}
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          open={open}
+          open={openSuccess}
           autoHideDuration={3000}
-          onClose={handleClose}
+          onClose={handleCloseSuccess}
         >
-          <Alert
-            onClose={handleClose}
-            severity="success"
-            variant="filled"
-            sx={{ width: "100%" }}
-          >
+          <Alert onClose={handleCloseSuccess} severity="success" variant="filled" sx={{ width: "100%" }}>
             Account created successfully
+          </Alert>
+        </Snackbar>
+
+        {/* Error Snackbar */}
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          open={openError}
+          autoHideDuration={4000}
+          onClose={handleCloseError}
+        >
+          <Alert onClose={handleCloseError} severity="error" variant="filled" sx={{ width: "100%" }}>
+            {errorMessage}
           </Alert>
         </Snackbar>
       </Box>
