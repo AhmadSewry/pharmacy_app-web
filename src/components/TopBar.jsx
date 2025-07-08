@@ -14,6 +14,7 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const drawerWidth = 240;
 
@@ -80,7 +81,7 @@ export default function TopBar({ open, handleDrawerOpen }) {
   const navigate = useNavigate();
   const { mode, toggleTheme } = useThemeContext(); // Get theme mode
   const [searchText, setSearchText] = useState("");
-
+  const { t } = useTranslation();
   const handleInputChange = (e) => {
     setSearchText(e.target.value);
   };
@@ -130,7 +131,7 @@ export default function TopBar({ open, handleDrawerOpen }) {
             <SearchIcon />
           </SearchIconWrapper>
           <StyledInputBase
-            placeholder="Search…"
+            placeholder={t("Search…")}
             inputProps={{ "aria-label": "search" }}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown} // 💡 يفعل البحث عند الضغط على Enter

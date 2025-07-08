@@ -62,7 +62,10 @@ function Cart() {
               <TableRow key={item.id}>
                 <TableCell>{item.name}</TableCell>
                 <TableCell align="center">{item.price}</TableCell>
-                <TableCell align="center">
+                <TableCell
+                  align="center"
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
                   <IncDec
                     quantity={item.quantity}
                     onIncrement={() =>
