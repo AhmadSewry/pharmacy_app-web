@@ -8,8 +8,10 @@ import {
   LockOpenOutlined,
   SecurityOutlined,
 } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 function ManageTeam() {
+  const { t } = useTranslation();
   const theme = useTheme();
   const columns = [
     {
@@ -21,7 +23,7 @@ function ManageTeam() {
     },
     {
       field: "firstName",
-      headerName: "First name",
+      headerName: t("First name"),
       editable: true,
       headerAlign: "center",
       align: "center",
@@ -29,7 +31,7 @@ function ManageTeam() {
     },
     {
       field: "lastName",
-      headerName: "Last name",
+      headerName: t("Last name"),
       editable: true,
       headerAlign: "center",
       align: "center",
@@ -37,7 +39,7 @@ function ManageTeam() {
     },
     {
       field: "email",
-      headerName: "email",
+      headerName: t("email"),
       type: "number",
       headerAlign: "center",
       editable: true,
@@ -46,7 +48,7 @@ function ManageTeam() {
     },
     {
       field: "phone",
-      headerName: "phone",
+      headerName: t("phone"),
       description: "This column has a value getter and is not sortable.",
       sortable: false,
       flex: 1,
@@ -55,7 +57,7 @@ function ManageTeam() {
     },
     {
       field: "access",
-      headerName: "access",
+      headerName: t("access"),
       description: "This column has a value getter and is not sortable.",
       sortable: false,
       flex: 1,
