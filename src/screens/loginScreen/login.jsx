@@ -11,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = async (event) => {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
 
     try {
       const response = await fetch(
@@ -30,15 +30,14 @@ const Login = () => {
 
       if (!response.ok) {
         throw new Error("Login failed");
-        // Redirect to homepage
-
       }
 
       const data = await response.json();
 
       if (data.token) {
-        localStorage.setItem("token", data.token); // Store token
-        navigate("/home"); // Redirect to homepage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        navigate("/home");
       } else {
         alert("Invalid credentials. Please try again.");
       }
@@ -47,10 +46,11 @@ const Login = () => {
       alert("Login failed. Please check your credentials and try again.");
     }
   };
+
   return (
     <div className="container">
       <form onSubmit={handleLogin} className="wrapper">
-        <img src={loginImage} alt="Login Logo" className="login-image"  />
+        <img src={loginImage} alt="Login Logo" className="login-image" />
         <h1>Login</h1>
         <div className="input-box">
           <input
@@ -91,3 +91,38 @@ const Login = () => {
 };
 
 export default Login;
+
+// === Refresh Token Utility ===
+
+export const refreshToken = async () => {
+  const token = localStorage.getItem("token");
+  const refreshToken = localStorage.getItem("refreshToken");
+
+  try {
+    const response = await fetch("http://localhost:5200/api/Account", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: token,
+        refreshToken: refreshToken,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to refresh token");
+    }
+
+    const data = await response.json();
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("refreshToken", data.refreshToken);
+
+    return data.token;
+  } catch (error) {
+    console.error("Token refresh error:", error);
+    localStorage.clear();
+    window.location.href = "/";
+  }
+};
