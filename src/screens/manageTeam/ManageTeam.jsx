@@ -145,6 +145,13 @@ function ManageTeam() {
       renderCell: ({ row }) => dayjs(row.hireDate).format("YYYY-MM-DD"),
     },
     {
+      field: "salary",
+      headerName: "Salary",
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
       field: "role",
       headerName: "Role",
       flex: 1,
@@ -177,12 +184,12 @@ function ManageTeam() {
       headerAlign: "center",
       renderCell: ({ row }) => (
         <Box>
-          <Tooltip title="تعديل الموظف">
+          <Tooltip title="edit employee">
             <IconButton onClick={() => handleEdit(row)} color="primary">
               <EditIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="حذف الموظف">
+          <Tooltip title="delete employee">
             <IconButton onClick={() => handleDeleteClick(row)} color="error">
               <DeleteIcon />
             </IconButton>
@@ -191,7 +198,7 @@ function ManageTeam() {
       ),
     },
   ];
-
+  
   return (
     <div style={{ height: "100%", width: "100%" }}>
       <Box sx={{ p: 2 }}>
