@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 function AddCategory({ onClick }) {
   const navigate = useNavigate();
+  const handleAddCategoryClick = () => {
+    navigate("/add-category-screen");
+  };
   return (
     <Card
-      onClick={onClick}
+      onClick={handleAddCategoryClick}
       sx={{
         width: 200,
         borderRadius: "12px",

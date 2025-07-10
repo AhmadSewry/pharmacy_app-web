@@ -5,7 +5,7 @@ import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import { CategoriesData } from "./CategoriesData";
-import AddCategory from "./categories for products/addCategory/AddCategory";
+import AddCategory from "./categories for products/addCategory/AddCategoryComponent";
 
 const Category = () => {
   const navigate = useNavigate();
@@ -80,7 +80,7 @@ const Category = () => {
             </CardContent>
           </Card>
         ))}
-        <AddCategory/>
+        <AddCategory />
       </Box>
     </Box>
   );
