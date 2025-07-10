@@ -32,7 +32,7 @@ function HomePage() {
           {t("Our Products")}
         </Typography>
       </Box>
-      <Products></Products>
+      <Products limit={11}></Products>
       <Footer></Footer>
     </Container>
   );
