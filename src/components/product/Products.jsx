@@ -9,12 +9,12 @@ import SingleProduct from "./SingleProduct";
 
 export default function Products() {
   const theme = useTheme();
+  const visibleProducts = ProductsData.slice(0, 11);
 
-  // Ensure ProductsData is defined and not empty
-  const renderProducts = (ProductsData || []).map((product = {}) => (
+  const renderProducts = visibleProducts.map((product) => (
     <Grid
       item
-      key={product.id || Math.random()} // Fallback key
+      key={product.id}
       xs={2}
       sm={4}
       md={4}
