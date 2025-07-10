@@ -24,7 +24,8 @@ import ColdFlu from "./components/category/categories for products/medicineCateg
 import AllergyMedications from "./components/category/categories for products/medicineCategory/MedicineCategoryScreens/allergyMedications/AllergyMedications.jsx";
 import VitaminsSupplements from "./components/category/categories for products/medicineCategory/MedicineCategoryScreens/vitaminsSupplements/VitaminsSupplements.jsx";
 import MentalHealth from "./components/category/categories for products/medicineCategory/MedicineCategoryScreens/mentalHealth/MentalHealth.jsx";
-import AddCategory from "./components/category/categories for products/addCategory/AddCategory.jsx";
+import AddCategory from "./components/category/categories for products/addCategory/AddCategoryComponent.jsx";
+import AddCategoryScreen from "./components/category/categories for products/addCategory/AddCategoryScreen.jsx";
 function App() {
   document.title = "Pharmacy App";
   return (
@@ -61,6 +62,10 @@ function App() {
             />
             <Route path="medicine/mental-health" element={<MentalHealth />} />
             <Route path="/add-category" element={<AddCategory />} />
+            <Route
+              path="/add-category-screen"
+              element={<AddCategoryScreen />}
+            />
           </Route>
         </Routes>
       </Router>

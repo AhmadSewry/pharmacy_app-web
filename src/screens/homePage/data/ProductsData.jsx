@@ -9,6 +9,7 @@ export const ProductsData = [
     id: 1,
     name: "Imodium",
     price: 2.99,
+    category: "Pain Relief",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     image: medicine2,
@@ -16,6 +17,7 @@ export const ProductsData = [
   {
     id: 2,
     name: "Imodium",
+    category: "Pain Relief",
     price: 2.99,
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
@@ -24,6 +26,7 @@ export const ProductsData = [
   {
     id: 3,
     name: "Imodium",
+    category: "Pain Relief",
     price: 2.99,
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
@@ -33,6 +36,7 @@ export const ProductsData = [
     id: 4,
     name: "Imodium",
     price: 2.99,
+    category: "Pain Relief",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     image: medicine2,
@@ -40,6 +44,7 @@ export const ProductsData = [
   {
     id: 5,
     name: "Cetamol",
+    category: "Pain Relief",
     price: 0.99,
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
@@ -81,6 +86,7 @@ export const ProductsData = [
     id: 10,
     name: "Snip",
     price: 1.99,
+    category: "Cold & Flu",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     image: medicine3,
@@ -89,6 +95,7 @@ export const ProductsData = [
     id: 11,
     name: "Snip",
     price: 1.99,
+    category: "Cold & Flu",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     image: medicine3,
