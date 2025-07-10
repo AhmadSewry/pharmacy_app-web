@@ -4,17 +4,16 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
-import { CategoriesData } from "./CategoriesData";
-import AddCategory from "./categories for products/addCategory/AddCategory";
+import { MedicineCategoriesData } from "./MedicineCategoriesData";
 
-const Category = () => {
+const MedicineCategory = () => {
   const navigate = useNavigate();
 
   return (
     <Box
       sx={{
         padding: "2rem",
-        backgroundColor: "#eef2f5",
+        backgroundColor: "#f4f6f8",
         textAlign: "center",
       }}
     >
@@ -26,7 +25,7 @@ const Category = () => {
           color: "#333",
         }}
       >
-        Product Categories
+        Medicines Categories
       </Typography>
 
       <Box
@@ -37,7 +36,7 @@ const Category = () => {
           gap: "2rem",
         }}
       >
-        {CategoriesData.map((category) => (
+        {MedicineCategoriesData.map((category) => (
           <Card
             key={category.id}
             sx={{
@@ -52,12 +51,15 @@ const Category = () => {
             }}
             onClick={() => {
               const title = category.title.toLowerCase();
-              if (title === "medicines") navigate("/medicine");
-              else if (title === "baby & maternity care") navigate("/babycare");
-              else if (title === "first aid and medical supplies")
-                navigate("/first-aid");
-              else if (title === "personal care & cosmetics")
-                navigate("/cosmetics");
+              if (title === "cold & flu") navigate("/medicine/cold-flu");
+              else if (title === "pain relief")
+                navigate("/medicine/pain-relief");
+              else if (title === "allergy medications")
+                navigate("/medicine/allergy-medications");
+              else if (title === "vitamins & supplements")
+                navigate("/medicine/vitamins-supplements");
+              else if (title === "mental health")
+                navigate("/medicine/mental-health");
             }}
           >
             <CardMedia
@@ -80,10 +82,9 @@ const Category = () => {
             </CardContent>
           </Card>
         ))}
-        <AddCategory/>
       </Box>
     </Box>
   );
 };
 
-export default Category;
+export default MedicineCategory;
