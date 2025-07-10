@@ -14,6 +14,12 @@ import {
   DialogActions,
   Button,
   InputAdornment,
+  Tabs,
+  Tab,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import {
   AdminPanelSettingsOutlined,
@@ -31,6 +37,7 @@ function ManageTeam() {
   const [openEdit, setOpenEdit] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [tabIndex, setTabIndex] = useState(0);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
 
@@ -50,26 +57,21 @@ function ManageTeam() {
   const handleEdit = (row) => {
     setSelectedEmployee({ ...row, password: "" });
     setShowPassword(false);
+    setTabIndex(0);
     setOpenEdit(true);
-  };
-
-  const handleSave = async () => {
-    try {
-      await axios.put(
-        `http://localhost:5200/api/Employee/${selectedEmployee.employeeID}`,
-        selectedEmployee
-      );
-      setOpenEdit(false);
-      fetchEmployees();
-    } catch (error) {
-      console.error("فشل التحديث:", error);
-    }
   };
 
   const handleChange = (e) => {
     setSelectedEmployee({
       ...selectedEmployee,
       [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleRoleChange = (e) => {
+    setSelectedEmployee({
+      ...selectedEmployee,
+      role: e.target.value,
     });
   };
 
@@ -93,49 +95,59 @@ function ManageTeam() {
     }
   };
 
+  const handleSaveInfo = async () => {
+    try {
+      const updatedData = {
+        employeeID: selectedEmployee.employeeID,
+        personName: selectedEmployee.personName,
+        userName: selectedEmployee.userName,
+        email: selectedEmployee.email,
+        phone: selectedEmployee.phone,
+        salary: selectedEmployee.salary,
+        role: selectedEmployee.role,
+      };
+      await axios.put(
+        `http://localhost:5200/api/Employee/${selectedEmployee.employeeID}`,
+        updatedData
+      );
+      setOpenEdit(false);
+      fetchEmployees();
+    } catch (error) {
+      console.error("فشل التحديث:", error);
+    }
+  };
+
+  const handleSavePassword = async () => {
+    try {
+      const updatedData = {
+        employeeID: selectedEmployee.employeeID,
+        personName: selectedEmployee.personName,
+        userName: selectedEmployee.userName,
+        email: selectedEmployee.email,
+        phone: selectedEmployee.phone,
+        salary: selectedEmployee.salary,
+        role: selectedEmployee.role,
+        password: selectedEmployee.password, // أرسلها ضمن الجسم الأساسي
+      };
+      await axios.put(
+        `http://localhost:5200/api/Employee/${selectedEmployee.employeeID}`,
+        updatedData
+      );
+      setOpenEdit(false);
+      fetchEmployees();
+    } catch (error) {
+      console.error("فشل تغيير كلمة المرور:", error);
+    }
+  };
+
   const columns = [
-    {
-      field: "employeeID",
-      headerName: "ID",
-      flex: 0.7,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "personName",
-      headerName: "Full Name",
-      flex: 1,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "userName",
-      headerName: "Username",
-      flex: 1,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      flex: 1.2,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "phone",
-      headerName: "Phone",
-      flex: 1,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "numberOfCertificate",
-      headerName: "Certificates",
-      flex: 1,
-      align: "center",
-      headerAlign: "center",
-    },
+    { field: "employeeID", headerName: "ID", flex: 0.7, align: "center", headerAlign: "center" },
+    { field: "personName", headerName: "Full Name", flex: 1, align: "center", headerAlign: "center" },
+    { field: "userName", headerName: "Username", flex: 1, align: "center", headerAlign: "center" },
+    { field: "email", headerName: "Email", flex: 1.2, align: "center", headerAlign: "center" },
+    { field: "phone", headerName: "Phone", flex: 1, align: "center", headerAlign: "center" },
+    { field: "numberOfCertificate", headerName: "Certificates", flex: 1, align: "center", headerAlign: "center" },
+    { field: "salary", headerName: "Salary", flex: 1, align: "center", headerAlign: "center" },
     {
       field: "hireDate",
       headerName: "Hire Date",
@@ -143,13 +155,6 @@ function ManageTeam() {
       align: "center",
       headerAlign: "center",
       renderCell: ({ row }) => dayjs(row.hireDate).format("YYYY-MM-DD"),
-    },
-    {
-      field: "salary",
-      headerName: "Salary",
-      flex: 1,
-      align: "center",
-      headerAlign: "center",
     },
     {
       field: "role",
@@ -198,7 +203,7 @@ function ManageTeam() {
       ),
     },
   ];
-  
+
   return (
     <div style={{ height: "100%", width: "100%" }}>
       <Box sx={{ p: 2 }}>
@@ -211,49 +216,77 @@ function ManageTeam() {
         />
       </Box>
 
-      {/* Dialog تعديل */}
       <Dialog open={openEdit} onClose={() => setOpenEdit(false)} fullWidth>
         <DialogTitle>تعديل بيانات الموظف</DialogTitle>
         <DialogContent>
-          <TextField fullWidth margin="dense" label="Full Name" name="personName" value={selectedEmployee?.personName || ""} onChange={handleChange} />
-          <TextField fullWidth margin="dense" label="Username" name="userName" value={selectedEmployee?.userName || ""} onChange={handleChange} />
-          <TextField fullWidth margin="dense" label="Email" name="email" value={selectedEmployee?.email || ""} onChange={handleChange} />
-          <TextField fullWidth margin="dense" label="Phone" name="phone" value={selectedEmployee?.phone || ""} onChange={handleChange} />
-          <TextField fullWidth margin="dense" label="Certificates" name="numberOfCertificate" value={selectedEmployee?.numberOfCertificate || ""} onChange={handleChange} />
-          <TextField fullWidth margin="dense" label="Role" name="role" value={selectedEmployee?.role || ""} onChange={handleChange} />
-          <TextField
-            fullWidth
-            margin="dense"
-            label="Password"
-            type={showPassword ? "text" : "password"}
-            name="password"
-            value={selectedEmployee?.password || ""}
-            onChange={handleChange}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={toggleShowPassword} edge="end">
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
+          <Tabs value={tabIndex} onChange={(e, newValue) => setTabIndex(newValue)} centered>
+            <Tab label="تعديل البيانات" />
+            <Tab label="تغيير كلمة المرور" />
+          </Tabs>
+
+          {tabIndex === 0 && (
+            <>
+              <TextField fullWidth margin="dense" label="Full Name" name="personName" value={selectedEmployee?.personName || ""} onChange={handleChange} />
+              <TextField fullWidth margin="dense" label="Username" name="userName" value={selectedEmployee?.userName || ""} onChange={handleChange} />
+              <TextField fullWidth margin="dense" label="Email" name="email" value={selectedEmployee?.email || ""} onChange={handleChange} />
+              <TextField fullWidth margin="dense" label="Phone" name="phone" value={selectedEmployee?.phone || ""} onChange={handleChange} />
+              <TextField fullWidth margin="dense" label="Salary" name="salary" value={selectedEmployee?.salary || ""} onChange={handleChange} />
+              <TextField fullWidth margin="dense" label="Certificates" name="numberOfCertificate" value={selectedEmployee?.numberOfCertificate || ""} disabled />
+
+              <FormControl fullWidth margin="dense">
+                <InputLabel id="role-select-label">Role</InputLabel>
+                <Select
+                  labelId="role-select-label"
+                  value={selectedEmployee?.role || ""}
+                  label="Role"
+                  onChange={handleRoleChange}
+                >
+                  <MenuItem value="Admin">Admin</MenuItem>
+                  <MenuItem value="User">User</MenuItem>
+                </Select>
+              </FormControl>
+            </>
+          )}
+
+          {tabIndex === 1 && (
+            <TextField
+              fullWidth
+              margin="dense"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={selectedEmployee?.password || ""}
+              onChange={handleChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={toggleShowPassword} edge="end">
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenEdit(false)}>إلغاء</Button>
-          <Button onClick={handleSave} variant="contained" color="primary">
-            حفظ التعديلات
-          </Button>
+          {tabIndex === 0 ? (
+            <Button onClick={handleSaveInfo} variant="contained" color="primary">
+              حفظ التعديلات
+            </Button>
+          ) : (
+            <Button onClick={handleSavePassword} variant="contained" color="primary">
+              تغيير كلمة المرور
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
 
-      {/* Dialog تأكيد الحذف */}
       <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
         <DialogTitle>تأكيد الحذف</DialogTitle>
         <DialogContent>
-          هل أنت متأكد أنك تريد حذف الموظف{" "}
-          <strong>{employeeToDelete?.personName}</strong>؟
+          هل أنت متأكد أنك تريد حذف الموظف <strong>{employeeToDelete?.personName}</strong>؟
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
