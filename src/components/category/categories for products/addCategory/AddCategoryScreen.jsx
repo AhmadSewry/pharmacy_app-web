@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -8,74 +8,166 @@ import {
   Button,
   Snackbar,
   Alert,
-  Stack,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  Switch,
-  Typography,
   Box,
+  LinearProgress,
+  Typography,
+  IconButton,
 } from "@mui/material";
+import { CloudUpload, Close } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-
-const categoryOptions = ["Medicines", "Baby Care", "Cosmetics", "Vitamins"];
 
 const AddCategoryForm = ({ open, onClose }) => {
   const [openSuccess, setOpenSuccess] = useState(false);
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
+    watch,
   } = useForm();
 
-  const onSubmit = async (data) => {
-    const payload = {
-      name: data.name,
-      slug: data.slug,
-      description: data.description,
-      parentCategory: data.parentCategory,
-      imageUrl: data.imageUrl,
-      isActive: data.isActive,
-    };
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Basic validation
+      if (!file.type.match("image.*")) {
+        setErrorMessage("Please select an image file (JPEG, PNG)");
+        setOpenError(true);
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        setErrorMessage("Image size should be less than 5MB");
+        setOpenError(true);
+        return;
+      }
+      setSelectedFile(file);
+      setValue("image", URL.createObjectURL(file)); // For preview
+    }
+  };
+
+  const uploadImage = async () => {
+    if (!selectedFile) return "";
+
+    setIsUploading(true);
+    setUploadProgress(0);
+    setErrorMessage("");
+
+    const formData = new FormData();
+    formData.append("image", selectedFile);
 
     try {
-      const res = await axios.post(
-        "http://localhost:5200/api/Category",
+      const response = await axios.post(
+        "http://localhost:5200/api/ProductCategory",
+        formData,
+        {
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round(
+              (progressEvent.loaded / progressEvent.total) * 100
+            );
+            setUploadProgress(progress);
+          },
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data.image || ""; // Return the image URL from server
+    } catch (error) {
+      console.error("Upload error:", error);
+      let message = "Failed to upload image";
+      if (error.response?.data?.message) {
+        message = error.response.data.message;
+      }
+      setErrorMessage(message);
+      setOpenError(true);
+      return "";
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      // Upload image first if selected
+      const imageUrl = selectedFile ? await uploadImage() : "";
+      if (selectedFile && !imageUrl) return; // Stop if upload failed
+
+      // Prepare payload according to your API spec
+      const payload = {
+        name: data.name,
+        image: imageUrl,
+        products: [], // Empty array as required
+      };
+
+      // Create the category
+      const response = await axios.post(
+        "http://localhost:5200/api/ProductCategory",
         payload
       );
-      console.log("✅ Category created:", res.data);
+
+      console.log("Category created:", response.data);
       setOpenSuccess(true);
-      reset();
-      onClose(); // Close dialog after success
+      resetForm();
+      onClose();
     } catch (error) {
-      const err = error.response?.data?.message || "Something went wrong.";
-      console.error("❌", err);
-      setErrorMessage(err);
+      console.error("Error creating category:", error);
+      let message = "Failed to create category";
+      if (error.response?.data?.message) {
+        message = error.response.data.message;
+      }
+      setErrorMessage(message);
       setOpenError(true);
     }
   };
 
-  const handleCloseDialog = () => {
+  const resetForm = () => {
     reset();
-    onClose();
+    setSelectedFile(null);
+    setUploadProgress(0);
+    setIsUploading(false);
+    setErrorMessage("");
+  };
+
+  const handleCloseDialog = () => {
+    if (!isUploading) {
+      resetForm();
+      onClose();
+    }
   };
 
   return (
     <>
       <Dialog open={open} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <DialogTitle>
-          <Typography variant="h5" fontWeight="bold" textAlign="center">
-            Add New Category
-          </Typography>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="h6" fontWeight="bold">
+              Add New Category
+            </Typography>
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={handleCloseDialog}
+              disabled={isUploading}
+            >
+              <Close />
+            </IconButton>
+          </Box>
         </DialogTitle>
 
-        <DialogContent>
+        <DialogContent dividers>
           <Box
             component="form"
             onSubmit={handleSubmit(onSubmit)}
@@ -83,65 +175,127 @@ const AddCategoryForm = ({ open, onClose }) => {
               padding: 2,
               display: "flex",
               flexDirection: "column",
-              gap: 2,
+              gap: 3,
             }}
           >
             <TextField
-              label="Category Name"
+              label="Category Name *"
               variant="outlined"
               fullWidth
-              {...register("name", { required: "Name is required" })}
+              {...register("name", {
+                required: "Category name is required",
+                minLength: {
+                  value: 3,
+                  message: "Name should be at least 3 characters",
+                },
+              })}
               error={!!errors.name}
               helperText={errors.name?.message}
+              disabled={isUploading}
             />
 
-            <TextField
-              label="Image From your files"
-              variant="outlined"
-              fullWidth
-              {...register("imageUrl")}
-            />
+            {/* File Upload Section */}
+            <Box>
+              <input
+                type="file"
+                onChange={handleFileChange}
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                accept="image/*"
+                disabled={isUploading}
+              />
+              <Button
+                variant="outlined"
+                component="label"
+                startIcon={<CloudUpload />}
+                onClick={() => fileInputRef.current.click()}
+                fullWidth
+                disabled={isUploading}
+                sx={{ py: 1.5 }}
+              >
+                {selectedFile ? selectedFile.name : "Upload Category Image"}
+              </Button>
 
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Typography>Active</Typography>
-              <Switch {...register("isActive")} defaultChecked />
-            </Stack>
+              {isUploading && (
+                <Box sx={{ width: "100%", mt: 1 }}>
+                  <LinearProgress
+                    variant={uploadProgress ? "determinate" : "indeterminate"}
+                    value={uploadProgress}
+                  />
+                  <Typography
+                    variant="caption"
+                    display="block"
+                    textAlign="center"
+                  >
+                    {uploadProgress
+                      ? `${uploadProgress}% uploaded`
+                      : "Uploading..."}
+                  </Typography>
+                </Box>
+              )}
+
+              {watch("image") && (
+                <Box sx={{ mt: 2, textAlign: "center" }}>
+                  <img
+                    src={watch("image")}
+                    alt="Preview"
+                    style={{
+                      maxHeight: 150,
+                      maxWidth: "100%",
+                      borderRadius: 4,
+                      border: "1px solid #ddd",
+                    }}
+                  />
+                </Box>
+              )}
+            </Box>
           </Box>
         </DialogContent>
 
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
+        <DialogActions sx={{ p: 2 }}>
+          <Button
+            onClick={handleCloseDialog}
+            disabled={isUploading}
+            sx={{ mr: 1 }}
+          >
+            Cancel
+          </Button>
           <Button
             onClick={handleSubmit(onSubmit)}
             variant="contained"
             color="primary"
+            disabled={isUploading || !watch("name")}
           >
-            Save
+            {isUploading ? "Saving..." : "Save Category"}
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Success/Error Snackbars */}
+      {/* Notifications */}
       <Snackbar
         open={openSuccess}
         autoHideDuration={3000}
         onClose={() => setOpenSuccess(false)}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert severity="success">Category added successfully!</Alert>
+        <Alert severity="success" onClose={() => setOpenSuccess(false)}>
+          Category created successfully!
+        </Alert>
       </Snackbar>
 
       <Snackbar
         open={openError}
-        autoHideDuration={4000}
+        autoHideDuration={6000}
         onClose={() => setOpenError(false)}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert severity="error">{errorMessage}</Alert>
+        <Alert
+          severity="error"
+          onClose={() => setOpenError(false)}
+          sx={{ whiteSpace: "pre-line" }}
+        >
+          {errorMessage}
+        </Alert>
       </Snackbar>
     </>
   );
