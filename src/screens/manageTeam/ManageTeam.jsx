@@ -30,9 +30,11 @@ import {
   Delete as DeleteIcon,
 } from "@mui/icons-material";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 function ManageTeam() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [rows, setRows] = useState([]);
   const [openEdit, setOpenEdit] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -86,7 +88,9 @@ function ManageTeam() {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5200/api/Employee/${employeeToDelete.employeeID}`);
+      await axios.delete(
+        `http://localhost:5200/api/Employee/${employeeToDelete.employeeID}`
+      );
       setOpenDeleteDialog(false);
       setEmployeeToDelete(null);
       fetchEmployees();
@@ -141,16 +145,58 @@ function ManageTeam() {
   };
 
   const columns = [
-    { field: "employeeID", headerName: "ID", flex: 0.7, align: "center", headerAlign: "center" },
-    { field: "personName", headerName: "Full Name", flex: 1, align: "center", headerAlign: "center" },
-    { field: "userName", headerName: "Username", flex: 1, align: "center", headerAlign: "center" },
-    { field: "email", headerName: "Email", flex: 1.2, align: "center", headerAlign: "center" },
-    { field: "phone", headerName: "Phone", flex: 1, align: "center", headerAlign: "center" },
-    { field: "numberOfCertificate", headerName: "Certificates", flex: 1, align: "center", headerAlign: "center" },
-    { field: "salary", headerName: "Salary", flex: 1, align: "center", headerAlign: "center" },
+    {
+      field: "employeeID",
+      headerName: t("ID"),
+      flex: 0.7,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "personName",
+      headerName: t("Full Name"),
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "userName",
+      headerName: t("Username"),
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "email",
+      headerName: t("Email"),
+      flex: 1.2,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "phone",
+      headerName: t("Phone"),
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "numberOfCertificate",
+      headerName: t("Certificates"),
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "salary",
+      headerName: t("Salary"),
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+    },
     {
       field: "hireDate",
-      headerName: "Hire Date",
+      headerName: t("Hire Date"),
       flex: 1,
       align: "center",
       headerAlign: "center",
@@ -158,14 +204,15 @@ function ManageTeam() {
     },
     {
       field: "role",
-      headerName: "Role",
+      headerName: t("Role"),
       flex: 1,
       align: "center",
       headerAlign: "center",
       renderCell: ({ row: { role } }) => (
         <Box
           sx={{
-            backgroundColor: role === "Admin" ? theme.palette.secondary.dark : "#107163",
+            backgroundColor:
+              role === "Admin" ? theme.palette.secondary.dark : "#107163",
             p: "5px",
             width: "99px",
             textAlign: "center",
@@ -175,15 +222,24 @@ function ManageTeam() {
             justifyContent: "space-evenly",
           }}
         >
-          {role === "Admin" && <AdminPanelSettingsOutlined sx={{ color: "white" }} fontSize="small" />}
-          {role === "User" && <LockOpenOutlined sx={{ color: "white" }} fontSize="small" />}
-          <Typography sx={{ fontSize: "13px", color: "white" }}>{role}</Typography>
+          {role === "Admin" && (
+            <AdminPanelSettingsOutlined
+              sx={{ color: "white" }}
+              fontSize="small"
+            />
+          )}
+          {role === "User" && (
+            <LockOpenOutlined sx={{ color: "white" }} fontSize="small" />
+          )}
+          <Typography sx={{ fontSize: "13px", color: "white" }}>
+            {role}
+          </Typography>
         </Box>
       ),
     },
     {
       field: "actions",
-      headerName: "Actions",
+      headerName: t("Actions"),
       flex: 0.8,
       align: "center",
       headerAlign: "center",
@@ -219,19 +275,65 @@ function ManageTeam() {
       <Dialog open={openEdit} onClose={() => setOpenEdit(false)} fullWidth>
         <DialogTitle>تعديل بيانات الموظف</DialogTitle>
         <DialogContent>
-          <Tabs value={tabIndex} onChange={(e, newValue) => setTabIndex(newValue)} centered>
+          <Tabs
+            value={tabIndex}
+            onChange={(e, newValue) => setTabIndex(newValue)}
+            centered
+          >
             <Tab label="تعديل البيانات" />
             <Tab label="تغيير كلمة المرور" />
           </Tabs>
 
           {tabIndex === 0 && (
             <>
-              <TextField fullWidth margin="dense" label="Full Name" name="personName" value={selectedEmployee?.personName || ""} onChange={handleChange} />
-              <TextField fullWidth margin="dense" label="Username" name="userName" value={selectedEmployee?.userName || ""} onChange={handleChange} />
-              <TextField fullWidth margin="dense" label="Email" name="email" value={selectedEmployee?.email || ""} onChange={handleChange} />
-              <TextField fullWidth margin="dense" label="Phone" name="phone" value={selectedEmployee?.phone || ""} onChange={handleChange} />
-              <TextField fullWidth margin="dense" label="Salary" name="salary" value={selectedEmployee?.salary || ""} onChange={handleChange} />
-              <TextField fullWidth margin="dense" label="Certificates" name="numberOfCertificate" value={selectedEmployee?.numberOfCertificate || ""} disabled />
+              <TextField
+                fullWidth
+                margin="dense"
+                label="Full Name"
+                name="personName"
+                value={selectedEmployee?.personName || ""}
+                onChange={handleChange}
+              />
+              <TextField
+                fullWidth
+                margin="dense"
+                label="Username"
+                name="userName"
+                value={selectedEmployee?.userName || ""}
+                onChange={handleChange}
+              />
+              <TextField
+                fullWidth
+                margin="dense"
+                label="Email"
+                name="email"
+                value={selectedEmployee?.email || ""}
+                onChange={handleChange}
+              />
+              <TextField
+                fullWidth
+                margin="dense"
+                label="Phone"
+                name="phone"
+                value={selectedEmployee?.phone || ""}
+                onChange={handleChange}
+              />
+              <TextField
+                fullWidth
+                margin="dense"
+                label="Salary"
+                name="salary"
+                value={selectedEmployee?.salary || ""}
+                onChange={handleChange}
+              />
+              <TextField
+                fullWidth
+                margin="dense"
+                label="Certificates"
+                name="numberOfCertificate"
+                value={selectedEmployee?.numberOfCertificate || ""}
+                disabled
+              />
 
               <FormControl fullWidth margin="dense">
                 <InputLabel id="role-select-label">Role</InputLabel>
@@ -272,21 +374,33 @@ function ManageTeam() {
         <DialogActions>
           <Button onClick={() => setOpenEdit(false)}>إلغاء</Button>
           {tabIndex === 0 ? (
-            <Button onClick={handleSaveInfo} variant="contained" color="primary">
+            <Button
+              onClick={handleSaveInfo}
+              variant="contained"
+              color="primary"
+            >
               حفظ التعديلات
             </Button>
           ) : (
-            <Button onClick={handleSavePassword} variant="contained" color="primary">
+            <Button
+              onClick={handleSavePassword}
+              variant="contained"
+              color="primary"
+            >
               تغيير كلمة المرور
             </Button>
           )}
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+      >
         <DialogTitle>تأكيد الحذف</DialogTitle>
         <DialogContent>
-          هل أنت متأكد أنك تريد حذف الموظف <strong>{employeeToDelete?.personName}</strong>؟
+          هل أنت متأكد أنك تريد حذف الموظف{" "}
+          <strong>{employeeToDelete?.personName}</strong>؟
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDeleteDialog(false)} color="primary">

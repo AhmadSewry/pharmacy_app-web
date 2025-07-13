@@ -12,10 +12,12 @@ import {
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import IncDec from "../../components/ui";
 import CartData from "./CartData";
+import { useTranslation } from "react-i18next";
 
 function Cart() {
   const [cartItems, setCartItems] = useState(CartData);
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const handleRemove = (id) => {
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
@@ -36,24 +38,24 @@ function Cart() {
   return (
     <div style={{ width: "100%", marginLeft: "5%", marginRight: "5%" }}>
       <h1 style={{ textAlign: "center", fontFamily: '"Montez", cursive' }}>
-        Your Cart
+        {t("Your Cart")}
       </h1>
       <Card sx={{ mt: "10px" }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontWeight: "bold" }}>Item</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>{t("Item")}</TableCell>
               <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                Price
+                {t("Price")}
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                Quantity
+                {t("Quantity")}
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                Total
+                {t("Total")}
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                Remove
+                {t("Remove")}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -81,7 +83,11 @@ function Cart() {
                 </TableCell>
                 <TableCell align="center">
                   <HighlightOffIcon
-                    sx={{ fontSize: "25px", color: "red", cursor: "pointer" }}
+                    sx={{
+                      fontSize: "25px",
+                      color: "red",
+                      cursor: "pointer",
+                    }}
                     onClick={() => handleRemove(item.id)}
                   />
                 </TableCell>
@@ -93,7 +99,7 @@ function Cart() {
                 align="center"
                 sx={{ fontWeight: "bold", fontSize: "20px" }}
               >
-                Total: ${total}
+                {t("Total")}: ${total}
               </TableCell>
             </TableRow>
             <TableRow>
@@ -121,7 +127,7 @@ function Cart() {
                     },
                   }}
                 >
-                  🛒 Checkout
+                  🛒 {t("Checkout")}
                 </Button>
               </TableCell>
             </TableRow>

@@ -1,10 +1,11 @@
 import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 import React, { useState } from "react";
-import AddCategoryForm from "./AddCategoryScreen"; 
+import AddCategoryForm from "./AddCategoryScreen";
+import { useTranslation } from "react-i18next";
 
 function AddCategory() {
   const [open, setOpen] = useState(false);
-
+  const { t } = useTranslation();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -42,7 +43,7 @@ function AddCategory() {
             variant="subtitle1"
             sx={{ fontWeight: 600, color: "#00796b" }}
           >
-            Add New Category
+            {t("Add New Category")}
           </Typography>
         </CardContent>
       </Card>
