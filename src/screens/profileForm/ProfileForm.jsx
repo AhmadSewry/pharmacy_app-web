@@ -13,6 +13,7 @@ import {
   FormControl,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 function ProfileForm() {
   const [selectedRole, setSelectedRole] = useState("");
@@ -51,17 +52,22 @@ function ProfileForm() {
       numberOfCertificate: data.numberCertificate,
       role: selectedRole,
       userName: data.username, // ✅ هذا ضروري لـ Identity
-      uesrId: "00000000-0000-0000-0000-000000000000" // أو احذفه إذا لا يستخدم فعليًا
+      uesrId: "00000000-0000-0000-0000-000000000000", // أو احذفه إذا لا يستخدم فعليًا
     };
 
     try {
-      const response = await axios.post("http://localhost:5200/api/Employee", requestPayload);
+      const response = await axios.post(
+        "http://localhost:5200/api/Employee",
+        requestPayload
+      );
       console.log("✅ تم إنشاء المستخدم:", response.data);
       setOpenSuccess(true);
     } catch (error) {
       console.log("❌ خطأ في الإرسال:", error.response?.data);
       const errorDetails = error.response?.data?.errors;
-      const firstError = errorDetails ? Object.values(errorDetails)[0][0] : "حدث خطأ أثناء الإرسال.";
+      const firstError = errorDetails
+        ? Object.values(errorDetails)[0][0]
+        : "حدث خطأ أثناء الإرسال.";
       setErrorMessage(firstError);
       setOpenError(true);
     }
@@ -70,6 +76,7 @@ function ProfileForm() {
   const regphone = /^(?:\+963|00963)\d{9}$/;
   const regCertificate = /^\d{7}$/;
   const regEmail = /^\S+@\S+\.\S+$/;
+  const { t } = useTranslation();
 
   return (
     <Box
@@ -88,88 +95,115 @@ function ProfileForm() {
       <Stack direction={"row"} gap={2}>
         <TextField
           error={Boolean(errors.firstName)}
-          helperText={errors.firstName ? "Enter FirstName with at least 3 characters." : null}
+          helperText={
+            errors.firstName
+              ? t("Enter FirstName with at least 3 characters.")
+              : null
+          }
           {...register("firstName", { required: true, minLength: 3 })}
           sx={{ flex: 1 }}
-          label="First Name"
+          label={t("First Name")}
           variant="filled"
         />
         <TextField
           error={Boolean(errors.lastName)}
-          helperText={errors.lastName ? "Enter LastName with at least 3 characters." : null}
+          helperText={
+            errors.lastName
+              ? t("Enter LastName with at least 3 characters.")
+              : null
+          }
           {...register("lastName", { required: true, minLength: 3 })}
           sx={{ flex: 1 }}
-          label="Last Name"
+          label={t("Last Name")}
           variant="filled"
         />
       </Stack>
 
       <TextField
         error={Boolean(errors.email)}
-        helperText={errors.email ? "Enter a valid email address" : null}
+        helperText={errors.email ? t("Enter a valid email address") : null}
         {...register("email", { required: true, pattern: regEmail })}
-        label="Email"
+        label={t("Email")}
         variant="filled"
       />
 
       <TextField
         error={Boolean(errors.phone)}
-        helperText={errors.phone ? "Phone must start with +963 or 00963 followed by 9 digits" : null}
+        helperText={
+          errors.phone
+            ? t("Phone must start with +963 or 00963 followed by 9 digits")
+            : null
+        }
         {...register("phone", { required: true, pattern: regphone })}
-        label="Phone"
+        label={t("Phone")}
         variant="filled"
       />
 
       <TextField
         error={Boolean(errors.numberCertificate)}
-        helperText={errors.numberCertificate ? "Certificate number must be exactly 7 digits" : null}
-        {...register("numberCertificate", { required: true, pattern: regCertificate })}
-        label="Certificate Number"
+        helperText={
+          errors.numberCertificate
+            ? t("Certificate number must be exactly 7 digits")
+            : null
+        }
+        {...register("numberCertificate", {
+          required: true,
+          pattern: regCertificate,
+        })}
+        label={t("Certificate Number")}
         variant="filled"
       />
 
       <TextField
         error={Boolean(errors.username)}
-        helperText={errors.username ? "Username must be at least 3 characters" : null}
+        helperText={
+          errors.username ? t("Username must be at least 3 characters") : null
+        }
         {...register("username", { required: true, minLength: 3 })}
-        label="Username"
+        label={t("Username")}
         variant="filled"
       />
 
       <TextField
         error={Boolean(errors.password)}
-        helperText={errors.password ? "Password must be at least 3 characters" : null}
+        helperText={
+          errors.password ? t("Password must be at least 3 characters") : null
+        }
         {...register("password", { required: true, minLength: 3 })}
-        label="Password"
+        label={t("Password")}
         type="password"
         variant="filled"
       />
 
       <TextField
         error={Boolean(errors.salary)}
-        helperText={errors.salary ? "Enter salary as a number" : null}
+        helperText={errors.salary ? t("Enter salary as a number") : null}
         {...register("salary", { required: true, valueAsNumber: true })}
-        label="Salary"
+        label={t("Salary")}
         type="number"
         variant="filled"
       />
 
       <FormControl fullWidth variant="filled">
-        <InputLabel id="role-label">Role</InputLabel>
+        <InputLabel id="role-label">{t("Role")}</InputLabel>
         <Select
           labelId="role-label"
           value={selectedRole}
           onChange={handleSelectChange}
           required
         >
-          <MenuItem value="Admin">Admin</MenuItem>
-          <MenuItem value="User">User</MenuItem>
+          <MenuItem value="Admin">{t("Admin")}</MenuItem>
+          <MenuItem value="User">{t("User")}</MenuItem>
         </Select>
       </FormControl>
 
       <Box sx={{ textAlign: "right" }}>
-        <Button type="submit" sx={{ textTransform: "capitalize" }} variant="contained">
-          Create New Employee
+        <Button
+          type="submit"
+          sx={{ textTransform: "capitalize" }}
+          variant="contained"
+        >
+          {t("Create New Employee")}
         </Button>
 
         {/* Success Snackbar */}
@@ -179,8 +213,13 @@ function ProfileForm() {
           autoHideDuration={3000}
           onClose={handleCloseSuccess}
         >
-          <Alert onClose={handleCloseSuccess} severity="success" variant="filled" sx={{ width: "100%" }}>
-            Account created successfully
+          <Alert
+            onClose={handleCloseSuccess}
+            severity="success"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {t("Account created successfully")}
           </Alert>
         </Snackbar>
 
@@ -191,7 +230,12 @@ function ProfileForm() {
           autoHideDuration={4000}
           onClose={handleCloseError}
         >
-          <Alert onClose={handleCloseError} severity="error" variant="filled" sx={{ width: "100%" }}>
+          <Alert
+            onClose={handleCloseError}
+            severity="error"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
             {errorMessage}
           </Alert>
         </Snackbar>

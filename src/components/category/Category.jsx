@@ -6,10 +6,11 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import { CategoriesData } from "./CategoriesData";
 import AddCategory from "./categories for products/addCategory/AddCategoryComponent";
+import { useTranslation } from "react-i18next";
 
 const Category = () => {
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   return (
     <Box
       sx={{
@@ -26,7 +27,7 @@ const Category = () => {
           color: "#333",
         }}
       >
-        Product Categories
+       { t("Product Categories")}
       </Typography>
 
       <Box
