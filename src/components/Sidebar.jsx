@@ -13,6 +13,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import {
   BarChartOutlined,
   CalendarTodayOutlined,
@@ -32,6 +33,7 @@ import { useThemeContext } from "../ThemeContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Cookies } from "react-cookie";
+import LocalShipping from "@mui/icons-material/LocalShipping";
 
 const drawerWidth = 240;
 
@@ -81,7 +83,7 @@ const menuItems = [
   { text: "Manage Team", icon: <PeopleAltOutlined />, path: "/team" },
   {
     text: "Manage Suppliers",
-    icon: <ContactsOutlined />,
+    icon: <LocalShipping />,
     path: "/manageSuppliers",
   },
   { text: "Invoices Balances", icon: <ReceiptOutlined />, path: "/invoices" },
