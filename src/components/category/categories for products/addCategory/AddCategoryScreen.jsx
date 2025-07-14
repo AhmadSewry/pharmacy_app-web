@@ -16,6 +16,7 @@ import {
 import { CloudUpload, Close } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const AddCategoryForm = ({ open, onClose }) => {
   const [openSuccess, setOpenSuccess] = useState(false);
@@ -25,7 +26,7 @@ const AddCategoryForm = ({ open, onClose }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
-
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -124,7 +125,7 @@ const AddCategoryForm = ({ open, onClose }) => {
             alignItems="center"
           >
             <Typography variant="h6" fontWeight="bold">
-              Add New Category
+              {t("Add New Category")}
             </Typography>
             <IconButton
               edge="end"

@@ -22,9 +22,11 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
 import AddCategory from "./categories for products/addCategory/AddCategoryComponent";
+import { useTranslation } from "react-i18next";
 
 const Category = () => {
   const navigate = useNavigate();
+
   const [categories, setCategories] = useState([]);
 
   // Menu state
@@ -132,6 +134,9 @@ const Category = () => {
       });
   };
 
+
+  const { t } = useTranslation();
+ 
   return (
     <Box
       sx={{
@@ -148,7 +153,7 @@ const Category = () => {
           color: "#333",
         }}
       >
-        Product Categories
+       { t("Product Categories")}
       </Typography>
 
       <Box
