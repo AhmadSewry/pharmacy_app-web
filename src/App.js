@@ -3,7 +3,6 @@ import { CustomThemeProvider } from "./ThemeContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./screens/loginScreen/login";
 import ManageTeam from "./screens/manageTeam/ManageTeam";
-import Contacts from "./screens/contacts/Contacts";
 import Invoices from "./screens/invoices/Invoices";
 import ProfileForm from "./screens/profileForm/ProfileForm";
 import Calendar from "./screens/calendar/Calendar";
@@ -26,6 +25,7 @@ import VitaminsSupplements from "./components/category/categories for products/m
 import MentalHealth from "./components/category/categories for products/medicineCategory/MedicineCategoryScreens/mentalHealth/MentalHealth.jsx";
 import AddCategory from "./components/category/categories for products/addCategory/AddCategoryComponent.jsx";
 import AddCategoryScreen from "./components/category/categories for products/addCategory/AddCategoryScreen.jsx";
+import ManageSuppliers from "./screens/manageSuppliers/ManageSuppliers.jsx";
 function App() {
   document.title = "Pharmacy App";
   return (
@@ -36,7 +36,7 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route path="home" element={<HomePage />} />
             <Route path="team" element={<ManageTeam />} />
-            <Route path="contacts" element={<Contacts />} />
+            <Route path="manageSuppliers" element={<ManageSuppliers />} />
             <Route path="invoices" element={<Invoices />} />
             <Route path="form" element={<ProfileForm />} />
             <Route path="/product-details" element={<ProductDetails />} />
