@@ -2,6 +2,7 @@ import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 import React, { useState } from "react";
 import AddCategoryForm from "./../../addCategory/AddCategoryScreen";
 import { useTranslation } from "react-i18next";
+import AddMedicineCategoryComponentForm from "./AddMedicineCategoryComponentForm";
 
 function AddMedicineCategoryComponent() {
   const [open, setOpen] = useState(false);
@@ -43,12 +44,12 @@ function AddMedicineCategoryComponent() {
             variant="subtitle1"
             sx={{ fontWeight: 600, color: "#00796b" }}
           >
-            {t("Add New Category")}
+            {t("Add New CategoryMedicines")}
           </Typography>
         </CardContent>
       </Card>
 
-      <AddCategoryForm open={open} onClose={handleClose} />
+      <AddMedicineCategoryComponentForm open={open} onClose={handleClose} />
     </>
   );
 }
