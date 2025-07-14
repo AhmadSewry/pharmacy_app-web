@@ -1,20 +1,90 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
-import { MedicineCategoriesData } from "./MedicineCategoriesData";
+import IconButton from "@mui/material/IconButton";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
 import AddMedicineCategoryComponent from "./MedicineCategoryScreens/AddMedicineCategoryComponent";
 
 const MedicineCategory = () => {
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = () => {
+    axios
+      .get("http://localhost:5200/api/MedicineCategory")
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching medicine categories:", error);
+      });
+  };
+
+  const handleMenuOpen = (event, category) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedCategory(category);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDeleteClick = () => {
+    handleMenuClose();
+    setOpenDialog(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (selectedCategory) {
+      axios
+        .delete(
+          `http://localhost:5200/api/MedicineCategory/${selectedCategory.cateogryID}`
+        )
+        .then(() => {
+          setCategories((prev) =>
+            prev.filter((cat) => cat.cateogryID !== selectedCategory.cateogryID)
+          );
+          setOpenDialog(false);
+          setSelectedCategory(null);
+        })
+        .catch((error) => {
+          console.error("Error deleting category:", error);
+        });
+    }
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+    setSelectedCategory(null);
+  };
 
   return (
     <Box
       sx={{
         padding: "2rem",
         backgroundColor: "#f4f6f8",
+        minHeight: "100vh",
         textAlign: "center",
       }}
     >
@@ -23,7 +93,7 @@ const MedicineCategory = () => {
         sx={{
           fontWeight: "bold",
           marginBottom: "2rem",
-          color: "#333",
+          color: "#1976d2",
         }}
       >
         Medicines Categories
@@ -37,54 +107,118 @@ const MedicineCategory = () => {
           gap: "2rem",
         }}
       >
-        {MedicineCategoriesData.map((category) => (
+        {categories.map((category) => (
           <Card
-            key={category.id}
+            key={category.cateogryID}
             sx={{
-              width: 200,
-              borderRadius: "12px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              width: 220,
+              position: "relative",
+              borderRadius: "16px",
+              boxShadow: "0 6px 18px rgba(0,0,0,0.1)",
               cursor: "pointer",
-              transition: "transform 0.3s ease",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
               "&:hover": {
                 transform: "scale(1.05)",
+                boxShadow: "0 12px 24px rgba(0,0,0,0.2)",
               },
             }}
-            onClick={() => {
-              const title = category.title.toLowerCase();
-              if (title === "cold & flu") navigate("/medicine/cold-flu");
-              else if (title === "pain relief")
-                navigate("/medicine/pain-relief");
-              else if (title === "allergy medications")
-                navigate("/medicine/allergy-medications");
-              else if (title === "vitamins & supplements")
-                navigate("/medicine/vitamins-supplements");
-              else if (title === "mental health")
-                navigate("/medicine/mental-health");
-            }}
           >
+            <IconButton
+              sx={{ position: "absolute", top: 8, right: 8, zIndex: 1 }}
+              onClick={(event) => {
+                event.stopPropagation();
+                handleMenuOpen(event, category);
+              }}
+            >
+              <MoreVertIcon />
+            </IconButton>
+
             <CardMedia
               component="img"
               src={category.image}
-              alt={category.title}
+              alt={category.name}
               sx={{
-                height: 120,
+                height: 140,
                 objectFit: "cover",
-                borderRadius: "12px 12px 0 0",
+                borderRadius: "16px 16px 0 0",
+              }}
+              onClick={() => {
+                const title = category.name.toLowerCase();
+                if (title === "cold & flu") navigate("/medicine/cold-flu");
+                else if (title === "pain relief")
+                  navigate("/medicine/pain-relief");
+                else if (title === "allergy medications")
+                  navigate("/medicine/allergy-medications");
+                else if (title === "vitamins & supplements")
+                  navigate("/medicine/vitamins-supplements");
+                else if (title === "mental health")
+                  navigate("/medicine/mental-health");
               }}
             />
-            <CardContent>
+            <CardContent
+              sx={{
+                backgroundColor: "#fff",
+              }}
+              onClick={() => {
+                const title = category.name.toLowerCase();
+                if (title === "cold & flu") navigate("/medicine/cold-flu");
+                else if (title === "pain relief")
+                  navigate("/medicine/pain-relief");
+                else if (title === "allergy medications")
+                  navigate("/medicine/allergy-medications");
+                else if (title === "vitamins & supplements")
+                  navigate("/medicine/vitamins-supplements");
+                else if (title === "mental health")
+                  navigate("/medicine/mental-health");
+              }}
+            >
               <Typography
                 variant="subtitle1"
-                sx={{ fontWeight: 600, textTransform: "capitalize" }}
+                sx={{
+                  fontWeight: 700,
+                  textTransform: "none",
+                  color: "#333",
+                }}
               >
-                {category.title}
+                {category.name}
               </Typography>
             </CardContent>
           </Card>
         ))}
-                  <AddMedicineCategoryComponent/>
 
+        <AddMedicineCategoryComponent />
+
+        {/* Menu for options */}
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+        </Menu>
+
+        {/* Confirm Delete Dialog */}
+        <Dialog open={openDialog} onClose={handleDialogClose}>
+          <DialogTitle>Confirm Delete</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete "
+              {selectedCategory?.name}"?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDialogClose} color="primary">
+              No
+            </Button>
+            <Button
+              onClick={handleDeleteConfirm}
+              color="error"
+              variant="contained"
+            >
+              Yes, Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </Box>
   );
