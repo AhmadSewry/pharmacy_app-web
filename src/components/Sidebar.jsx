@@ -14,10 +14,10 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import {
   BarChartOutlined,
   CalendarTodayOutlined,
-  ContactsOutlined,
   HelpOutlineOutlined,
   HomeOutlined,
   Logout,
@@ -25,7 +25,6 @@ import {
   PersonOutline,
   PieChartOutlineOutlined,
   ReceiptOutlined,
-  TimelineOutlined,
 } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
 import loginImage from "../screens/loginScreen/assets/images/loginImage.jpg";
@@ -92,7 +91,11 @@ const menuItems = [
 const secondaryItems = [
   { text: "Profile Form", icon: <PersonOutline />, path: "/form" },
   { text: "Calendar", icon: <CalendarTodayOutlined />, path: "/calendar" },
-  { text: "FAQ Page", icon: <HelpOutlineOutlined />, path: "/faq" },
+  {
+    text: "Purshase Page",
+    icon: <AttachMoneyIcon sx={{ fontSize: 30 }} />,
+    path: "/purshase",
+  },
 ];
 
 const cookies = new Cookies();
