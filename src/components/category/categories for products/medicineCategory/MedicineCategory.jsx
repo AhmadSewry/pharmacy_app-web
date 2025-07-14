@@ -5,6 +5,7 @@ import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import { MedicineCategoriesData } from "./MedicineCategoriesData";
+import AddMedicineCategoryComponent from "./MedicineCategoryScreens/AddMedicineCategoryComponent";
 
 const MedicineCategory = () => {
   const navigate = useNavigate();
@@ -82,6 +83,8 @@ const MedicineCategory = () => {
             </CardContent>
           </Card>
         ))}
+                  <AddMedicineCategoryComponent/>
+
       </Box>
     </Box>
   );
