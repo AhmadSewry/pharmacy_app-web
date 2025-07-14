@@ -6,7 +6,6 @@ import ManageTeam from "./screens/manageTeam/ManageTeam";
 import Invoices from "./screens/invoices/Invoices";
 import ProfileForm from "./screens/profileForm/ProfileForm";
 import Calendar from "./screens/calendar/Calendar";
-import Faq from "./screens/FAQ/FAQ";
 import BarChart from "./screens/barChart/BarChart";
 import PieChart from "./screens/pieChart/PieChart";
 import LineChart from "./screens/lineChart/LineChart";
@@ -26,6 +25,7 @@ import MentalHealth from "./components/category/categories for products/medicine
 import AddCategory from "./components/category/categories for products/addCategory/AddCategoryComponent.jsx";
 import AddCategoryScreen from "./components/category/categories for products/addCategory/AddCategoryScreen.jsx";
 import ManageSuppliers from "./screens/manageSuppliers/ManageSuppliers.jsx";
+import Purshase from "./screens/purshase/Purshase.jsx";
 function App() {
   document.title = "Pharmacy App";
   return (
@@ -41,7 +41,7 @@ function App() {
             <Route path="form" element={<ProfileForm />} />
             <Route path="/product-details" element={<ProductDetails />} />
             <Route path="calendar" element={<Calendar />} />
-            <Route path="faq" element={<Faq />} />
+            <Route path="purshase" element={<Purshase />} />
             <Route path="bar" element={<BarChart />} />
             <Route path="pie" element={<PieChart />} />
             <Route path="line" element={<LineChart />} />

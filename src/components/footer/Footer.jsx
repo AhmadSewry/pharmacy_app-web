@@ -36,21 +36,34 @@ export default function Footer() {
         <Grid item md={6} lg={4}>
           <FooterTitle variant="body1">About us</FooterTitle>
           <Typography variant="caption2">
-            Lorem ipsum dolor sit amet consectetur adipisicing
+            We are committed to providing top-quality products and exceptional
+            customer service. Our team is passionate about innovation,
+            reliability, and your satisfaction.
           </Typography>
           <Box sx={{ mt: 4 }}>
-            <FacebookOutlinedIcon
-              // fontSize="large"
-              sx={{ mr: 1, color: "blue" }}
-            ></FacebookOutlinedIcon>
-            <TwitterIcon
-              // fontSize="large"
-              sx={{ mr: 1, color: "black" }}
-            ></TwitterIcon>
-            <InstagramIcon
-              // fontSize="large"
-              sx={{ mr: 1, color: "pink" }}
-            ></InstagramIcon>
+            <a
+              href="https://www.facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FacebookOutlinedIcon
+                sx={{ mr: 1, color: "blue", cursor: "pointer" }}
+              />
+            </a>
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <TwitterIcon sx={{ mr: 1, color: "black", cursor: "pointer" }} />
+            </a>
+            <a
+              href="https://www.instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <InstagramIcon sx={{ mr: 1, color: "pink", cursor: "pointer" }} />
+            </a>
           </Box>
         </Grid>
         <Grid item md={6} lg={2} ml={"30px"}>
