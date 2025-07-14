@@ -55,66 +55,33 @@ const AddCategoryForm = ({ open, onClose }) => {
     }
   };
 
-  const uploadImage = async () => {
-    if (!selectedFile) return "";
-
-    setIsUploading(true);
-    setUploadProgress(0);
-    setErrorMessage("");
-
-    const formData = new FormData();
-    formData.append("image", selectedFile);
-
+  
+  const onSubmit = async (data) => {
     try {
+      // تحضير الـ FormData
+      const formData = new FormData();
+      formData.append("Name", data.name);
+      if (selectedFile) {
+        formData.append("Image", selectedFile);
+      }
+  
+      // أرسل الطلب كامل دفعة واحدة
       const response = await axios.post(
         "http://localhost:5200/api/ProductCategory",
         formData,
         {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
           onUploadProgress: (progressEvent) => {
             const progress = Math.round(
               (progressEvent.loaded / progressEvent.total) * 100
             );
             setUploadProgress(progress);
           },
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
         }
       );
-      return response.data.image || ""; // Return the image URL from server
-    } catch (error) {
-      console.error("Upload error:", error);
-      let message = "Failed to upload image";
-      if (error.response?.data?.message) {
-        message = error.response.data.message;
-      }
-      setErrorMessage(message);
-      setOpenError(true);
-      return "";
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const onSubmit = async (data) => {
-    try {
-      // Upload image first if selected
-      const imageUrl = selectedFile ? await uploadImage() : "";
-      if (selectedFile && !imageUrl) return; // Stop if upload failed
-
-      // Prepare payload according to your API spec
-      const payload = {
-        name: data.name,
-        image: imageUrl,
-        products: [], // Empty array as required
-      };
-
-      // Create the category
-      const response = await axios.post(
-        "http://localhost:5200/api/ProductCategory",
-        payload
-      );
-
+  
       console.log("Category created:", response.data);
       setOpenSuccess(true);
       resetForm();
@@ -127,8 +94,11 @@ const AddCategoryForm = ({ open, onClose }) => {
       }
       setErrorMessage(message);
       setOpenError(true);
+    } finally {
+      setIsUploading(false);
     }
   };
+  
 
   const resetForm = () => {
     reset();
