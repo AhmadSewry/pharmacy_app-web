@@ -80,9 +80,9 @@ const menuItems = [
   { text: "Dashboard", icon: <HomeOutlined />, path: "/home" },
   { text: "Manage Team", icon: <PeopleAltOutlined />, path: "/team" },
   {
-    text: "Contacts Information",
+    text: "Manage Suppliers",
     icon: <ContactsOutlined />,
-    path: "/contacts",
+    path: "/manageSuppliers",
   },
   { text: "Invoices Balances", icon: <ReceiptOutlined />, path: "/invoices" },
 ];
