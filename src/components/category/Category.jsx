@@ -26,7 +26,6 @@ import { useTranslation } from "react-i18next";
 
 const Category = () => {
   const navigate = useNavigate();
-
   const [categories, setCategories] = useState([]);
 
   // Menu state
@@ -53,7 +52,7 @@ const Category = () => {
   };
 
   const handleMenuClick = (event, category) => {
-    event.stopPropagation(); // مهم عشان ما يفتح كارد التنقل
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
     setSelectedCategory(category);
     setEditName(category.name);
@@ -65,7 +64,6 @@ const Category = () => {
   };
 
   // DELETE
-
   const openDeleteDialog = () => {
     setIsDeleteDialogOpen(true);
     handleMenuClose();
@@ -86,7 +84,6 @@ const Category = () => {
   };
 
   // EDIT
-
   const openEditDialog = () => {
     setIsEditDialogOpen(true);
     handleMenuClose();
@@ -118,7 +115,6 @@ const Category = () => {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
-        // تحديث الكاتيجوري بالاسم و الصورة (إذا عدلت الصورة يحدث imageUrl)
         setCategories(
           categories.map((c) =>
             c.cateogryID === selectedCategory.cateogryID
@@ -134,26 +130,26 @@ const Category = () => {
       });
   };
 
-
   const { t } = useTranslation();
- 
+
   return (
     <Box
       sx={{
-        padding: "2rem",
-        backgroundColor: "#eef2f5",
+        p: { xs: 2, md: 4 },
+        backgroundColor: "#f5f7fa",
         textAlign: "center",
+        minHeight: "100vh",
       }}
     >
       <Typography
         variant="h4"
         sx={{
           fontWeight: "bold",
-          marginBottom: "2rem",
+          mb: 4,
           color: "#333",
         }}
       >
-       { t("Product Categories")}
+        {t("Product Categories")}
       </Typography>
 
       <Box
@@ -161,7 +157,7 @@ const Category = () => {
           display: "flex",
           flexWrap: "wrap",
           justifyContent: "center",
-          gap: "2rem",
+          gap: 3,
         }}
       >
         {categories.map((category) => (
@@ -169,14 +165,19 @@ const Category = () => {
             key={category.cateogryID}
             sx={{
               width: 200,
-              borderRadius: "12px",
+              height: 220,
+              borderRadius: 3,
               boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
               cursor: "pointer",
-              transition: "transform 0.3s ease",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
               position: "relative",
               "&:hover": {
                 transform: "scale(1.05)",
+                boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
               },
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
             }}
             onClick={() => {
               const title = category.name.toLowerCase();
@@ -186,16 +187,16 @@ const Category = () => {
               else if (title === "personal care & cosmetics") navigate("/cosmetics");
             }}
           >
-            {/* ثلاث نقاط القائمة */}
             <IconButton
               size="small"
               onClick={(e) => handleMenuClick(e, category)}
               sx={{
                 position: "absolute",
-                top: 4,
-                right: 4,
+                top: 8,
+                right: 8,
                 backgroundColor: "#fff",
                 "&:hover": { backgroundColor: "#eee" },
+                zIndex: 2,
               }}
             >
               <MoreVertIcon fontSize="small" />
@@ -206,12 +207,12 @@ const Category = () => {
               src={category.imageUrl}
               alt={category.name}
               sx={{
-                height: 120,
+                height: 130,
+                width: "100%",
                 objectFit: "cover",
-                borderRadius: "12px 12px 0 0",
               }}
             />
-            <CardContent>
+            <CardContent sx={{ p: 1 }}>
               <Typography
                 variant="subtitle1"
                 sx={{ fontWeight: 600, textTransform: "capitalize" }}
@@ -224,13 +225,11 @@ const Category = () => {
         <AddCategory />
       </Box>
 
-      {/* قائمة الثلاث نقاط */}
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
         <MenuItem onClick={openEditDialog}>Edit</MenuItem>
         <MenuItem onClick={openDeleteDialog}>Delete</MenuItem>
       </Menu>
 
-      {/* حوار تأكيد الحذف */}
       <Dialog open={isDeleteDialogOpen} onClose={closeDeleteDialog}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>هل أنت متأكد من حذف التصنيف؟</DialogContent>
@@ -242,23 +241,26 @@ const Category = () => {
         </DialogActions>
       </Dialog>
 
-      {/* حوار التعديل */}
       <Dialog open={isEditDialogOpen} onClose={closeEditDialog}>
         <DialogTitle>تعديل التصنيف</DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 300 }}>
+        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 320 }}>
           <TextField
             label="الاسم"
             value={editName}
             onChange={(e) => setEditName(e.target.value)}
             fullWidth
           />
-          <Button variant="contained" component="label">
+          <Button variant="outlined" component="label">
             اختر صورة جديدة
             <input type="file" hidden onChange={onFileChange} accept="image/*" />
           </Button>
-          {editImageFile && <Typography variant="body2">{editImageFile.name}</Typography>}
+          {editImageFile && (
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              {editImageFile.name}
+            </Typography>
+          )}
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={closeEditDialog}>إلغاء</Button>
           <Button variant="contained" onClick={saveEdit}>
             حفظ التغييرات

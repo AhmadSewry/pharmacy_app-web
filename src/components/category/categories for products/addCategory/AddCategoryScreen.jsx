@@ -4,7 +4,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField,
   Button,
   Snackbar,
   Alert,
@@ -12,6 +11,10 @@ import {
   LinearProgress,
   Typography,
   IconButton,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
 } from "@mui/material";
 import { CloudUpload, Close } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
@@ -36,10 +39,16 @@ const AddCategoryForm = ({ open, onClose }) => {
     watch,
   } = useForm();
 
+  const categoryOptions = [
+    "medicines",
+    "baby & maternity care",
+    "personal care & cosmetics",
+    "first aid and medical supplies",
+  ];
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      // Basic validation
       if (!file.type.match("image.*")) {
         setErrorMessage("Please select an image file (JPEG, PNG)");
         setOpenError(true);
@@ -51,21 +60,18 @@ const AddCategoryForm = ({ open, onClose }) => {
         return;
       }
       setSelectedFile(file);
-      setValue("image", URL.createObjectURL(file)); // For preview
+      setValue("image", URL.createObjectURL(file));
     }
   };
 
-  
   const onSubmit = async (data) => {
     try {
-      // تحضير الـ FormData
       const formData = new FormData();
       formData.append("Name", data.name);
       if (selectedFile) {
         formData.append("Image", selectedFile);
       }
-  
-      // أرسل الطلب كامل دفعة واحدة
+
       const response = await axios.post(
         "http://localhost:5200/api/ProductCategory",
         formData,
@@ -81,7 +87,7 @@ const AddCategoryForm = ({ open, onClose }) => {
           },
         }
       );
-  
+
       console.log("Category created:", response.data);
       setOpenSuccess(true);
       resetForm();
@@ -98,7 +104,6 @@ const AddCategoryForm = ({ open, onClose }) => {
       setIsUploading(false);
     }
   };
-  
 
   const resetForm = () => {
     reset();
@@ -119,20 +124,11 @@ const AddCategoryForm = ({ open, onClose }) => {
     <>
       <Dialog open={open} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <DialogTitle>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
+          <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="h6" fontWeight="bold">
               {t("Add New Category")}
             </Typography>
-            <IconButton
-              edge="end"
-              color="inherit"
-              onClick={handleCloseDialog}
-              disabled={isUploading}
-            >
+            <IconButton edge="end" color="inherit" onClick={handleCloseDialog} disabled={isUploading}>
               <Close />
             </IconButton>
           </Box>
@@ -149,23 +145,27 @@ const AddCategoryForm = ({ open, onClose }) => {
               gap: 3,
             }}
           >
-            <TextField
-              label="Category Name *"
-              variant="outlined"
-              fullWidth
-              {...register("name", {
-                required: "Category name is required",
-                minLength: {
-                  value: 3,
-                  message: "Name should be at least 3 characters",
-                },
-              })}
-              error={!!errors.name}
-              helperText={errors.name?.message}
-              disabled={isUploading}
-            />
+            <FormControl fullWidth variant="outlined" disabled={isUploading}>
+              <InputLabel id="category-label">Category *</InputLabel>
+              <Select
+                labelId="category-label"
+                label="Category *"
+                defaultValue=""
+                {...register("name", { required: "Please select a category" })}
+              >
+                {categoryOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.name && (
+                <Typography color="error" variant="caption">
+                  {errors.name.message}
+                </Typography>
+              )}
+            </FormControl>
 
-            {/* File Upload Section */}
             <Box>
               <input
                 type="file"
@@ -193,14 +193,8 @@ const AddCategoryForm = ({ open, onClose }) => {
                     variant={uploadProgress ? "determinate" : "indeterminate"}
                     value={uploadProgress}
                   />
-                  <Typography
-                    variant="caption"
-                    display="block"
-                    textAlign="center"
-                  >
-                    {uploadProgress
-                      ? `${uploadProgress}% uploaded`
-                      : "Uploading..."}
+                  <Typography variant="caption" display="block" textAlign="center">
+                    {uploadProgress ? `${uploadProgress}% uploaded` : "Uploading..."}
                   </Typography>
                 </Box>
               )}
@@ -224,11 +218,7 @@ const AddCategoryForm = ({ open, onClose }) => {
         </DialogContent>
 
         <DialogActions sx={{ p: 2 }}>
-          <Button
-            onClick={handleCloseDialog}
-            disabled={isUploading}
-            sx={{ mr: 1 }}
-          >
+          <Button onClick={handleCloseDialog} disabled={isUploading} sx={{ mr: 1 }}>
             Cancel
           </Button>
           <Button
@@ -260,11 +250,7 @@ const AddCategoryForm = ({ open, onClose }) => {
         onClose={() => setOpenError(false)}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert
-          severity="error"
-          onClose={() => setOpenError(false)}
-          sx={{ whiteSpace: "pre-line" }}
-        >
+        <Alert severity="error" onClose={() => setOpenError(false)} sx={{ whiteSpace: "pre-line" }}>
           {errorMessage}
         </Alert>
       </Snackbar>
