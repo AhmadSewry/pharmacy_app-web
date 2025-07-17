@@ -13,12 +13,10 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import {
   BarChartOutlined,
   CalendarTodayOutlined,
-  HelpOutlineOutlined,
   HomeOutlined,
   Logout,
   PeopleAltOutlined,
@@ -26,13 +24,13 @@ import {
   PieChartOutlineOutlined,
   ReceiptOutlined,
 } from "@mui/icons-material";
+import LocalShipping from "@mui/icons-material/LocalShipping";
 import { Avatar } from "@mui/material";
 import loginImage from "../screens/loginScreen/assets/images/loginImage.jpg";
 import { useThemeContext } from "../ThemeContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Cookies } from "react-cookie";
-import LocalShipping from "@mui/icons-material/LocalShipping";
 
 const drawerWidth = 240;
 
@@ -77,52 +75,40 @@ const Drawer = styled(MuiDrawer, {
     : { ...closedMixin(theme), "& .MuiDrawer-paper": closedMixin(theme) }),
 }));
 
-const menuItems = [
-  { text: "Dashboard", icon: <HomeOutlined />, path: "/home" },
-  { text: "Manage Team", icon: <PeopleAltOutlined />, path: "/team" },
-  {
-    text: "Manage Suppliers",
-    icon: <LocalShipping />,
-    path: "/manageSuppliers",
-  },
-  { text: "Invoices Balances", icon: <ReceiptOutlined />, path: "/invoices" },
-];
-
-const secondaryItems = [
-  { text: "Profile Form", icon: <PersonOutline />, path: "/form" },
-  { text: "Calendar", icon: <CalendarTodayOutlined />, path: "/calendar" },
-  {
-    text: "Purshase Page",
-    icon: <AttachMoneyIcon sx={{ fontSize: 30 }} />,
-    path: "/purshase",
-  },
-];
-
 const cookies = new Cookies();
-
-// ... نفس باقي الاستيرادات والكود كما هو ...
 
 export default function Sidebar({ open, handleDrawerClose }) {
   const theme = useTheme();
   const navigate = useNavigate();
   const { mode } = useThemeContext();
 
-  const handleLogout = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  // ✅ قراءة الدور من التخزين المحلي وتحويله لحروف صغيرة
+  const role = localStorage.getItem("role")?.toLowerCase();
+  console.log("Current role:", role);
 
-      await axios.get("http://localhost:5200/api/Account/logout", {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
+  // ✅ القائمة الأساسية
+  const menuItems = [
+    { text: "Dashboard", icon: <HomeOutlined />, path: "/home" },
+    ...(role === "admin"
+      ? [{ text: "Manage Team", icon: <PeopleAltOutlined />, path: "/team" }]
+      : []),
+    {
+      text: "Manage Suppliers",
+      icon: <LocalShipping />,
+      path: "/manageSuppliers",
+    },
+    { text: "Invoices Balances", icon: <ReceiptOutlined />, path: "/invoices" },
+  ];
 
-      localStorage.removeItem("token");
-      navigate("/");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
+  const secondaryItems = [
+    { text: "Profile Form", icon: <PersonOutline />, path: "/form" },
+    { text: "Calendar", icon: <CalendarTodayOutlined />, path: "/calendar" },
+    {
+      text: "Purshase Page",
+      icon: <AttachMoneyIcon sx={{ fontSize: 30 }} />,
+      path: "/purshase",
+    },
+  ];
 
   const chartItems = [
     { text: "Bar Chart", icon: <BarChartOutlined />, path: "/bar" },
@@ -130,17 +116,29 @@ export default function Sidebar({ open, handleDrawerClose }) {
     { text: "Logout", icon: <Logout />, action: handleLogout },
   ];
 
+  async function handleLogout() {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.get("http://localhost:5200/api/Account/logout", {
+        headers: { Authorization: "Bearer " + token },
+      });
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("refreshToken");
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  }
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
+            {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
         <Divider />
@@ -149,8 +147,8 @@ export default function Sidebar({ open, handleDrawerClose }) {
           sx={{
             mx: "auto",
             width: open ? 80 : 50,
-            transition: "1s",
             height: open ? 80 : 50,
+            transition: "1s",
             mt: 1,
             my: 1,
             border: "2px gray",
@@ -158,10 +156,7 @@ export default function Sidebar({ open, handleDrawerClose }) {
           alt="Remy Sharp"
           src={loginImage}
         />
-        <Typography
-          align="center"
-          sx={{ fontSize: open ? 15 : 0, transition: "1s" }}
-        >
+        <Typography align="center" sx={{ fontSize: open ? 15 : 0, transition: "1s" }}>
           Ahmed
         </Typography>
         <Typography
@@ -172,10 +167,11 @@ export default function Sidebar({ open, handleDrawerClose }) {
             color: theme.palette.info.main,
           }}
         >
-          Admin
+          {role}
         </Typography>
 
         <Divider />
+
         <List>
           {menuItems.map((item) => (
             <ListItem key={item.path} disablePadding sx={{ display: "block" }}>
@@ -197,16 +193,14 @@ export default function Sidebar({ open, handleDrawerClose }) {
                 >
                   {item.icon}
                 </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
+                <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
 
         <Divider />
+
         <List>
           {secondaryItems.map((item) => (
             <ListItem key={item.path} disablePadding sx={{ display: "block" }}>
@@ -228,16 +222,14 @@ export default function Sidebar({ open, handleDrawerClose }) {
                 >
                   {item.icon}
                 </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
+                <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
 
         <Divider />
+
         <List>
           {chartItems.map((item, index) => (
             <ListItem key={index} disablePadding sx={{ display: "block" }}>
@@ -265,10 +257,7 @@ export default function Sidebar({ open, handleDrawerClose }) {
                 >
                   {item.icon}
                 </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
+                <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           ))}
