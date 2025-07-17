@@ -33,10 +33,12 @@ const Login = () => {
       }
 
       const data = await response.json();
-
+      console.log(data);
       if (data.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("refreshToken", data.refreshToken);
+        localStorage.setItem("role",data.role);
+
         navigate("/home");
       } else {
         alert("Invalid credentials. Please try again.");
