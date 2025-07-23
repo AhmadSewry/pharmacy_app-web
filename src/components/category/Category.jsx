@@ -23,6 +23,8 @@ import Button from "@mui/material/Button";
 
 import AddCategory from "./categories for products/addCategory/AddCategoryComponent";
 import { useTranslation } from "react-i18next";
+import CategoryMedicine from "./categories for products/categoryDetails/Medicine";
+import Medicine from "./categories for products/categoryDetails/Medicine";
 
 const Category = () => {
   const navigate = useNavigate();
@@ -102,7 +104,7 @@ const Category = () => {
       alert("Name cannot be empty");
       return;
     }
-
+  
     const formData = new FormData();
     formData.append("CategoryID", selectedCategory.cateogryID);
     formData.append("Name", editName);
@@ -118,12 +120,13 @@ const Category = () => {
         setCategories(
           categories.map((c) =>
             c.cateogryID === selectedCategory.cateogryID
-              ? { ...c, name: editName, imageUrl: res.data.imageUrl ?? c.imageUrl }
+              ? { ...c, name: editName, image: res.data.image ?? c.image }
               : c
           )
         );
         closeEditDialog();
       })
+      
       .catch((err) => {
         console.log(err);
         alert("Failed to update category");
@@ -131,6 +134,16 @@ const Category = () => {
   };
 
   const { t } = useTranslation();
+
+  const buildImageUrl = (imagePath) => {
+    if (!imagePath) return "/placeholder.jpg"; // صورة افتراضية لو ما فيه صورة
+    // لو الصورة فيها رابط كامل (http/https) يرجع كما هو
+    if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+      return imagePath;
+    }
+    // لو الصورة مسار نسبي
+    return `http://localhost:5200/${imagePath}`;
+  };
 
   return (
     <Box
@@ -180,11 +193,14 @@ const Category = () => {
               flexDirection: "column",
             }}
             onClick={() => {
-              const title = category.name.toLowerCase();
-              if (title === "medicines") navigate("/medicine");
-              else if (title === "baby & maternity care") navigate("/babycare");
-              else if (title === "first aid and medical supplies") navigate("/first-aid");
-              else if (title === "personal care & cosmetics") navigate("/cosmetics");
+              const id = category.cateogryID;
+              navigate("/AddProduct", { state: { id } });
+              //console.log(id);
+              
+              // if (title === "medicines") navigate("/medicine");
+              // else if (title === "baby & maternity care") navigate("/babycare");
+              // else if (titlnavigate("/categoryDetails",{state:{id}});e === "first aid and medical supplies") navigate("/first-aid");
+              // else if (title === "personal care & cosmetics") navigate("/cosmetics");
             }}
           >
             <IconButton
@@ -204,8 +220,7 @@ const Category = () => {
 
             <CardMedia
               component="img"
-              src={category.imageUrl}
-              alt={category.name}
+              src={buildImageUrl(category.image)}                      alt={category.name}
               sx={{
                 height: 130,
                 width: "100%",
@@ -222,6 +237,8 @@ const Category = () => {
             </CardContent>
           </Card>
         ))}
+
+        <Medicine/>
         <AddCategory />
       </Box>
 

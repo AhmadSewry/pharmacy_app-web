@@ -15,6 +15,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  TextField,
 } from "@mui/material";
 import { CloudUpload, Close } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
@@ -124,11 +125,20 @@ const AddCategoryForm = ({ open, onClose }) => {
     <>
       <Dialog open={open} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <DialogTitle>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography variant="h6" fontWeight="bold">
               {t("Add New Category")}
             </Typography>
-            <IconButton edge="end" color="inherit" onClick={handleCloseDialog} disabled={isUploading}>
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={handleCloseDialog}
+              disabled={isUploading}
+            >
               <Close />
             </IconButton>
           </Box>
@@ -145,26 +155,17 @@ const AddCategoryForm = ({ open, onClose }) => {
               gap: 3,
             }}
           >
-            <FormControl fullWidth variant="outlined" disabled={isUploading}>
-              <InputLabel id="category-label">Category *</InputLabel>
-              <Select
-                labelId="category-label"
-                label="Category *"
-                defaultValue=""
-                {...register("name", { required: "Please select a category" })}
-              >
-                {categoryOptions.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </Select>
-              {errors.name && (
-                <Typography color="error" variant="caption">
-                  {errors.name.message}
-                </Typography>
-              )}
-            </FormControl>
+            <TextField
+              label="Category *"
+              variant="outlined"
+              fullWidth
+              disabled={isUploading}
+              {...register("name", {
+                required: "Please enter a category name",
+              })}
+              error={!!errors.name}
+              helperText={errors.name?.message}
+            />
 
             <Box>
               <input
@@ -193,8 +194,14 @@ const AddCategoryForm = ({ open, onClose }) => {
                     variant={uploadProgress ? "determinate" : "indeterminate"}
                     value={uploadProgress}
                   />
-                  <Typography variant="caption" display="block" textAlign="center">
-                    {uploadProgress ? `${uploadProgress}% uploaded` : "Uploading..."}
+                  <Typography
+                    variant="caption"
+                    display="block"
+                    textAlign="center"
+                  >
+                    {uploadProgress
+                      ? `${uploadProgress}% uploaded`
+                      : "Uploading..."}
                   </Typography>
                 </Box>
               )}
@@ -218,7 +225,11 @@ const AddCategoryForm = ({ open, onClose }) => {
         </DialogContent>
 
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={handleCloseDialog} disabled={isUploading} sx={{ mr: 1 }}>
+          <Button
+            onClick={handleCloseDialog}
+            disabled={isUploading}
+            sx={{ mr: 1 }}
+          >
             Cancel
           </Button>
           <Button
@@ -250,7 +261,11 @@ const AddCategoryForm = ({ open, onClose }) => {
         onClose={() => setOpenError(false)}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert severity="error" onClose={() => setOpenError(false)} sx={{ whiteSpace: "pre-line" }}>
+        <Alert
+          severity="error"
+          onClose={() => setOpenError(false)}
+          sx={{ whiteSpace: "pre-line" }}
+        >
           {errorMessage}
         </Alert>
       </Snackbar>

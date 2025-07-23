@@ -15,6 +15,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  TextField,
 } from "@mui/material";
 import { CloudUpload, Close } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
@@ -39,13 +40,6 @@ const AddMedicineCategoryComponentForm = ({ open, onClose }) => {
     watch,
   } = useForm();
 
-  const categoryOptions = [
-    "Pain Relief",
-    "Allergy Medications",
-    "Vitamins & Supplements",
-    "Mental Health",
-    "Cold & Flu",
-  ];
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -146,26 +140,16 @@ const AddMedicineCategoryComponentForm = ({ open, onClose }) => {
               gap: 3,
             }}
           >
-            <FormControl fullWidth variant="outlined" disabled={isUploading}>
-              <InputLabel id="category-label">Category *</InputLabel>
-              <Select
-                labelId="category-label"
-                label="Category *"
-                defaultValue=""
-                {...register("name", { required: "Please select a category" })}
-              >
-                {categoryOptions.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </Select>
-              {errors.name && (
-                <Typography color="error" variant="caption">
-                  {errors.name.message}
-                </Typography>
-              )}
-            </FormControl>
+            <TextField
+  fullWidth
+  label="Category Name *"
+  variant="outlined"
+  disabled={isUploading}
+  {...register("name", { required: "Category name is required" })}
+  error={!!errors.name}
+  helperText={errors.name?.message}
+/>
+
 
             <Box>
               <input
