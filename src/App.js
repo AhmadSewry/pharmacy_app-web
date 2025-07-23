@@ -26,6 +26,14 @@ import AddCategory from "./components/category/categories for products/addCatego
 import AddCategoryScreen from "./components/category/categories for products/addCategory/AddCategoryScreen.jsx";
 import ManageSuppliers from "./screens/manageSuppliers/ManageSuppliers.jsx";
 import Purshase from "./screens/purshase/Purshase.jsx";
+import CategoryDetails from "./components/category/categories for products/categoryDetails/CategoryDetails.jsx";
+import CategoryMedicine from "./components/category/categories for products/categoryDetails/Medicine.jsx";
+import Category from "./components/category/Category.jsx";
+import MedicineDetails from "./components/category/categories for products/medicineCategory/AddMedicine.jsx";
+import AddProductDetails from "./components/category/categories for products/medicineCategory/AddMedicine.jsx";
+import Medicine from "./components/category/categories for products/categoryDetails/Medicine.jsx";
+import AddMedicine from "./components/category/categories for products/medicineCategory/AddMedicine.jsx";
+import AddProduct from "./components/category/categories for products/AddProduct.jsx";
 function App() {
   document.title = "Pharmacy App";
   return (
@@ -34,6 +42,12 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/" element={<MainLayout />}>
+          <Route path="AddMedicine" element={<AddMedicine/>} />
+          <Route path="AddProduct" element={<AddProduct/>} />
+{/* 
+          <Route path="/medicineb" element={<CategoryDetails/>} /> */}
+
+            <Route path="categoryDetails" element={<CategoryDetails/>} />
             <Route path="home" element={<HomePage />} />
             <Route path="team" element={<ManageTeam />} />
             <Route path="manageSuppliers" element={<ManageSuppliers />} />
@@ -46,7 +60,7 @@ function App() {
             <Route path="pie" element={<PieChart />} />
             <Route path="line" element={<LineChart />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/medicine" element={<MedicineCategory />} />
+            <Route path="/medicine" element={<CategoryDetails />} />
             <Route path="/babycare" element={<BabycareCategory />} />
             <Route path="/first-aid" element={<FirstAidCategory />} />
             <Route path="/cosmetics" element={<CosmeticsCategory />} />

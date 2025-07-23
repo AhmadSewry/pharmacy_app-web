@@ -143,16 +143,16 @@ const MedicineCategory = () => {
                 borderRadius: "16px 16px 0 0",
               }}
               onClick={() => {
-                const title = category.name.toLowerCase();
-                if (title === "cold & flu") navigate("/medicine/cold-flu");
-                else if (title === "pain relief")
-                  navigate("/medicine/pain-relief");
-                else if (title === "allergy medications")
-                  navigate("/medicine/allergy-medications");
-                else if (title === "vitamins & supplements")
-                  navigate("/medicine/vitamins-supplements");
-                else if (title === "mental health")
-                  navigate("/medicine/mental-health");
+                // const title = category.name.toLowerCase();
+                // if (title === "cold & flu") navigate("/medicine/cold-flu");
+                // else if (title === "pain relief")
+                //   navigate("/medicine/pain-relief");
+                // else if (title === "allergy medications")
+                //   navigate("/medicine/allergy-medications");
+                // else if (title === "vitamins & supplements")
+                //   navigate("/medicine/vitamins-supplements");
+                // else if (title === "mental health")
+                //   navigate("/medicine/mental-health");
               }}
             />
             <CardContent
@@ -160,16 +160,16 @@ const MedicineCategory = () => {
                 backgroundColor: "#fff",
               }}
               onClick={() => {
-                const title = category.name.toLowerCase();
-                if (title === "cold & flu") navigate("/medicine/cold-flu");
-                else if (title === "pain relief")
-                  navigate("/medicine/pain-relief");
-                else if (title === "allergy medications")
-                  navigate("/medicine/allergy-medications");
-                else if (title === "vitamins & supplements")
-                  navigate("/medicine/vitamins-supplements");
-                else if (title === "mental health")
-                  navigate("/medicine/mental-health");
+                // const title = category.name.toLowerCase();
+                // if (title === "cold & flu") navigate("/medicine/cold-flu");
+                // else if (title === "pain relief")
+                //   navigate("/medicine/pain-relief");
+                // else if (title === "allergy medications")
+                //   navigate("/medicine/allergy-medications");
+                // else if (title === "vitamins & supplements")
+                //   navigate("/medicine/vitamins-supplements");
+                // else if (title === "mental health")
+                //   navigate("/medicine/mental-health");
               }}
             >
               <Typography
