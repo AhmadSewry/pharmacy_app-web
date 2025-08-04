@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import AddCategoryForm from "./AddCategoryScreen";
 import { useTranslation } from "react-i18next";
 
-function AddCategory() {
+function AddCategory({ onCategoryAdded }) {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation();
   const handleOpen = () => setOpen(true);
@@ -48,7 +48,11 @@ function AddCategory() {
         </CardContent>
       </Card>
 
-      <AddCategoryForm open={open} onClose={handleClose} />
+      <AddCategoryForm
+  open={open}
+  onClose={handleClose}
+  onCategoryAdded={onCategoryAdded} // مهم جداً
+/>
     </>
   );
 }

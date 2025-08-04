@@ -117,13 +117,17 @@ const askDelete = (id) => {
   setDeleteId(id);
   setConfirmOpen(true);
 };
+const token = localStorage.getItem("token");
 
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5200/api/ProductCategory/${categoryIdFromState}`
+          `http://localhost:5200/api/ProductCategory/${categoryIdFromState}`,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },}
         );
         setProducts(response.data.products);
       } catch (error) {
