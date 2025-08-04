@@ -23,7 +23,6 @@ import Button from "@mui/material/Button";
 
 import AddCategory from "./categories for products/addCategory/AddCategoryComponent";
 import { useTranslation } from "react-i18next";
-import CategoryMedicine from "./categories for products/categoryDetails/Medicine";
 import Medicine from "./categories for products/categoryDetails/Medicine";
 
 const Category = () => {
@@ -42,13 +41,25 @@ const Category = () => {
   const [editName, setEditName] = useState("");
   const [editImageFile, setEditImageFile] = useState(null);
 
+  const token = localStorage.getItem("token"); // هنا التوكن
+
+  const addCategory = (newCategory) => {
+    setCategories((prev) => [...prev, newCategory]);
+  };
+  
+
+  
   useEffect(() => {
     fetchCategories();
   }, []);
 
   const fetchCategories = () => {
     axios
-      .get("http://localhost:5200/api/ProductCategory")
+      .get("http://localhost:5200/api/ProductCategory", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => setCategories(res.data))
       .catch((err) => console.log(err));
   };
@@ -77,9 +88,15 @@ const Category = () => {
 
   const confirmDelete = () => {
     axios
-      .delete(`http://localhost:5200/api/ProductCategory/${selectedCategory.cateogryID}`)
+      .delete(`http://localhost:5200/api/ProductCategory/${selectedCategory.cateogryID}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then(() => {
-        setCategories(categories.filter((c) => c.cateogryID !== selectedCategory.cateogryID));
+        setCategories(
+          categories.filter((c) => c.cateogryID !== selectedCategory.cateogryID)
+        );
         closeDeleteDialog();
       })
       .catch((err) => console.log(err));
@@ -104,7 +121,7 @@ const Category = () => {
       alert("Name cannot be empty");
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("CategoryID", selectedCategory.cateogryID);
     formData.append("Name", editName);
@@ -113,9 +130,16 @@ const Category = () => {
     }
 
     axios
-      .put(`http://localhost:5200/api/ProductCategory/${selectedCategory.cateogryID}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
+      .put(
+        `http://localhost:5200/api/ProductCategory/${selectedCategory.cateogryID}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((res) => {
         setCategories(
           categories.map((c) =>
@@ -126,7 +150,6 @@ const Category = () => {
         );
         closeEditDialog();
       })
-      
       .catch((err) => {
         console.log(err);
         alert("Failed to update category");
@@ -136,12 +159,10 @@ const Category = () => {
   const { t } = useTranslation();
 
   const buildImageUrl = (imagePath) => {
-    if (!imagePath) return "/placeholder.jpg"; // صورة افتراضية لو ما فيه صورة
-    // لو الصورة فيها رابط كامل (http/https) يرجع كما هو
+    if (!imagePath) return "/placeholder.jpg"; 
     if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
       return imagePath;
     }
-    // لو الصورة مسار نسبي
     return `http://localhost:5200/${imagePath}`;
   };
 
@@ -195,12 +216,7 @@ const Category = () => {
             onClick={() => {
               const id = category.cateogryID;
               navigate("/AddProduct", { state: { id } });
-              //console.log(id);
-              
-              // if (title === "medicines") navigate("/medicine");
-              // else if (title === "baby & maternity care") navigate("/babycare");
-              // else if (titlnavigate("/categoryDetails",{state:{id}});e === "first aid and medical supplies") navigate("/first-aid");
-              // else if (title === "personal care & cosmetics") navigate("/cosmetics");
+              console.log(id);
             }}
           >
             <IconButton
@@ -220,7 +236,8 @@ const Category = () => {
 
             <CardMedia
               component="img"
-              src={buildImageUrl(category.image)}                      alt={category.name}
+              src={buildImageUrl(category.image)}
+              alt={category.name}
               sx={{
                 height: 130,
                 width: "100%",
@@ -238,8 +255,8 @@ const Category = () => {
           </Card>
         ))}
 
-        <Medicine/>
-        <AddCategory />
+        <Medicine />
+        <AddCategory onCategoryAdded={addCategory} />
       </Box>
 
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>

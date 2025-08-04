@@ -22,7 +22,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 
-const AddCategoryForm = ({ open, onClose }) => {
+const AddCategoryForm = ({ open, onClose,onCategoryAdded  }) => {
   const [openSuccess, setOpenSuccess] = useState(false);
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -67,6 +67,8 @@ const AddCategoryForm = ({ open, onClose }) => {
 
   const onSubmit = async (data) => {
     try {
+      const token = localStorage.getItem("token"); // خذ التوكن هنا
+
       const formData = new FormData();
       formData.append("Name", data.name);
       if (selectedFile) {
@@ -79,6 +81,8 @@ const AddCategoryForm = ({ open, onClose }) => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`, // <<< اضف الهيدر هون
+
           },
           onUploadProgress: (progressEvent) => {
             const progress = Math.round(
@@ -90,6 +94,9 @@ const AddCategoryForm = ({ open, onClose }) => {
       );
 
       console.log("Category created:", response.data);
+      if (onCategoryAdded) {
+        onCategoryAdded(response.data); // هنا يُمرر التصنيف الجديد
+      }
       setOpenSuccess(true);
       resetForm();
       onClose();
