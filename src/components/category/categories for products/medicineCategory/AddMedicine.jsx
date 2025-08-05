@@ -17,6 +17,9 @@ import {
   TextField,
   Box,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+
 import { useLocation } from "react-router-dom";
 
 function AddMedicine() {
@@ -39,23 +42,59 @@ function AddMedicine() {
     imageFile: null,
   });
 
+  //Delete
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+  const handleOpenDeleteDialog = (product) => {
+    setProductToDelete(product);
+    setOpenDeleteDialog(true);
+  };
+  
+  const handleCloseDeleteDialog = () => {
+    setProductToDelete(null);
+    setOpenDeleteDialog(false);
+  };
+  const handleConfirmDelete = async () => {
+    if (!productToDelete?.productId) return;
+  
+    try {
+      await axios.delete(`http://localhost:5200/api/Product/${productToDelete.productId}`);
+      setProducts((prev) => prev.filter((p) => p.productResponse.productId !== productToDelete.productId));
+      handleCloseDeleteDialog();
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("فشل في حذف المنتج");
+    }
+  };
+  
   const [errors, setErrors] = useState({
     name: "",
     sellPrice: "",
     medicineTypeId: "",
   });
-
-  useEffect(() => {
-    const fetchProducts = async () => {
+const fetchProducts = async () => {
       try {
         const response = await axios.get(
           `http://localhost:5200/api/MedicineCategory/${categoryIdFromState}`
         );
+        //console.log(response);
         setProducts(response.data.medicineResponses || []);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
+  useEffect(() => {
+    // const fetchProducts = async () => {
+    //   try {
+    //     const response = await axios.get(
+    //       `http://localhost:5200/api/MedicineCategory/${categoryIdFromState}`
+    //     );
+    //     //console.log(response);
+    //     setProducts(response.data.medicineResponses || []);
+    //   } catch (error) {
+    //     console.error("Error fetching products:", error);
+    //   }
+    // };
     if (categoryIdFromState) {
       fetchProducts();
     }
@@ -78,6 +117,9 @@ function AddMedicine() {
       medicineTypeId: 0,
       imageFile: null,
     });
+    fetchProducts();
+
+    //////////////////////////////////
   };
 
   const handleChange = (e) => {
@@ -150,17 +192,17 @@ function AddMedicine() {
         console.log("Created Product:", response.data);
 
         // ✅ ضيف المنتج بشكل صحيح مع تفاصيل الدواء
-        setProducts((prev) => [
-          ...prev,
-          {
-            productResponse: response.data,
-            medicineResponse: {
-              manufacturer: newProduct.manufacturer,
-              activeIngredient: newProduct.activeIngredient,
-              medicineTypeName: `Type ${newProduct.medicineTypeId}`,
-            },
-          },
-        ]);
+        // setProducts((prev) => [
+        //   ...prev,
+        //   {
+        //     productResponse: response.data,
+        //     medicineResponse: {
+        //       manufacturer: newProduct.manufacturer,
+        //       activeIngredient: newProduct.activeIngredient,
+        //       medicineTypeName: `Type ${newProduct.medicineTypeId}`,
+        //     },
+        //   },
+        // ]);
 
         handleClose();
       } catch (error) {
@@ -189,12 +231,14 @@ function AddMedicine() {
               <TableCell>Manufacturer</TableCell>
               <TableCell>Active Ingredient</TableCell>
               <TableCell>Type</TableCell>
+              <TableCell>Action</TableCell> {/* 🔥 جديد */}
+
             </TableRow>
           </TableHead>
           <TableBody>
             {products.map((medicine, index) => {
               const product = medicine.productResponse || {};
-              const medicineData = medicine.medicineResponse || {};
+              //const medicineData = medicine.medicineResponse || {};
 
               return (
                 <TableRow key={product.productId || index}>
@@ -203,9 +247,17 @@ function AddMedicine() {
                   <TableCell>{product.description || "N/A"}</TableCell>
                   <TableCell>${product.sellPrice?.toFixed(2) || "N/A"}</TableCell>
                   <TableCell>{product.minimumStockLevel || "N/A"}</TableCell>
-                  <TableCell>{medicineData.manufacturer || "N/A"}</TableCell>
-                  <TableCell>{medicineData.activeIngredient || "N/A"}</TableCell>
-                  <TableCell>{medicineData.medicineTypeName || "N/A"}</TableCell>
+                  <TableCell>{medicine.manufacturer || "N/A"}</TableCell>
+                  <TableCell>{medicine.activeIngredient || "N/A"}</TableCell>
+                  <TableCell>{medicine.medicineTypeName || "N/A"}</TableCell>
+                  <TableCell>
+    <Button
+      color="error"
+      onClick={() => handleOpenDeleteDialog(product)}
+    >
+      <DeleteIcon />
+    </Button>
+  </TableCell>
                 </TableRow>
               );
             })}
@@ -354,10 +406,24 @@ function AddMedicine() {
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={handleClose}>إلغاء</Button>
           <Button onClick={handleSubmit} variant="contained" color="primary">
-            إضافة المنتج
+            nnإضافة المنتج
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
+  <DialogTitle>تأكيد الحذف</DialogTitle>
+  <DialogContent>
+    هل أنت متأكد أنك تريد حذف هذا المنتج؟
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseDeleteDialog}>إلغاء</Button>
+    <Button onClick={handleConfirmDelete} color="error" variant="contained">
+      نعم، احذف
+    </Button>
+  </DialogActions>
+</Dialog>
+
     </>
   );
 }

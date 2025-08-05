@@ -215,8 +215,13 @@ const Category = () => {
             }}
             onClick={() => {
               const id = category.cateogryID;
-              navigate("/AddProduct", { state: { id } });
-              console.log(id);
+               navigate("/AddProduct", { state: { id } });
+
+              // if (id === 12) {
+              //   navigate("/categoryDetails");
+              // } else
+              // navigate("/AddProduct", { state: { id } });
+              // console.log(id);
             }}
           >
             <IconButton
