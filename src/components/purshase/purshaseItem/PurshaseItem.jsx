@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   FormControl,
@@ -7,20 +7,50 @@ import {
   MenuItem,
   TextField,
   Stack,
+  Button,
 } from "@mui/material";
+import axios from "axios";
 
-function PurshaseItem() {
+function PurshaseItem({ onAddProduct }) {
   const [selectedMedicine, setSelectedMedicine] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [products, setProducts] = useState([]);
 
-  const medicineList = [
-    "Paracetamol",
-    "Ibuprofen",
-    "Amoxicillin",
-    "Cetirizine",
-    "Metformin",
-  ]; // You can replace this with dynamic data if needed
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await axios.get("http://localhost:5200/api/Product");
+        setProducts(res.data || []);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  const handleAdd = () => {
+    if (!selectedMedicine || !price || !quantity) {
+      alert("يرجى إدخال جميع البيانات");
+      return;
+    }
+
+    const selectedProductObj = products.find(
+      (p) => p.productId === selectedMedicine
+    );
+
+    onAddProduct({
+      productId: selectedMedicine,
+      name: selectedProductObj?.name || "",
+      price: parseFloat(price),
+      quantity: parseInt(quantity, 10),
+    });
+
+    // تفريغ الحقول
+    setSelectedMedicine("");
+    setPrice("");
+    setQuantity("");
+  };
 
   return (
     <Box
@@ -35,15 +65,15 @@ function PurshaseItem() {
       }}
     >
       <FormControl variant="filled" fullWidth>
-        <InputLabel id="medicine-select-label">Select Medicine</InputLabel>
+        <InputLabel id="medicine-select-label">Select Product</InputLabel>
         <Select
           labelId="medicine-select-label"
           value={selectedMedicine}
           onChange={(e) => setSelectedMedicine(e.target.value)}
         >
-          {medicineList.map((med) => (
-            <MenuItem key={med} value={med}>
-              {med}
+          {products.map((prod) => (
+            <MenuItem key={prod.productId} value={prod.productId}>
+              {prod.name}
             </MenuItem>
           ))}
         </Select>
@@ -69,6 +99,15 @@ function PurshaseItem() {
           inputProps={{ min: "0", step: "1" }}
         />
       </Stack>
+
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleAdd}
+        sx={{ alignSelf: "flex-end" }}
+      >
+        إضافة المنتج
+      </Button>
     </Box>
   );
 }
