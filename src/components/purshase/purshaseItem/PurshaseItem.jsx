@@ -15,6 +15,9 @@ function PurshaseItem({ onAddProduct }) {
   const [selectedMedicine, setSelectedMedicine] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [barcode, setBarcode] = useState("");
+  const [batchNumber, setBatchNumber] = useState("");
+  const [expirationDate, setExpirationDate] = useState(""); // الحقل الجديد
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -31,7 +34,7 @@ function PurshaseItem({ onAddProduct }) {
 
   const handleAdd = () => {
     if (!selectedMedicine || !price || !quantity) {
-      alert("يرجى إدخال جميع البيانات");
+      alert("يرجى إدخال جميع البيانات الأساسية (المنتج، السعر، الكمية)");
       return;
     }
 
@@ -44,12 +47,19 @@ function PurshaseItem({ onAddProduct }) {
       name: selectedProductObj?.name || "",
       price: parseFloat(price),
       quantity: parseInt(quantity, 10),
+      barcode: barcode.trim() || null,
+      batchNumber: batchNumber.trim() || null,
+      expirationDate: expirationDate ? new Date(expirationDate).toISOString() : null, // تحويل التاريخ لـ ISO
+      
     });
 
     // تفريغ الحقول
     setSelectedMedicine("");
     setPrice("");
     setQuantity("");
+    setBarcode("");
+    setBatchNumber("");
+    setExpirationDate("");
   };
 
   return (
@@ -99,6 +109,34 @@ function PurshaseItem({ onAddProduct }) {
           inputProps={{ min: "0", step: "1" }}
         />
       </Stack>
+
+      <TextField
+        label="Barcode"
+        variant="filled"
+        fullWidth
+        value={barcode}
+        onChange={(e) => setBarcode(e.target.value)}
+      />
+
+      <TextField
+        label="Batch Number"
+        variant="filled"
+        fullWidth
+        value={batchNumber}
+        onChange={(e) => setBatchNumber(e.target.value)}
+      />
+
+      <TextField
+        label="Expiration Date"
+        type="date"
+        variant="filled"
+        fullWidth
+        value={expirationDate}
+        onChange={(e) => setExpirationDate(e.target.value)}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
 
       <Button
         variant="contained"
