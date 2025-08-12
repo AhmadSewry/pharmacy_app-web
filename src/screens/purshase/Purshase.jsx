@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   TextField,
   Stack,
   Button,
+  IconButton,
+  Snackbar,
+  Alert,
+  Typography,
+  Paper,
+  Autocomplete,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
-import PurshaseItem from "../../components/purshase/purshaseItem/PurshaseItem";
-import { Snackbar, Alert } from "@mui/material";
+import PurchaseItem from "../../components/purshase/purshaseItem/PurshaseItem";
 
-function Purshase() {
-  const [selectedSupplier, setSelectedSupplier] = useState("");
+function Purchase() {
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
   const [suppliers, setSuppliers] = useState([]);
   const [date, setDate] = useState("");
   const [discount, setDiscount] = useState(0);
@@ -22,8 +24,8 @@ function Purshase() {
   const [purchaseItems, setPurchaseItems] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // success, error, info, warning
-  
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
   useEffect(() => {
     const fetchSuppliers = async () => {
       try {
@@ -40,48 +42,77 @@ function Purshase() {
     setPurchaseItems((prev) => [...prev, product]);
   };
 
+  const handleRemoveProduct = (indexToRemove) => {
+    setPurchaseItems((prev) => prev.filter((_, i) => i !== indexToRemove));
+  };
+
   const handleSubmit = async () => {
+    if (!selectedSupplier) {
+      setSnackbarMessage("الرجاء اختيار المورد");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return;
+    }
+    if (purchaseItems.length === 0) {
+      setSnackbarMessage("يجب إضافة منتج واحد على الأقل");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return;
+    }
+
     const payload = {
-      supplierID: selectedSupplier,
-      purchaseDate: date || new Date().toISOString(),
-      discount: parseFloat(discount),
-      totalAmount: parseFloat(totalAmount),
+      supplierID: selectedSupplier.supplierId,
+      purchaseDate: date ? new Date(date).toISOString() : new Date().toISOString(),
+      discount: parseFloat(discount) || 0,
+      totalAmount: parseFloat(totalAmount) || 0,
       purchaseItems: purchaseItems.map((p) => ({
         productID: p.productId,
         quantity: p.quantity,
         price: p.price,
-        batches: []
+        batches: [
+          {
+            quantity: 0,
+            barcode: p.barcode || "",
+            batchNumber: p.batchNumber || "",
+            expirationDate: p.expirationDate || new Date().toISOString(),
+          },
+        ],
       })),
     };
-  
+
     try {
       const res = await axios.post("http://localhost:5200/api/Purchase", payload);
       console.log("Purchase Added:", res.data);
-    
+
       setSnackbarMessage("تمت إضافة الفاتورة بنجاح");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
-    
-      // إفراغ الحقول بعد الإضافة
-      setSelectedSupplier("");
+
+      setSelectedSupplier(null);
       setDate("");
       setDiscount(0);
       setTotalAmount(0);
       setPurchaseItems([]);
     } catch (err) {
       console.error("Error adding purchase:", err);
-    
+
       setSnackbarMessage("فشل في حفظ الفاتورة");
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
-    
   };
-  
-  
 
   return (
-    <Box sx={{ width: "80%", padding: 2, display: "flex", flexDirection: "column", gap: 2 }}>
+    <Box
+      sx={{
+        width: "80%",
+        padding: 2,
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        margin: "auto",
+      }}
+    >
       <Stack direction={"row"} gap={2}>
         <TextField
           sx={{ flex: 1 }}
@@ -109,58 +140,72 @@ function Purshase() {
         onChange={(e) => setDiscount(e.target.value)}
       />
 
-      <FormControl variant="filled" fullWidth>
-        <InputLabel id="supplier-label">Supplier</InputLabel>
-        <Select
-          labelId="supplier-label"
-          value={selectedSupplier}
-          onChange={(e) => setSelectedSupplier(e.target.value)}
-        >
-          {suppliers.map((sup) => (
-            <MenuItem key={sup.supplierId} value={sup.supplierId}>
-              {sup.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      {/* مكون البحث والاختيار معًا */}
+      <Autocomplete
+        options={suppliers}
+        getOptionLabel={(option) => option.name}
+        value={selectedSupplier}
+        onChange={(event, newValue) => setSelectedSupplier(newValue)}
+        renderInput={(params) => (
+          <TextField {...params} label="اختر المورد" variant="filled" />
+        )}
+        isOptionEqualToValue={(option, value) => option.supplierId === value.supplierId}
+        clearOnEscape
+        sx={{ mt: 1 }}
+      />
 
-      <PurshaseItem onAddProduct={handleAddProduct} />
+      <PurchaseItem onAddProduct={handleAddProduct} />
 
-      {/* عرض المنتجات المضافة */}
       {purchaseItems.length > 0 && (
         <Box sx={{ mt: 2 }}>
-          <h3>المنتجات المضافة:</h3>
+          <Typography variant="h6">المنتجات المضافة:</Typography>
           {purchaseItems.map((item, index) => (
-            <p key={index}>
-              {item.name} - {item.quantity} × {item.price}
-            </p>
+            <Paper
+              key={index}
+              sx={{
+                p: 1,
+                mt: 1,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+              elevation={2}
+            >
+              <Typography>
+                {item.name} - الكمية: {item.quantity} × السعر: {item.price}
+              </Typography>
+              <IconButton
+                color="error"
+                onClick={() => handleRemoveProduct(index)}
+                aria-label="حذف المنتج"
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Paper>
           ))}
         </Box>
       )}
-<Button
-  variant="contained"
-  color="primary"
-  onClick={handleSubmit}
->
-  حفظ الفاتورة
-</Button>
-<Snackbar
-  open={snackbarOpen}
-  autoHideDuration={4000}
-  onClose={() => setSnackbarOpen(false)}
-  anchorOrigin={{ vertical: "top", horizontal: "right" }}
->
-  <Alert
-    onClose={() => setSnackbarOpen(false)}
-    severity={snackbarSeverity}
-    sx={{ width: "100%" }}
-  >
-    {snackbarMessage}
-  </Alert>
-</Snackbar>
 
+      <Button variant="contained" color="primary" onClick={handleSubmit}>
+        حفظ الفاتورة
+      </Button>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
 
-export default Purshase;
+export default Purchase;

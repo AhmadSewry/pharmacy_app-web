@@ -1,147 +1,287 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, IconButton, Collapse, Box, Typography
+  Box,
+  Paper,
+  Typography,
+  Button,
+  Collapse,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Snackbar,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
-import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+import { KeyboardArrowDown, KeyboardArrowUp, Delete } from "@mui/icons-material";
 
 function PurchasesListView() {
   const [purchases, setPurchases] = useState([]);
-  const [openRows, setOpenRows] = useState({});
+  const [productsMap, setProductsMap] = useState({});
+  const [openIndexes, setOpenIndexes] = useState({});
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [purchaseToDelete, setPurchaseToDelete] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // جلب الفواتير والموردين مع بعض
-        const [purchasesRes, suppliersRes] = await Promise.all([
-          axios.get("http://localhost:5200/api/Purchase"),
-          axios.get("http://localhost:5200/api/Supplier")
-        ]);
-
-        // إنشاء قاموس للموردين { supplierID: supplierName }
-        const suppliersMap = {};
-        suppliersRes.data.forEach(s => {
-          suppliersMap[s.supplierID] = s.name;
-        });
-
-        // إضافة اسم المورد لكل فاتورة
-        const purchasesWithNames = purchasesRes.data.map(p => ({
-          ...p,
-          name: suppliersMap[p.supplierID] || `#${p.supplierID}`
-        }));
-
-        setPurchases(purchasesWithNames);
-      } catch (error) {
-        console.error("خطأ في جلب البيانات:", error);
-      }
-    };
-
     fetchData();
   }, []);
 
-  const toggleRow = (index) => {
-    setOpenRows(prev => ({ ...prev, [index]: !prev[index] }));
+  const fetchData = async () => {
+    try {
+      const [purchasesRes, suppliersRes, productsRes] = await Promise.all([
+        axios.get("http://localhost:5200/api/Purchase"),
+        axios.get("http://localhost:5200/api/Supplier"),
+        axios.get("http://localhost:5200/api/Product"),
+      ]);
+
+      const suppliersMap = {};
+      suppliersRes.data.forEach((s) => {
+        suppliersMap[s.supplierId ?? s.supplierID] = s.name;
+      });
+
+      const productsDictionary = {};
+      productsRes.data.forEach((p) => {
+        productsDictionary[p.productId ?? p.productID] = p.name;
+      });
+      setProductsMap(productsDictionary);
+
+      const purchasesWithNames = purchasesRes.data.map((p) => ({
+        ...p,
+        supplierName: suppliersMap[p.supplierId ?? p.supplierID] || `#${p.supplierId ?? p.supplierID}`,
+      }));
+
+      setPurchases(purchasesWithNames);
+    } catch (error) {
+      console.error("خطأ في جلب البيانات:", error);
+      showSnackbar("فشل في تحميل الفواتير", "error");
+    }
+  };
+
+  const toggleDetails = async (idx) => {
+    if (openIndexes[idx]) {
+      setOpenIndexes((prev) => ({ ...prev, [idx]: false }));
+      return;
+    }
+
+    const purchase = purchases[idx];
+    try {
+      const res = await axios.get(`http://localhost:5200/api/Purchase/${purchase.purchaseID}`);
+      const detailedPurchase = res.data;
+
+      setPurchases((prev) => {
+        const updated = [...prev];
+        updated[idx] = {
+          ...updated[idx],
+          purchaseItems: detailedPurchase.purchaseItems,
+        };
+        return updated;
+      });
+
+      setOpenIndexes((prev) => ({ ...prev, [idx]: true }));
+    } catch (error) {
+      console.error("خطأ في جلب تفاصيل الفاتورة:", error);
+      showSnackbar("فشل في جلب تفاصيل الفاتورة", "error");
+    }
+  };
+
+  // فتح نافذة التأكيد مع حفظ الفاتورة المراد حذفها
+  const openDeleteDialog = (purchaseID, idx) => {
+    setPurchaseToDelete({ purchaseID, idx });
+    setDialogOpen(true);
+  };
+
+  // إغلاق نافذة التأكيد
+  const closeDeleteDialog = () => {
+    setDialogOpen(false);
+    setPurchaseToDelete(null);
+  };
+
+  // اظهار السناك بار
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  // تأكيد الحذف
+  const confirmDelete = async () => {
+    if (!purchaseToDelete) return;
+
+    try {
+      await axios.delete(`http://localhost:5200/api/Purchase/${purchaseToDelete.purchaseID}`);
+
+      // حذف الفاتورة محلياً
+      setPurchases((prev) => prev.filter((_, i) => i !== purchaseToDelete.idx));
+
+      // إغلاق تفاصيل الفاتورة إذا كانت مفتوحة
+      setOpenIndexes((prev) => {
+        const copy = { ...prev };
+        delete copy[purchaseToDelete.idx];
+        return copy;
+      });
+
+      showSnackbar("تم حذف الفاتورة بنجاح", "success");
+    } catch (error) {
+      console.error("خطأ في حذف الفاتورة:", error);
+      showSnackbar("فشل في حذف الفاتورة، حاول مرة أخرى", "error");
+    } finally {
+      closeDeleteDialog();
+    }
   };
 
   return (
-    <TableContainer component={Paper} sx={{ direction: "rtl", mt: 3 }}>
-      <Table>
-        <TableHead>
-          <TableRow sx={{ backgroundColor: "#f4f4f4" }}>
-            <TableCell />
-            <TableCell align="center">#</TableCell>
-            <TableCell align="center">المورد</TableCell>
-            <TableCell align="center">تاريخ الشراء</TableCell>
-            <TableCell align="center">الخصم</TableCell>
-            <TableCell align="center">المجموع</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {purchases.map((purchase, idx) => (
-            <React.Fragment key={idx}>
-              {/* الصف الرئيسي */}
-              <TableRow>
-                <TableCell align="center">
-                  <IconButton size="small" onClick={() => toggleRow(idx)}>
-                    {openRows[idx] ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                  </IconButton>
-                </TableCell>
-                <TableCell align="center">{idx + 1}</TableCell>
-                <TableCell align="center">{purchase.supplierName}</TableCell>
-                <TableCell align="center">
-                  {new Date(purchase.purchaseDate).toLocaleDateString()}
-                </TableCell>
-                <TableCell align="center">{purchase.discount ?? 0}</TableCell>
-                <TableCell align="center">{purchase.totalAmount ?? 0}</TableCell>
-              </TableRow>
+    <Box sx={{ width: "90%", mx: "auto", mt: 4, mb: 8 }}>
+      <Typography variant="h4" align="center" gutterBottom>
+        قائمة الفواتير
+      </Typography>
 
-              {/* الصف الفرعي */}
-              <TableRow>
-                <TableCell colSpan={6} sx={{ paddingBottom: 0, paddingTop: 0 }}>
-                  <Collapse in={openRows[idx]} timeout="auto" unmountOnExit>
-                    <Box sx={{ margin: 2 }}>
-                      <Typography variant="h6" gutterBottom>المنتجات</Typography>
-                      <Table size="small">
-                        <TableHead>
-                          <TableRow sx={{ backgroundColor: "#e9f5ff" }}>
-                            <TableCell align="center">معرّف المنتج</TableCell>
-                            <TableCell align="center">الكمية</TableCell>
-                            <TableCell align="center">السعر</TableCell>
+      {purchases.length === 0 && (
+        <Typography align="center" sx={{ mt: 4 }}>
+          لا توجد فواتير لعرضها
+        </Typography>
+      )}
+
+      {purchases.map((purchase, idx) => (
+        <Paper
+          key={idx}
+          elevation={3}
+          sx={{
+            mb: 3,
+            p: 2,
+            borderRadius: 2,
+            bgcolor: "#f9f9f9",
+            direction: "rtl",
+          }}
+        >
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Typography variant="h6">
+              فاتورة #{purchase.purchaseID ?? idx + 1} - المورد: {purchase.supplierName}
+            </Typography>
+
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Button
+                variant="outlined"
+                size="small"
+                color="error"
+                startIcon={<Delete />}
+                onClick={() => openDeleteDialog(purchase.purchaseID, idx)}
+              >
+                حذف الفاتورة
+              </Button>
+
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => toggleDetails(idx)}
+                endIcon={openIndexes[idx] ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+              >
+                {openIndexes[idx] ? "إخفاء التفاصيل" : "عرض التفاصيل"}
+              </Button>
+            </Box>
+          </Box>
+
+          <Typography sx={{ mt: 1 }}>
+            التاريخ: {purchase.purchaseDate ? new Date(purchase.purchaseDate).toLocaleDateString() : "-"}
+          </Typography>
+          <Typography>الخصم: {purchase.discount ?? 0}</Typography>
+          <Typography>المجموع: {purchase.totalAmount ?? 0}</Typography>
+
+          <Collapse in={openIndexes[idx]} timeout="auto" unmountOnExit sx={{ mt: 2 }}>
+            <Box>
+              <Typography variant="subtitle1" gutterBottom>
+                المنتجات:
+              </Typography>
+              <Table size="small" sx={{ bgcolor: "white", borderRadius: 1 }}>
+                <TableHead>
+                  <TableRow sx={{ bgcolor: "#e0f7fa" }}>
+                    <TableCell align="center">معرّف المنتج</TableCell>
+                    <TableCell align="center">اسم المنتج</TableCell>
+                    <TableCell align="center">رقم الباتش</TableCell>
+                    <TableCell align="center">الباركود</TableCell>
+                    <TableCell align="center">السعر</TableCell>
+                    <TableCell align="center">تاريخ الانتهاء</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {purchase.purchaseItems?.map((item, i) => (
+                    <React.Fragment key={i}>
+                      <TableRow>
+                        <TableCell align="center">{item.productID}</TableCell>
+                        <TableCell align="center">{productsMap[item.productID] || "-"}</TableCell>
+                        <TableCell align="center">
+                          {item.batchResponses?.length > 0 ? item.batchResponses[0].batchNumber : "-"}
+                        </TableCell>
+                        <TableCell align="center">
+                          {item.batchResponses?.length > 0 ? item.batchResponses[0].barcode : "-"}
+                        </TableCell>
+                        <TableCell align="center">{item.price}</TableCell>
+                        <TableCell align="center">
+                          {item.batchResponses?.length > 0
+                            ? item.batchResponses[0].expirationDate?.split("T")[0] || "-"
+                            : "-"}
+                        </TableCell>
+                      </TableRow>
+
+                      {item.batchResponses?.length > 1 &&
+                        item.batchResponses.slice(1).map((batch, j) => (
+                          <TableRow key={j}>
+                            <TableCell />
+                            <TableCell />
+                            <TableCell align="center">{batch.batchNumber}</TableCell>
+                            <TableCell align="center">{batch.barcode}</TableCell>
+                            <TableCell />
+                            <TableCell align="center">
+                              {batch.expirationDate ? batch.expirationDate.split("T")[0] : "-"}
+                            </TableCell>
                           </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {purchase.purchaseItems?.map((item, i) => (
-                            <React.Fragment key={i}>
-                              <TableRow>
-                                <TableCell align="center">{item.productID}</TableCell>
-                                <TableCell align="center">{item.quantity}</TableCell>
-                                <TableCell align="center">{item.price}</TableCell>
-                              </TableRow>
+                        ))}
+                    </React.Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </Paper>
+      ))}
 
-                              {/* جدول الباتشات */}
-                              {item.batches?.length > 0 && (
-                                <TableRow>
-                                  <TableCell colSpan={3}>
-                                    <Typography variant="subtitle1" sx={{ mt: 1 }}>الباتشات</Typography>
-                                    <Table size="small">
-                                      <TableHead>
-                                        <TableRow sx={{ backgroundColor: "#fff6e5" }}>
-                                          <TableCell align="center">رقم الباتش</TableCell>
-                                          <TableCell align="center">الباركود</TableCell>
-                                          <TableCell align="center">الكمية</TableCell>
-                                          <TableCell align="center">تاريخ الانتهاء</TableCell>
-                                        </TableRow>
-                                      </TableHead>
-                                      <TableBody>
-                                        {item.batches.map((batch, j) => (
-                                          <TableRow key={j}>
-                                            <TableCell align="center">{batch.batchNumber}</TableCell>
-                                            <TableCell align="center">{batch.barcode}</TableCell>
-                                            <TableCell align="center">{batch.quantity}</TableCell>
-                                            <TableCell align="center">
-                                              {new Date(batch.expirationDate).toLocaleDateString()}
-                                            </TableCell>
-                                          </TableRow>
-                                        ))}
-                                      </TableBody>
-                                    </Table>
-                                  </TableCell>
-                                </TableRow>
-                              )}
-                            </React.Fragment>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </Box>
-                  </Collapse>
-                </TableCell>
-              </TableRow>
-            </React.Fragment>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+      {/* Dialog تأكيد الحذف */}
+      <Dialog open={dialogOpen} onClose={closeDeleteDialog}>
+        <DialogTitle>تأكيد الحذف</DialogTitle>
+        <DialogContent>
+          هل أنت متأكد من حذف الفاتورة رقم {purchaseToDelete?.purchaseID}؟
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDeleteDialog}>إلغاء</Button>
+          <Button color="error" onClick={confirmDelete}>
+            حذف
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 }
 
