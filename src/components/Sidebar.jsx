@@ -138,7 +138,11 @@ export default function Sidebar({ open, handleDrawerClose }) {
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {theme.direction === "rtl" ? (
+              <ChevronRightIcon />
+            ) : (
+              <ChevronLeftIcon />
+            )}
           </IconButton>
         </DrawerHeader>
         <Divider />
@@ -156,7 +160,10 @@ export default function Sidebar({ open, handleDrawerClose }) {
           alt="Remy Sharp"
           src={loginImage}
         />
-        <Typography align="center" sx={{ fontSize: open ? 15 : 0, transition: "1s" }}>
+        <Typography
+          align="center"
+          sx={{ fontSize: open ? 15 : 0, transition: "1s" }}
+        >
           Ahmed
         </Typography>
         <Typography
@@ -193,7 +200,10 @@ export default function Sidebar({ open, handleDrawerClose }) {
                 >
                   {item.icon}
                 </ListItemIcon>
-                <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText
+                  primary={item.text}
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
               </ListItemButton>
             </ListItem>
           ))}
@@ -222,7 +232,10 @@ export default function Sidebar({ open, handleDrawerClose }) {
                 >
                   {item.icon}
                 </ListItemIcon>
-                <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText
+                  primary={item.text}
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
               </ListItemButton>
             </ListItem>
           ))}
@@ -257,7 +270,10 @@ export default function Sidebar({ open, handleDrawerClose }) {
                 >
                   {item.icon}
                 </ListItemIcon>
-                <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText
+                  primary={item.text}
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
               </ListItemButton>
             </ListItem>
           ))}

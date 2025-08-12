@@ -7,7 +7,6 @@ import Invoices from "./screens/invoices/Invoices";
 import ProfileForm from "./screens/profileForm/ProfileForm";
 import Calendar from "./screens/calendar/Calendar";
 import BarChart from "./screens/barChart/BarChart";
-import PieChart from "./screens/pieChart/PieChart";
 import LineChart from "./screens/lineChart/LineChart";
 import MainLayout from "./components/mainLayout";
 import HomePage from "./screens/homePage/HomePage";
@@ -34,6 +33,8 @@ import AddProductDetails from "./components/category/categories for products/med
 import Medicine from "./components/category/categories for products/categoryDetails/Medicine.jsx";
 import AddMedicine from "./components/category/categories for products/medicineCategory/AddMedicine.jsx";
 import AddProduct from "./components/category/categories for products/AddProduct.jsx";
+import PieChart from "./screens/pieChart/PieChart";
+
 function App() {
   document.title = "Pharmacy App";
   return (
@@ -42,12 +43,12 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/" element={<MainLayout />}>
-          <Route path="AddMedicine" element={<AddMedicine/>} />
-          <Route path="AddProduct" element={<AddProduct/>} />
-{/* 
+            <Route path="AddMedicine" element={<AddMedicine />} />
+            <Route path="AddProduct" element={<AddProduct />} />
+            {/* 
           <Route path="/medicineb" element={<CategoryDetails/>} /> */}
 
-            <Route path="categoryDetails" element={<CategoryDetails/>} />
+            <Route path="categoryDetails" element={<CategoryDetails />} />
             <Route path="home" element={<HomePage />} />
             <Route path="team" element={<ManageTeam />} />
             <Route path="manageSuppliers" element={<ManageSuppliers />} />
