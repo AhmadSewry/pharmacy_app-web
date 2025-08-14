@@ -40,7 +40,7 @@ function Medicine() {
       {/* الصورة */}
       <CardMedia
         component="img"
-      //  image="https://cdn-icons-png.flaticon.com/512/1828/1828817.png"
+        image="../../../../images/categoryMedicine.jpg"
         alt="Medicine"
         sx={{
           height: 100,
