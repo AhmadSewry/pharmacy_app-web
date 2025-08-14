@@ -14,6 +14,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import {
   BarChartOutlined,
   CalendarTodayOutlined,
@@ -31,6 +32,7 @@ import { useThemeContext } from "../ThemeContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Cookies } from "react-cookie";
+import Sales from "../screens/sales/Sales";
 
 const drawerWidth = 240;
 
@@ -113,6 +115,7 @@ export default function Sidebar({ open, handleDrawerClose }) {
   const chartItems = [
     { text: "Bar Chart", icon: <BarChartOutlined />, path: "/bar" },
     { text: "Pie Chart", icon: <PieChartOutlineOutlined />, path: "/pie" },
+    { text: "Sales", icon: <PointOfSaleIcon />, path: "/sales" },
     { text: "Logout", icon: <Logout />, action: handleLogout },
   ];
 

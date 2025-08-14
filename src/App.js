@@ -34,6 +34,7 @@ import Medicine from "./components/category/categories for products/categoryDeta
 import AddMedicine from "./components/category/categories for products/medicineCategory/AddMedicine.jsx";
 import AddProduct from "./components/category/categories for products/AddProduct.jsx";
 import PieChart from "./screens/pieChart/PieChart";
+import Sales from "./screens/sales/Sales.jsx";
 
 function App() {
   document.title = "Pharmacy App";
@@ -67,6 +68,8 @@ function App() {
             <Route path="/cosmetics" element={<CosmeticsCategory />} />
             <Route path="medicine/pain-relief" element={<PainRelief />} />
             <Route path="medicine/cold-flu" element={<ColdFlu />} />
+
+            <Route path="/sales" element={<Sales />} />
             <Route
               path="medicine/allergy-medications"
               element={<AllergyMedications />}
