@@ -6,7 +6,7 @@ import ManageTeam from "./screens/manageTeam/ManageTeam";
 import Invoices from "./screens/invoices/Invoices";
 import ProfileForm from "./screens/profileForm/ProfileForm";
 import Calendar from "./screens/calendar/Calendar";
-import BarChart from "./screens/barChart/BarChart";
+import BarChart from "./screens/invoiceList/InvoiceList.jsx";
 import LineChart from "./screens/lineChart/LineChart";
 import MainLayout from "./components/mainLayout";
 import HomePage from "./screens/homePage/HomePage";
@@ -35,6 +35,7 @@ import AddMedicine from "./components/category/categories for products/medicineC
 import AddProduct from "./components/category/categories for products/AddProduct.jsx";
 import PieChart from "./screens/pieChart/PieChart";
 import Sales from "./screens/sales/Sales.jsx";
+import PurchasesListView from "./screens/invoiceList/InvoiceList.jsx";
 
 function App() {
   document.title = "Pharmacy App";
@@ -58,7 +59,7 @@ function App() {
             <Route path="/product-details" element={<ProductDetails />} />
             <Route path="calendar" element={<Calendar />} />
             <Route path="purshase" element={<Purshase />} />
-            <Route path="bar" element={<BarChart />} />
+            <Route path="invoice-list" element={<PurchasesListView />} />
             <Route path="pie" element={<PieChart />} />
             <Route path="line" element={<LineChart />} />
             <Route path="/cart" element={<Cart />} />

@@ -89,8 +89,8 @@ const CategoryDetails = () => {
   return (
     <Box
       sx={{
+        
         padding: "2rem",
-        backgroundColor: "#f4f6f8",
         minHeight: "100vh",
         textAlign: "center",
       }}

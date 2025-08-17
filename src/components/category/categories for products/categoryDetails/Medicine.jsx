@@ -1,6 +1,7 @@
 import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import categoryMedicineImage from "../../../../images/categoryMedicine.jpg";
 
 function Medicine() {
   const navigate = useNavigate();
@@ -40,7 +41,11 @@ function Medicine() {
       {/* الصورة */}
       <CardMedia
         component="img"
+<<<<<<< HEAD
+        src={categoryMedicineImage}
+=======
         image="../../../../images/categoryMedicine.jpg"
+>>>>>>> b6a7559dd366dd43ef2b9c6f981210401f880c01
         alt="Medicine"
         sx={{
           height: 100,

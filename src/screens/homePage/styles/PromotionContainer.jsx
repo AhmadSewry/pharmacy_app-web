@@ -8,7 +8,7 @@ export const PromotionContainer = styled(Box)(({ theme }) => ({
   justifyContent: "center",
   padding: "20px 0px 20px 0px",
   overflow: "hidden",
-  backgroundColor: theme.palette.mode === "light" ? "#33a18e" : "pink",
+  backgroundColor: theme.palette.mode === "light" ? "#33a18e" : "#1a936f",
 }));
 
 export const MessageText = styled(Typography)((theme) => ({

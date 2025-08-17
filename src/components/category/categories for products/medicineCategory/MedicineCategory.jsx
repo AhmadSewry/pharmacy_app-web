@@ -202,8 +202,7 @@ const MedicineCategory = () => {
           <DialogTitle>Confirm Delete</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Are you sure you want to delete "
-              {selectedCategory?.name}"?
+              Are you sure you want to delete "{selectedCategory?.name}"?
             </DialogContentText>
           </DialogContent>
           <DialogActions>

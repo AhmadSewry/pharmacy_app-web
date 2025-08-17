@@ -107,7 +107,7 @@ export default function TopBar({ open, handleDrawerOpen }) {
       open={open}
       sx={{
         backgroundColor: mode === "dark" ? "" : "#107163",
-        color: mode === "dark" ? "gold" : "white",
+        color: mode === "dark" ? "#1a936f" : "white",
       }}
     >
       <Toolbar>
