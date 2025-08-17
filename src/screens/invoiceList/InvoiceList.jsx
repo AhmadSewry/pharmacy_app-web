@@ -17,19 +17,43 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Grid,
+  Divider,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
+<<<<<<< HEAD:src/screens/invoiceList/InvoiceList.jsx
 import {
   KeyboardArrowDown,
   KeyboardArrowUp,
   Delete,
+=======
+import { 
+  KeyboardArrowDown, 
+  KeyboardArrowUp, 
+  Delete, 
+  Edit,
+  ExpandMore 
+>>>>>>> b6a7559dd366dd43ef2b9c6f981210401f880c01:src/screens/barChart/BarChart.jsx
 } from "@mui/icons-material";
 
 function PurchasesListView() {
   const [purchases, setPurchases] = useState([]);
   const [productsMap, setProductsMap] = useState({});
+  const [suppliersMap, setSuppliersMap] = useState({});
+  const [allProducts, setAllProducts] = useState([]);
   const [openIndexes, setOpenIndexes] = useState({});
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [purchaseToDelete, setPurchaseToDelete] = useState(null);
+  const [purchaseToEdit, setPurchaseToEdit] = useState(null);
+  const [editFormData, setEditFormData] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -46,22 +70,28 @@ function PurchasesListView() {
         axios.get("http://localhost:5200/api/Product"),
       ]);
 
-      const suppliersMap = {};
+      const suppliersMapTemp = {};
       suppliersRes.data.forEach((s) => {
-        suppliersMap[s.supplierId ?? s.supplierID] = s.name;
+        suppliersMapTemp[s.supplierId ?? s.supplierID] = s.name;
       });
+      setSuppliersMap(suppliersMapTemp);
 
       const productsDictionary = {};
       productsRes.data.forEach((p) => {
         productsDictionary[p.productId ?? p.productID] = p.name;
       });
       setProductsMap(productsDictionary);
+      setAllProducts(productsRes.data);
 
       const purchasesWithNames = purchasesRes.data.map((p) => ({
         ...p,
+<<<<<<< HEAD:src/screens/invoiceList/InvoiceList.jsx
         supplierName:
           suppliersMap[p.supplierId ?? p.supplierID] ||
           `#${p.supplierId ?? p.supplierID}`,
+=======
+        supplierName: suppliersMapTemp[p.supplierId ?? p.supplierID] || `#${p.supplierId ?? p.supplierID}`,
+>>>>>>> b6a7559dd366dd43ef2b9c6f981210401f880c01:src/screens/barChart/BarChart.jsx
       }));
 
       setPurchases(purchasesWithNames);
@@ -110,6 +140,129 @@ function PurchasesListView() {
   const closeDeleteDialog = () => {
     setDialogOpen(false);
     setPurchaseToDelete(null);
+  };
+
+  // فتح نافذة التعديل
+  const openEditDialog = async (purchaseID, idx) => {
+    try {
+      const res = await axios.get(`http://localhost:5200/api/Purchase/${purchaseID}`);
+      const purchaseData = res.data;
+      
+      setEditFormData({
+        purchaseID: purchaseData.purchaseID,
+        supplierId: purchaseData.supplierId ?? purchaseData.supplierID,
+        purchaseDate: purchaseData.purchaseDate ? purchaseData.purchaseDate.split('T')[0] : '',
+        discount: purchaseData.discount ?? 0,
+        totalAmount: purchaseData.totalAmount ?? 0,
+        purchaseItems: purchaseData.purchaseItems?.map(item => ({
+          purchaseItemID: item.purchaseItemID,
+          productID: item.productID,
+          price: item.price || 0,
+          batchResponses: item.batchResponses?.map(batch => ({
+            batchID: batch.batchID,
+            batchNumber: batch.batchNumber || '',
+            barcode: batch.barcode || '',
+            expirationDate: batch.expirationDate ? batch.expirationDate.split('T')[0] : '',
+            quantity: batch.quantity || 1
+          })) || []
+        })) || []
+      });
+      
+      setPurchaseToEdit({ purchaseID, idx, fullData: purchaseData });
+      setEditDialogOpen(true);
+    } catch (error) {
+      console.error("خطأ في جلب بيانات الفاتورة للتعديل:", error);
+      showSnackbar("فشل في جلب بيانات الفاتورة", "error");
+    }
+  };
+
+  // إغلاق نافذة التعديل
+  const closeEditDialog = () => {
+    setEditDialogOpen(false);
+    setPurchaseToEdit(null);
+    setEditFormData({});
+  };
+
+  // تحديث بيانات النموذج
+  const handleEditFormChange = (field, value) => {
+    setEditFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  // تحديث بيانات المنتج
+  const handleItemChange = (itemIndex, field, value) => {
+    setEditFormData(prev => ({
+      ...prev,
+      purchaseItems: prev.purchaseItems.map((item, idx) => 
+        idx === itemIndex ? { ...item, [field]: value } : item
+      )
+    }));
+  };
+
+  // تحديث بيانات الباتش
+  const handleBatchChange = (itemIndex, batchIndex, field, value) => {
+    setEditFormData(prev => ({
+      ...prev,
+      purchaseItems: prev.purchaseItems.map((item, idx) => 
+        idx === itemIndex ? {
+          ...item,
+          batchResponses: item.batchResponses.map((batch, bIdx) =>
+            bIdx === batchIndex ? { ...batch, [field]: value } : batch
+          )
+        } : item
+      )
+    }));
+  };
+
+  // حفظ التعديلات
+  const handleSaveEdit = async () => {
+    try {
+      const updateData = {
+        purchaseID: editFormData.purchaseID,
+        supplierId: editFormData.supplierId,
+        purchaseDate: editFormData.purchaseDate,
+        discount: parseFloat(editFormData.discount) || 0,
+        totalAmount: parseFloat(editFormData.totalAmount) || 0,
+        purchaseItems: editFormData.purchaseItems.map(item => ({
+          purchaseItemID: item.purchaseItemID,
+          productID: parseInt(item.productID),
+          price: parseFloat(item.price) || 0,
+          batches: item.batchResponses.map(batch => ({
+            batchID: batch.batchID,
+            batchNumber: batch.batchNumber,
+            barcode: batch.barcode,
+            expirationDate: batch.expirationDate,
+            quantity: parseInt(batch.quantity) || 1
+          }))
+        }))
+      };
+
+      await axios.put(`http://localhost:5200/api/Purchase/${editFormData.purchaseID}`, updateData);
+
+      // تحديث البيانات محلياً
+      setPurchases(prev => {
+        const updated = [...prev];
+        updated[purchaseToEdit.idx] = {
+          ...updated[purchaseToEdit.idx],
+          supplierId: updateData.supplierId,
+          supplierID: updateData.supplierId,
+          supplierName: suppliersMap[updateData.supplierId] || `#${updateData.supplierId}`,
+          purchaseDate: updateData.purchaseDate,
+          discount: updateData.discount,
+          totalAmount: updateData.totalAmount,
+          purchaseItems: editFormData.purchaseItems
+        };
+        return updated;
+      });
+
+      showSnackbar("تم حفظ التعديلات بنجاح", "success");
+      closeEditDialog();
+    } catch (error) {
+      console.error("خطأ في حفظ التعديلات:", error);
+      showSnackbar("فشل في حفظ التعديلات، حاول مرة أخرى", "error");
+    }
   };
 
   // اظهار السناك بار
@@ -209,6 +362,16 @@ function PurchasesListView() {
               <Button
                 variant="outlined"
                 size="small"
+                color="primary"
+                startIcon={<Edit />}
+                onClick={() => openEditDialog(purchase.purchaseID, idx)}
+              >
+                تعديل الفاتورة
+              </Button>
+
+              <Button
+                variant="outlined"
+                size="small"
                 onClick={() => toggleDetails(idx)}
                 endIcon={
                   openIndexes[idx] ? <KeyboardArrowUp /> : <KeyboardArrowDown />
@@ -245,6 +408,7 @@ function PurchasesListView() {
                     <TableCell align="center">اسم المنتج</TableCell>
                     <TableCell align="center">رقم الباتش</TableCell>
                     <TableCell align="center">الباركود</TableCell>
+                    <TableCell align="center">الكمية</TableCell>
                     <TableCell align="center">السعر</TableCell>
                     <TableCell align="center">تاريخ الانتهاء</TableCell>
                   </TableRow>
@@ -267,6 +431,9 @@ function PurchasesListView() {
                             ? item.batchResponses[0].barcode
                             : "-"}
                         </TableCell>
+                        <TableCell align="center">
+                          {item.batchResponses?.length > 0 ? item.batchResponses[0].quantity : "-"}
+                        </TableCell>
                         <TableCell align="center">{item.price}</TableCell>
                         <TableCell align="center">
                           {item.batchResponses?.length > 0
@@ -282,12 +449,18 @@ function PurchasesListView() {
                           <TableRow key={j}>
                             <TableCell />
                             <TableCell />
+<<<<<<< HEAD:src/screens/invoiceList/InvoiceList.jsx
                             <TableCell align="center">
                               {batch.batchNumber}
                             </TableCell>
                             <TableCell align="center">
                               {batch.barcode}
                             </TableCell>
+=======
+                            <TableCell align="center">{batch.batchNumber}</TableCell>
+                            <TableCell align="center">{batch.barcode}</TableCell>
+                            <TableCell align="center">{batch.quantity}</TableCell>
+>>>>>>> b6a7559dd366dd43ef2b9c6f981210401f880c01:src/screens/barChart/BarChart.jsx
                             <TableCell />
                             <TableCell align="center">
                               {batch.expirationDate
@@ -315,6 +488,176 @@ function PurchasesListView() {
           <Button onClick={closeDeleteDialog}>إلغاء</Button>
           <Button color="error" onClick={confirmDelete}>
             حذف
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog تعديل الفاتورة */}
+      <Dialog 
+        open={editDialogOpen} 
+        onClose={closeEditDialog} 
+        maxWidth="lg" 
+        fullWidth
+        sx={{ '& .MuiDialog-paper': { height: '90vh' } }}
+      >
+        <DialogTitle>تعديل الفاتورة رقم {editFormData.purchaseID}</DialogTitle>
+        <DialogContent sx={{ overflow: 'auto' }}>
+          {/* بيانات الفاتورة الأساسية */}
+          <Typography variant="h6" sx={{ mt: 2, mb: 2 }}>
+            بيانات الفاتورة الأساسية
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <FormControl fullWidth>
+                <InputLabel>المورد</InputLabel>
+                <Select
+                  value={editFormData.supplierId || ''}
+                  label="المورد"
+                  onChange={(e) => handleEditFormChange('supplierId', e.target.value)}
+                >
+                  {Object.entries(suppliersMap).map(([id, name]) => (
+                    <MenuItem key={id} value={parseInt(id)}>
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="تاريخ الشراء"
+                type="date"
+                value={editFormData.purchaseDate || ''}
+                onChange={(e) => handleEditFormChange('purchaseDate', e.target.value)}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="الخصم"
+                type="number"
+                value={editFormData.discount || 0}
+                onChange={(e) => handleEditFormChange('discount', e.target.value)}
+                inputProps={{ min: 0, step: 0.01 }}
+              />
+            </Grid>
+            
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="المجموع الكلي"
+                type="number"
+                value={editFormData.totalAmount || 0}
+                onChange={(e) => handleEditFormChange('totalAmount', e.target.value)}
+                inputProps={{ min: 0, step: 0.01 }}
+              />
+            </Grid>
+          </Grid>
+
+          <Divider sx={{ my: 3 }} />
+
+          {/* تفاصيل المنتجات */}
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            تفاصيل المنتجات
+          </Typography>
+
+          {editFormData.purchaseItems?.map((item, itemIndex) => (
+            <Accordion key={itemIndex} sx={{ mb: 2 }}>
+              <AccordionSummary expandIcon={<ExpandMore />}>
+                <Typography sx={{ width: '50%', flexShrink: 0 }}>
+                  المنتج #{itemIndex + 1}: {productsMap[item.productID] || 'غير محدد'}
+                </Typography>
+                <Typography sx={{ color: 'text.secondary' }}>
+                  السعر: {item.price}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  {/* بيانات المنتج */}
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                      المنتج: {productsMap[item.productID] || 'غير محدد'}
+                    </Typography>
+                  </Grid>
+                  
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label="السعر"
+                      type="number"
+                      value={item.price || 0}
+                      onChange={(e) => handleItemChange(itemIndex, 'price', e.target.value)}
+                      inputProps={{ min: 0, step: 0.01 }}
+                    />
+                  </Grid>
+
+                  {/* الباتشات */}
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" sx={{ mb: 2 }}>الباتشات</Typography>
+                    
+                    {item.batchResponses?.map((batch, batchIndex) => (
+                      <Paper key={batchIndex} sx={{ p: 2, mb: 2, bgcolor: '#f5f5f5' }}>
+                        <Grid container spacing={2} alignItems="center">
+                          <Grid item xs={12} md={3}>
+                            <TextField
+                              fullWidth
+                              label="رقم الباتش"
+                              value={batch.batchNumber || ''}
+                              onChange={(e) => handleBatchChange(itemIndex, batchIndex, 'batchNumber', e.target.value)}
+                              size="small"
+                            />
+                          </Grid>
+                          
+                          <Grid item xs={12} md={3}>
+                            <TextField
+                              fullWidth
+                              label="الباركود"
+                              value={batch.barcode || ''}
+                              onChange={(e) => handleBatchChange(itemIndex, batchIndex, 'barcode', e.target.value)}
+                              size="small"
+                            />
+                          </Grid>
+                          
+                          <Grid item xs={12} md={2}>
+                            <TextField
+                              fullWidth
+                              label="الكمية"
+                              type="number"
+                              value={batch.quantity || 1}
+                              onChange={(e) => handleBatchChange(itemIndex, batchIndex, 'quantity', e.target.value)}
+                              inputProps={{ min: 1 }}
+                              size="small"
+                            />
+                          </Grid>
+                          
+                          <Grid item xs={12} md={4}>
+                            <TextField
+                              fullWidth
+                              label="تاريخ الانتهاء"
+                              type="date"
+                              value={batch.expirationDate || ''}
+                              onChange={(e) => handleBatchChange(itemIndex, batchIndex, 'expirationDate', e.target.value)}
+                              InputLabelProps={{ shrink: true }}
+                              size="small"
+                            />
+                          </Grid>
+                        </Grid>
+                      </Paper>
+                    ))}
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeEditDialog}>إلغاء</Button>
+          <Button color="primary" variant="contained" onClick={handleSaveEdit}>
+            حفظ التعديلات
           </Button>
         </DialogActions>
       </Dialog>

@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { Snackbar, Alert } from "@mui/material";
 
 import { useLocation } from "react-router-dom";
 
@@ -28,6 +29,18 @@ function AddMedicine() {
 
   const location = useLocation();
   const categoryIdFromState = location.state?.id || 0;
+// Snackbar state
+// Snackbar state
+const [snackbar, setSnackbar] = useState({
+  open: false,
+  message: "",
+  severity: "success", // success | error | warning | info
+});
+
+const handleCloseSnackbar = () => {
+  setSnackbar((prev) => ({ ...prev, open: false }));
+};
+
 
   const [newProduct, setNewProduct] = useState({
     name: "",
@@ -38,13 +51,14 @@ function AddMedicine() {
     manufacturer: "",
     activeIngredient: "",
     productType: "Medicine",
-    medicineTypeId: 0, // ✅ جديد
+    medicineTypeId: 0,
     imageFile: null,
   });
 
-  //Delete
+  // Delete Dialog
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
+  
   const handleOpenDeleteDialog = (product) => {
     setProductToDelete(product);
     setOpenDeleteDialog(true);
@@ -54,47 +68,191 @@ function AddMedicine() {
     setProductToDelete(null);
     setOpenDeleteDialog(false);
   };
+  
   const handleConfirmDelete = async () => {
     if (!productToDelete?.productId) return;
   
     try {
       await axios.delete(`http://localhost:5200/api/Product/${productToDelete.productId}`);
-      setProducts((prev) => prev.filter((p) => p.productResponse.productId !== productToDelete.productId));
+      await fetchProducts(); // إعادة تحميل البيانات
       handleCloseDeleteDialog();
+      alert("تم حذف المنتج بنجاح");
     } catch (error) {
       console.error("Error deleting product:", error);
-      alert("فشل في حذف المنتج");
+      alert("فشل في حذف المنتج: " + (error.response?.data?.message || error.message));
+    }
+  };
+
+  // Edit Dialog
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [productToEdit, setProductToEdit] = useState(null);
+
+  const handleOpenEditDialog = (medicine) => {
+    setProductToEdit({
+      productId: medicine.productResponse.productId,
+      name: medicine.productResponse.name || "",
+      description: medicine.productResponse.description || "",
+      categoryId: medicine.productResponse.categoryProductID || categoryIdFromState,
+      minimumStockLevel: medicine.productResponse.minimumStockLevel || 0,
+      sellPrice: medicine.productResponse.sellPrice || 0,
+      manufacturer: medicine.manufacturer || "",
+      activeIngredient: medicine.activeIngredient || "",
+      medicineTypeId: medicine.medicineTypeId || 0,
+      imageFile: null,
+    });
+    setOpenEditDialog(true);
+  };
+
+  const handleCloseEditDialog = () => {
+    setProductToEdit(null);
+    setOpenEditDialog(false);
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value, type, files } = e.target;
+    
+    if (type === "file") {
+      setProductToEdit((prev) => ({
+        ...prev,
+        imageFile: files[0]
+      }));
+    } else {
+      setProductToEdit((prev) => ({
+        ...prev,
+        [name]: type === "number" ? parseFloat(value) || 0 : value,
+      }));
+    }
+  };
+
+  // const handleUpdateProduct = async () => {
+  //   if (!productToEdit?.productId) return;
+
+  //   try {
+  //     const formData = new FormData();
+      
+  //     // بيانات المنتج الأساسية
+  //     formData.append("ProductId", productToEdit.productId);
+  //     formData.append("Name", productToEdit.name);
+  //     formData.append("description", productToEdit.description || "");
+  //     formData.append("categoryId", productToEdit.categoryId);
+  //     formData.append("MinimumStockLevel", productToEdit.minimumStockLevel || 0);
+  //     formData.append("SellPrice", productToEdit.sellPrice);
+  //     formData.append("ProductType", "Medicine");
+
+  //     // بيانات الدواء
+  //     if (productToEdit.manufacturer) {
+  //       formData.append("MedicineUpdateRequest.Manufacturer", productToEdit.manufacturer);
+  //     }
+  //     if (productToEdit.activeIngredient) {
+  //       formData.append("MedicineUpdateRequest.ActiveIngredient", productToEdit.activeIngredient);
+  //     }
+  //     if (productToEdit.medicineTypeId) {
+  //       formData.append("MedicineUpdateRequest.MedicineTypeId", productToEdit.medicineTypeId);
+  //     }
+  //     formData.append("MedicineUpdateRequest.CategoryId", productToEdit.categoryId);
+  //     formData.append("MedicineUpdateRequest.IsRequiredDescription", "true");
+
+  //     // إضافة الصورة إذا كانت موجودة
+  //     if (productToEdit.imageFile) {
+  //       formData.append("Image", productToEdit.imageFile);
+  //     }
+
+  //     const response = await axios.put(
+  //       `http://localhost:5200/api/Product/${productToEdit.productId}`,
+  //       formData,
+  //       { headers: { "Content-Type": "multipart/form-data" } }
+  //     );
+
+  //     console.log("Product updated successfully:", response.data);
+      
+  //     // إعادة تحميل البيانات
+  //     await fetchProducts();
+  //     handleCloseEditDialog();
+  //     alert("تم تعديل المنتج بنجاح");
+      
+  //   } catch (error) {
+  //     console.error("Error updating product:", error);
+  //     alert("فشل تعديل المنتج: " + (error.response?.data?.message || error.message));
+  //   }
+  // };
+
+  const handleUpdateProduct = async () => {
+    if (!productToEdit?.productId) return;
+  
+    try {
+      const formData = new FormData();
+      formData.append("ProductId", productToEdit.productId);
+      formData.append("Name", productToEdit.name);
+      formData.append("description", productToEdit.description || "");
+      formData.append("categoryId", productToEdit.categoryId);
+      formData.append("MinimumStockLevel", productToEdit.minimumStockLevel || 0);
+      formData.append("SellPrice", productToEdit.sellPrice);
+      formData.append("ProductType", "Medicine");
+  
+      if (productToEdit.manufacturer) {
+        formData.append("MedicineUpdateRequest.Manufacturer", productToEdit.manufacturer);
+      }
+      if (productToEdit.activeIngredient) {
+        formData.append("MedicineUpdateRequest.ActiveIngredient", productToEdit.activeIngredient);
+      }
+      if (productToEdit.medicineTypeId) {
+        formData.append("MedicineUpdateRequest.MedicineTypeId", productToEdit.medicineTypeId);
+      }
+      formData.append("MedicineUpdateRequest.CategoryId", productToEdit.categoryId);
+      formData.append("MedicineUpdateRequest.IsRequiredDescription", "true");
+  
+      if (productToEdit.imageFile) {
+        formData.append("Image", productToEdit.imageFile);
+      }
+  
+      const response = await axios.put(
+        `http://localhost:5200/api/Product/${productToEdit.productId}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+  
+      console.log("Product updated successfully:", response.data);
+  
+      await fetchProducts();
+      handleCloseEditDialog();
+  
+      setSnackbar({
+        open: true,
+        message: "تم تعديل المنتج بنجاح",
+        severity: "success",
+      });
+  
+    } catch (error) {
+      console.error("Error updating product:", error);
+      setSnackbar({
+        open: true,
+        message: "فشل تعديل المنتج: " + (error.response?.data?.message || error.message),
+        severity: "error",
+      });
     }
   };
   
+
   const [errors, setErrors] = useState({
     name: "",
     sellPrice: "",
     medicineTypeId: "",
   });
-const fetchProducts = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:5200/api/MedicineCategory/${categoryIdFromState}`
-        );
-        //console.log(response);
-        setProducts(response.data.medicineResponses || []);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5200/api/MedicineCategory/${categoryIdFromState}`
+      );
+      console.log("Fetched products:", response.data);
+      setProducts(response.data.medicineResponses || []);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      alert("فشل في جلب البيانات: " + (error.response?.data?.message || error.message));
+    }
+  };
+
   useEffect(() => {
-    // const fetchProducts = async () => {
-    //   try {
-    //     const response = await axios.get(
-    //       `http://localhost:5200/api/MedicineCategory/${categoryIdFromState}`
-    //     );
-    //     //console.log(response);
-    //     setProducts(response.data.medicineResponses || []);
-    //   } catch (error) {
-    //     console.error("Error fetching products:", error);
-    //   }
-    // };
     if (categoryIdFromState) {
       fetchProducts();
     }
@@ -117,9 +275,6 @@ const fetchProducts = async () => {
       medicineTypeId: 0,
       imageFile: null,
     });
-    fetchProducts();
-
-    //////////////////////////////////
   };
 
   const handleChange = (e) => {
@@ -129,7 +284,7 @@ const fetchProducts = async () => {
     } else {
       setNewProduct({
         ...newProduct,
-        [name]: value,
+        [name]: type === "number" ? parseFloat(value) || 0 : value,
       });
     }
     setErrors((prev) => ({ ...prev, [name]: "" }));
@@ -170,8 +325,6 @@ const fetchProducts = async () => {
         formData.append("MedicineAddRequest.Manufacturer", newProduct.manufacturer);
         formData.append("MedicineAddRequest.ActiveIngredient", newProduct.activeIngredient);
         formData.append("MedicineAddRequest.IsRequiredDescription", "true");
-
-        // ✅ ضروري جدًا:
         formData.append("MedicineAddRequest.CategoryID", newProduct.categoryId);
         formData.append("MedicineAddRequest.MedicineTypeId", newProduct.medicineTypeId);
 
@@ -190,24 +343,15 @@ const fetchProducts = async () => {
         );
 
         console.log("Created Product:", response.data);
-
-        // ✅ ضيف المنتج بشكل صحيح مع تفاصيل الدواء
-        // setProducts((prev) => [
-        //   ...prev,
-        //   {
-        //     productResponse: response.data,
-        //     medicineResponse: {
-        //       manufacturer: newProduct.manufacturer,
-        //       activeIngredient: newProduct.activeIngredient,
-        //       medicineTypeName: `Type ${newProduct.medicineTypeId}`,
-        //     },
-        //   },
-        // ]);
-
+        
+        // إعادة تحميل البيانات
+        await fetchProducts();
         handleClose();
+        alert("تم إضافة المنتج بنجاح");
+
       } catch (error) {
-        console.error(error);
-        alert("Error adding product. Check console.");
+        console.error("Error adding product:", error);
+        alert("فشل في إضافة المنتج: " + (error.response?.data?.message || error.message));
       }
     }
   };
@@ -231,14 +375,12 @@ const fetchProducts = async () => {
               <TableCell>Manufacturer</TableCell>
               <TableCell>Active Ingredient</TableCell>
               <TableCell>Type</TableCell>
-              <TableCell>Action</TableCell> {/* 🔥 جديد */}
-
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {products.map((medicine, index) => {
               const product = medicine.productResponse || {};
-              //const medicineData = medicine.medicineResponse || {};
 
               return (
                 <TableRow key={product.productId || index}>
@@ -251,18 +393,25 @@ const fetchProducts = async () => {
                   <TableCell>{medicine.activeIngredient || "N/A"}</TableCell>
                   <TableCell>{medicine.medicineTypeName || "N/A"}</TableCell>
                   <TableCell>
-    <Button
-      color="error"
-      onClick={() => handleOpenDeleteDialog(product)}
-    >
-      <DeleteIcon />
-    </Button>
-  </TableCell>
+                    <Button
+                      color="primary"
+                      onClick={() => handleOpenEditDialog(medicine)}
+                      sx={{ mr: 1 }}
+                    >
+                      <EditIcon />
+                    </Button>
+                    <Button
+                      color="error"
+                      onClick={() => handleOpenDeleteDialog(product)}
+                    >
+                      <DeleteIcon />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               );
             })}
             <TableRow>
-              <TableCell colSpan={8} align="right">
+              <TableCell colSpan={9} align="right">
                 <Button
                   variant="contained"
                   color="primary"
@@ -277,6 +426,7 @@ const fetchProducts = async () => {
         </Table>
       </TableContainer>
 
+      {/* Add Product Dialog */}
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle>إضافة منتج جديد</DialogTitle>
         <DialogContent dividers>
@@ -406,24 +556,156 @@ const fetchProducts = async () => {
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={handleClose}>إلغاء</Button>
           <Button onClick={handleSubmit} variant="contained" color="primary">
-            nnإضافة المنتج
+            إضافة المنتج
           </Button>
         </DialogActions>
       </Dialog>
 
+      {/* Delete Confirmation Dialog */}
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
-  <DialogTitle>تأكيد الحذف</DialogTitle>
-  <DialogContent>
-    هل أنت متأكد أنك تريد حذف هذا المنتج؟
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleCloseDeleteDialog}>إلغاء</Button>
-    <Button onClick={handleConfirmDelete} color="error" variant="contained">
-      نعم، احذف
-    </Button>
-  </DialogActions>
-</Dialog>
+        <DialogTitle>تأكيد الحذف</DialogTitle>
+        <DialogContent>
+          هل أنت متأكد أنك تريد حذف هذا المنتج؟
+          {productToDelete && (
+            <Typography sx={{ mt: 1, fontWeight: 'bold' }}>
+              {productToDelete.name}
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog}>إلغاء</Button>
+          <Button onClick={handleConfirmDelete} color="error" variant="contained">
+            نعم، احذف
+          </Button>
+        </DialogActions>
+      </Dialog>
 
+      {/* Edit Product Dialog */}
+      <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="sm" fullWidth>
+        <DialogTitle>تعديل المنتج</DialogTitle>
+        <DialogContent dividers>
+          {productToEdit && (
+            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, mt: 1 }}>
+              <TextField
+                label="الاسم"
+                name="name"
+                value={productToEdit.name}
+                onChange={handleEditChange}
+                fullWidth
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                label="الوصف"
+                name="description"
+                value={productToEdit.description}
+                onChange={handleEditChange}
+                fullWidth
+                multiline
+                rows={2}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                label="المُصنّع"
+                name="manufacturer"
+                value={productToEdit.manufacturer}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                label="المادة الفعالة"
+                name="activeIngredient"
+                value={productToEdit.activeIngredient}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                label="نوع الدواء (MedicineTypeId)"
+                name="medicineTypeId"
+                type="number"
+                value={productToEdit.medicineTypeId}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                label="سعر البيع"
+                name="sellPrice"
+                type="number"
+                value={productToEdit.sellPrice}
+                onChange={handleEditChange}
+                inputProps={{ step: 0.01, min: 0 }}
+                fullWidth
+              />
+              <TextField
+                label="الحد الأدنى للمخزون"
+                name="minimumStockLevel"
+                type="number"
+                value={productToEdit.minimumStockLevel}
+                onChange={handleEditChange}
+                inputProps={{ min: 0 }}
+                fullWidth
+              />
+              <TextField
+                label="رقم الفئة"
+                name="categoryId"
+                type="number"
+                value={productToEdit.categoryId}
+                disabled
+                fullWidth
+              />
+              
+              <Box sx={{ gridColumn: "span 2", display: "flex", flexDirection: "column", gap: 1 }}>
+                <Button variant="outlined" component="label" fullWidth>
+                  تغيير صورة المنتج
+                  <input
+                    type="file"
+                    hidden
+                    name="imageFile"
+                    accept="image/*"
+                    onChange={handleEditChange}
+                  />
+                </Button>
+
+                {productToEdit.imageFile && (
+                  <Box
+                    component="img"
+                    src={URL.createObjectURL(productToEdit.imageFile)}
+                    alt="معاينة الصورة الجديدة"
+                    sx={{
+                      mt: 1,
+                      maxHeight: 150,
+                      borderRadius: 1,
+                      boxShadow: 1,
+                      objectFit: "contain",
+                      border: "1px solid #ccc",
+                    }}
+                  />
+                )}
+              </Box>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditDialog}>إلغاء</Button>
+          <Button onClick={handleUpdateProduct} variant="contained" color="primary">
+            حفظ التعديلات
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar
+      open={snackbar.open}
+      autoHideDuration={3000}
+      onClose={handleCloseSnackbar}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+    >
+      <Alert
+        onClose={handleCloseSnackbar}
+        severity={snackbar.severity}
+        variant="filled"
+        sx={{ width: "100%" }}
+      >
+        {snackbar.message}
+      </Alert>
+    </Snackbar>
     </>
   );
 }

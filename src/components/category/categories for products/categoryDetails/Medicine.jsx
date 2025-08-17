@@ -41,7 +41,11 @@ function Medicine() {
       {/* الصورة */}
       <CardMedia
         component="img"
+<<<<<<< HEAD
         src={categoryMedicineImage}
+=======
+        image="../../../../images/categoryMedicine.jpg"
+>>>>>>> b6a7559dd366dd43ef2b9c6f981210401f880c01
         alt="Medicine"
         sx={{
           height: 100,
