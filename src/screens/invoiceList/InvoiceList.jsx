@@ -28,19 +28,13 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
-<<<<<<< HEAD:src/screens/invoiceList/InvoiceList.jsx
-import {
-  KeyboardArrowDown,
-  KeyboardArrowUp,
-  Delete,
-=======
+
 import { 
   KeyboardArrowDown, 
   KeyboardArrowUp, 
   Delete, 
   Edit,
   ExpandMore 
->>>>>>> b6a7559dd366dd43ef2b9c6f981210401f880c01:src/screens/barChart/BarChart.jsx
 } from "@mui/icons-material";
 
 function PurchasesListView() {
@@ -85,13 +79,12 @@ function PurchasesListView() {
 
       const purchasesWithNames = purchasesRes.data.map((p) => ({
         ...p,
-<<<<<<< HEAD:src/screens/invoiceList/InvoiceList.jsx
         supplierName:
           suppliersMap[p.supplierId ?? p.supplierID] ||
           `#${p.supplierId ?? p.supplierID}`,
-=======
+
         supplierName: suppliersMapTemp[p.supplierId ?? p.supplierID] || `#${p.supplierId ?? p.supplierID}`,
->>>>>>> b6a7559dd366dd43ef2b9c6f981210401f880c01:src/screens/barChart/BarChart.jsx
+
       }));
 
       setPurchases(purchasesWithNames);
@@ -449,18 +442,17 @@ function PurchasesListView() {
                           <TableRow key={j}>
                             <TableCell />
                             <TableCell />
-<<<<<<< HEAD:src/screens/invoiceList/InvoiceList.jsx
+
                             <TableCell align="center">
                               {batch.batchNumber}
                             </TableCell>
                             <TableCell align="center">
                               {batch.barcode}
                             </TableCell>
-=======
+
                             <TableCell align="center">{batch.batchNumber}</TableCell>
                             <TableCell align="center">{batch.barcode}</TableCell>
                             <TableCell align="center">{batch.quantity}</TableCell>
->>>>>>> b6a7559dd366dd43ef2b9c6f981210401f880c01:src/screens/barChart/BarChart.jsx
                             <TableCell />
                             <TableCell align="center">
                               {batch.expirationDate
