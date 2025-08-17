@@ -29,7 +29,7 @@ const FinancialPieChart = () => {
       datasets: [
         {
           data: data[period],
-          backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
+          backgroundColor: ["#000000ff", "#f50000ff", "#FFCE56", "#ffffffff"],
           borderWidth: 1,
           hoverOffset: 20,
         },

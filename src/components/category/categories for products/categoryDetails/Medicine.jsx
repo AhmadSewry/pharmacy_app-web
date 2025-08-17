@@ -1,6 +1,7 @@
 import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import categoryMedicineImage from "../../../../images/categoryMedicine.jpg";
 
 function Medicine() {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ function Medicine() {
       {/* الصورة */}
       <CardMedia
         component="img"
-      //  image="https://cdn-icons-png.flaticon.com/512/1828/1828817.png"
+        src={categoryMedicineImage}
         alt="Medicine"
         sx={{
           height: 100,

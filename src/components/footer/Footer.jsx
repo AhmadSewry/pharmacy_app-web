@@ -2,24 +2,23 @@ import {
   Box,
   Button,
   Grid,
-  List,
-  ListItemText,
   Stack,
   Typography,
   useTheme,
+  List,
+  ListItemText,
 } from "@mui/material";
 import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
-import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
-import SendIcon from "@mui/icons-material/Send";
+import { Telegram } from "@mui/icons-material";
 import React from "react";
-import {
-  FooterTitle,
-  SubscribeTf,
-} from "../../screens/homePage/styles/footer/Footer";
+import { FooterTitle } from "../../screens/homePage/styles/footer/Footer";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
   const theme = useTheme();
+  const { t } = useTranslation();
+
   return (
     <Box
       sx={{
@@ -33,16 +32,17 @@ export default function Footer() {
       }}
     >
       <Grid container spacing={2} justifyContent="center">
+        {/* قسم عنا */}
         <Grid item md={6} lg={4}>
-          <FooterTitle variant="body1">About us</FooterTitle>
+          <FooterTitle variant="body1">{t("About us")}</FooterTitle>
           <Typography variant="caption2">
-            We are committed to providing top-quality products and exceptional
-            customer service. Our team is passionate about innovation,
-            reliability, and your satisfaction.
+            {t(
+              "PharmaCore is your trusted online pharmacy providing quality medications and healthcare products."
+            )}
           </Typography>
           <Box sx={{ mt: 4 }}>
             <a
-              href="https://www.facebook.com"
+              href="https://www.facebook.com/share/1JpdhU6D4c/"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -58,85 +58,35 @@ export default function Footer() {
               <TwitterIcon sx={{ mr: 1, color: "black", cursor: "pointer" }} />
             </a>
             <a
-              href="https://www.instagram.com"
+              href="https://t.me/pharmacy_app2025"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <InstagramIcon sx={{ mr: 1, color: "pink", cursor: "pointer" }} />
+              <Telegram sx={{ mr: 1, color: "pink", cursor: "pointer" }} />
             </a>
           </Box>
         </Grid>
-        <Grid item md={6} lg={2} ml={"30px"}>
-          <FooterTitle variant="body1">information</FooterTitle>
-          <List>
-            <ListItemText>
-              <Typography lineHeight={2} variant="caption2">
-                About us
-              </Typography>
-            </ListItemText>
-            <ListItemText>
-              <Typography lineHeight={2} variant="caption2">
-                Order tracking
-              </Typography>
-            </ListItemText>
-            <ListItemText>
-              <Typography lineHeight={2} variant="caption2">
-                Privacy &amp; Policy
-              </Typography>
-            </ListItemText>
-            <ListItemText>
-              <Typography lineHeight={2} variant="caption2">
-                Terms &amp; Conditions
-              </Typography>
-            </ListItemText>
-          </List>
-        </Grid>
-        <Grid item md={6} lg={2} ml={"30px"}>
-          <FooterTitle variant="body1">my account</FooterTitle>
-          <List>
-            <ListItemText>
-              <Typography lineHeight={2} variant="caption2">
-                Login
-              </Typography>
-            </ListItemText>
-            <ListItemText>
-              <Typography lineHeight={2} variant="caption2">
-                My Cart
-              </Typography>
-            </ListItemText>
-            <ListItemText>
-              <Typography lineHeight={2} variant="caption2">
-                My Account
-              </Typography>
-            </ListItemText>
-            <ListItemText>
-              <Typography lineHeight={2} variant="caption2">
-                WishList
-              </Typography>
-            </ListItemText>
-          </List>
-        </Grid>
+
+        {/* قسم معلومات الاتصال الجديد */}
         <Grid item md={6} lg={4} ml={"30px"}>
-          <FooterTitle variant="body1"> newsLetter</FooterTitle>
-          <Stack>
-            <SubscribeTf
-              color="white"
-              label="Email Address"
-              variant="standard"
-            />
-            <Button
-              startIcon={<SendIcon />}
-              sx={{
-                mt: 4,
-                mb: 4,
-                backgroundColor:
-                  theme.palette.mode === "light" ? "#107163" : "gold",
-              }}
-              variant="contained"
-            >
-              Subscribe
-            </Button>
-          </Stack>
+          <FooterTitle variant="body1">{t("Contact Information")}</FooterTitle>
+          <List>
+            <ListItemText>
+              <Typography lineHeight={2} variant="caption2">
+                {t("Address")}: 123 Main Street, City, Country
+              </Typography>
+            </ListItemText>
+            <ListItemText>
+              <Typography lineHeight={2} variant="caption2">
+                {t("Phone")}: +1 (123) 456-7890
+              </Typography>
+            </ListItemText>
+            <ListItemText>
+              <Typography lineHeight={2} variant="caption2">
+                {t("Email")}: info@yourpharmacy.com
+              </Typography>
+            </ListItemText>
+          </List>
         </Grid>
       </Grid>
     </Box>

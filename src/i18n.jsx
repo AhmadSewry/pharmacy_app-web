@@ -1,4 +1,3 @@
-// src/i18n.js
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
@@ -90,9 +89,11 @@ const resources = {
       Print: "Print",
       "Your Cart": "Your Cart",
       Item: "Item",
-
       Remove: "Remove",
       Checkout: "Checkout",
+      // إضافة ترجمات الـ footer الجديدة هنا
+      "Contact Information": "Contact Information",
+      Address: "Address",
     },
   },
   ar: {
@@ -131,7 +132,6 @@ const resources = {
       Password: "كلمة المرور",
       "Username must be at least 3 characters":
         "يجب أن يحتوي اسم المستخدم على 3 أحرف على الأقل",
-
       "Phone must start with +963 or 00963 followed by 9 digits":
         "يجب أن يبدأ الرقم بـ +963 أو 00963 متبوعًا بـ 9 أرقام",
       "Enter LastName with at least 3 characters.":
@@ -140,7 +140,6 @@ const resources = {
       "Account created successfully": "تم إنشاء الحساب بنجاح",
       "First Name": "الاسم",
       "Certificate Number": "رقم الشهادة",
-
       "Enter a valid email address": "ادخل بريد الكتروني صحيح",
       "Password must be at least 3 characters":
         "كلمة المرور يجب ان تحتوي على الأقل 3 محارف",
@@ -182,9 +181,11 @@ const resources = {
       Print: "طباعة",
       "Your Cart": "سلة المشتريات",
       Item: "المنتج",
-
       Remove: "حذف",
       Checkout: "الدفع",
+      // إضافة ترجمات الـ footer الجديدة هنا
+      "Contact Information": "معلومات الاتصال",
+      Address: "العنوان",
     },
   },
 };
