@@ -1,22 +1,50 @@
 import React, { useState } from "react";
-import { Pie } from "react-chartjs-2";
-import { Card, Typography, Divider, Tabs, Tab, Box } from "@mui/material";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
+import { useTranslation } from "react-i18next"; // Import useTranslation
+import { Pie, Bar } from "react-chartjs-2";
+import {
+  Card,
+  Typography,
+  Divider,
+  Tabs,
+  Tab,
+  Box,
+  Grid,
+  Container,
+} from "@mui/material";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Title,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+} from "chart.js";
 import "chart.js/auto";
 
-// تسجيل عناصر Chart.js
-ChartJS.register(ArcElement, Tooltip, Legend, Title);
+// Register necessary Chart.js elements
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  Title,
+  CategoryScale,
+  LinearScale,
+  BarElement
+);
 
+// Pie Chart Component
 const FinancialPieChart = () => {
   const [tabValue, setTabValue] = useState(0);
+  const { t, i18n } = useTranslation(); // Use the hook here
 
-  // دالة توليد البيانات حسب الفترة
   const generateData = (period) => {
     const categories = [
-      "أدوية",
-      "مستلزمات طبية",
-      "العناية بالبشرة",
-      "مستلزمات الأطفال",
+      t("Medicines"), // Translated
+      t("Medical Supplies"), // Translated
+      t("Skincare"), // Translated
+      t("Baby Products"), // Translated
     ];
     const data = {
       daily: [4500, 3200, 1800, 1200],
@@ -29,7 +57,7 @@ const FinancialPieChart = () => {
       datasets: [
         {
           data: data[period],
-          backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
+          backgroundColor: ["#000000ff", "#f50000ff", "#FFCE56", "#ddd"],
           borderWidth: 1,
           hoverOffset: 20,
         },
@@ -43,13 +71,13 @@ const FinancialPieChart = () => {
     plugins: {
       title: {
         display: true,
-        text: "التوزيع النسبي للمبيعات",
+        text: t("Relative Sales Distribution"), // Translated
         font: { size: 18, family: "'Tajawal', sans-serif" },
         padding: { top: 10, bottom: 30 },
       },
       legend: {
-        position: "right",
-        rtl: true,
+        position: i18n.language === "ar" ? "right" : "left", // Dynamic positioning
+        rtl: i18n.language === "ar", // Dynamic RTL
         labels: {
           font: { family: "'Tajawal', sans-serif" },
           usePointStyle: true,
@@ -63,7 +91,7 @@ const FinancialPieChart = () => {
             const value = context.raw || 0;
             const total = context.dataset.data.reduce((a, b) => a + b, 0);
             const percentage = Math.round((value / total) * 100);
-            return `${label}: ${value.toLocaleString()} ل.س (${percentage}%)`;
+            return `${label}: ${value.toLocaleString()} SYP (${percentage}%)`;
           },
         },
         bodyFont: { family: "'Tajawal', sans-serif", size: 14 },
@@ -73,7 +101,6 @@ const FinancialPieChart = () => {
     animation: { animateScale: true, animateRotate: true },
   };
 
-  // تحديد الفترة حسب التبويب
   const period =
     tabValue === 0 ? "daily" : tabValue === 1 ? "weekly" : "monthly";
 
@@ -83,7 +110,10 @@ const FinancialPieChart = () => {
         p: 3,
         borderRadius: "12px",
         boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-        direction: "rtl",
+        direction: i18n.language === "ar" ? "rtl" : "ltr", // Dynamic direction
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <Typography
@@ -95,19 +125,18 @@ const FinancialPieChart = () => {
           textAlign: "center",
         }}
       >
-        التقارير المالية للصيدلية
+        {t("Pharmacy Financial Reports")} {/* Translated */}
       </Typography>
 
-      {/* تبويبات الفترات */}
       <Tabs
         value={tabValue}
         onChange={(e, newValue) => setTabValue(newValue)}
         centered
         sx={{ mb: 2 }}
       >
-        <Tab label="تقرير يومي" />
-        <Tab label="تقرير أسبوعي" />
-        <Tab label="تقرير شهري" />
+        <Tab label={t("Daily Report")} /> {/* Translated */}
+        <Tab label={t("Weekly Report")} /> {/* Translated */}
+        <Tab label={t("Monthly Report")} /> {/* Translated */}
       </Tabs>
 
       <Divider sx={{ my: 2 }} />
@@ -116,10 +145,10 @@ const FinancialPieChart = () => {
         variant="body1"
         sx={{ mb: 3, color: "#555", textAlign: "center" }}
       >
-        تحليل توزيع المبيعات حسب الأقسام
+        {t("Analysis of sales distribution by category")} {/* Translated */}
       </Typography>
 
-      <Box sx={{ height: "400px", position: "relative" }}>
+      <Box sx={{ flexGrow: 1, position: "relative" }}>
         <Pie data={generateData(period)} options={options} />
       </Box>
 
@@ -133,10 +162,182 @@ const FinancialPieChart = () => {
           fontStyle: "italic",
         }}
       >
-        آخر تحديث: {new Date().toLocaleDateString("ar-SY")}
+        {t("Last Updated")}:{" "}
+        {new Date().toLocaleDateString(
+          i18n.language === "ar" ? "ar-SY" : "en-US"
+        )}
       </Typography>
     </Card>
   );
 };
 
-export default FinancialPieChart;
+// Sales Summary Component (Updated to use translations)
+const SalesSummary = () => {
+  const { t, i18n } = useTranslation();
+  return (
+    <Card
+      sx={{
+        p: 3,
+        borderRadius: "12px",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+        height: "100%",
+        direction: i18n.language === "ar" ? "rtl" : "ltr",
+      }}
+    >
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{ fontWeight: "bold", color: "#2E7D32" }}
+      >
+        {t("Sales Summary")}
+      </Typography>
+      <Divider sx={{ my: 2 }} />
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <Typography variant="body1">{t("Daily Sales")}:</Typography>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            10,700 SYP
+          </Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="body1">{t("Weekly Sales")}:</Typography>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            32,200 SYP
+          </Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="body1">{t("Monthly Sales")}:</Typography>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            96,500 SYP
+          </Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="body1">{t("Daily Invoice Count")}:</Typography>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            45
+          </Typography>
+        </Grid>
+      </Grid>
+    </Card>
+  );
+};
+
+// Top Selling Items Component (Updated to use translations)
+const TopSellingItems = () => {
+  const { t, i18n } = useTranslation();
+  const data = {
+    labels: [
+      t("Product A"),
+      t("Medicine B"),
+      t("Sunscreen C"),
+      t("Vitamin D"),
+      t("Baby Shampoo"),
+    ],
+    datasets: [
+      {
+        label: t("Quantity Sold"),
+        data: [150, 120, 90, 85, 70],
+        backgroundColor: "rgba(46, 125, 50, 0.6)",
+        borderColor: "rgba(46, 125, 50, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: "y",
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: true,
+        text: t("Top Selling Products (Monthly)"),
+        font: { size: 18, family: "'Tajawal', sans-serif" },
+        padding: { top: 10, bottom: 20 },
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          callback: function (value) {
+            return value;
+          },
+        },
+      },
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+
+  return (
+    <Card
+      sx={{
+        p: 3,
+        borderRadius: "12px",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+        height: "100%",
+        direction: i18n.language === "ar" ? "rtl" : "ltr",
+      }}
+    >
+      <Box sx={{ flexGrow: 1, position: "relative" }}>
+        <Bar data={data} options={options} />
+      </Box>
+    </Card>
+  );
+};
+
+// Main Dashboard Component (Updated to use translations)
+const FinancialDashboard = () => {
+  const { t, i18n } = useTranslation();
+  return (
+    <Container
+      maxWidth={false}
+      sx={{
+        py: 4,
+        direction: i18n.language === "ar" ? "rtl" : "ltr",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{
+          fontWeight: "bold",
+          textAlign: "center",
+          mb: 8,
+          color: "#1B5E20",
+        }}
+      >
+        {t("Financial Dashboard")}
+      </Typography>
+      <Grid container spacing={4} sx={{ flexGrow: 1, alignItems: "stretch" }}>
+        <Grid item xs={12} md={6}>
+          <FinancialPieChart />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Grid
+            container
+            spacing={4}
+            sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+          >
+            <Grid item xs={12} sx={{ flexGrow: 1 }}>
+              <SalesSummary />
+            </Grid>
+            <Grid item xs={12} sx={{ flexGrow: 1 }}>
+              <TopSellingItems />
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Container>
+  );
+};
+
+export default FinancialDashboard;

@@ -1,6 +1,7 @@
 import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import categoryMedicineImage from "../../../../images/categoryMedicine.jpg";
 
 function Medicine() {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ function Medicine() {
   };
 
   return (
+  
     <Card
       onClick={handleClick}
       sx={{
@@ -40,6 +42,7 @@ function Medicine() {
       {/* الصورة */}
       <CardMedia
         component="img"
+        src={categoryMedicineImage}
         image="../../../../images/categoryMedicine.jpg"
         alt="Medicine"
         sx={{

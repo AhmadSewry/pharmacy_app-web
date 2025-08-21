@@ -17,7 +17,7 @@ function LanguageSwitcher() {
         <Button
           sx={{
             backgroundColor:
-              theme.palette.mode === "light" ? "#107163" : "gold",
+              theme.palette.mode === "light" ? "#107163" : "#1a936f",
             color: "white",
           }}
           key={lang.code}

@@ -15,6 +15,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+import ListIcon from "@mui/icons-material/List";
 import {
   BarChartOutlined,
   CalendarTodayOutlined,
@@ -113,7 +114,7 @@ export default function Sidebar({ open, handleDrawerClose }) {
   ];
 
   const chartItems = [
-    { text: "Bar Chart", icon: <BarChartOutlined />, path: "/bar" },
+    { text: "Invoices List", icon: <ListIcon />, path: "/invoice-list" },
     { text: "Pie Chart", icon: <PieChartOutlineOutlined />, path: "/pie" },
     { text: "Sales", icon: <PointOfSaleIcon />, path: "/sales" },
     { text: "Logout", icon: <Logout />, action: handleLogout },
@@ -197,7 +198,7 @@ export default function Sidebar({ open, handleDrawerClose }) {
                   sx={{
                     minWidth: 0,
                     justifyContent: "center",
-                    color: mode === "dark" ? "gold" : "green",
+                    color: mode === "dark" ? "#1a936f" : "green",
                   }}
                   style={{ paddingRight: "12px" }}
                 >
@@ -229,7 +230,7 @@ export default function Sidebar({ open, handleDrawerClose }) {
                   sx={{
                     minWidth: 0,
                     justifyContent: "center",
-                    color: mode === "dark" ? "gold" : "green",
+                    color: mode === "dark" ? "#1a936f" : "green",
                   }}
                   style={{ paddingRight: "12px" }}
                 >
@@ -267,7 +268,7 @@ export default function Sidebar({ open, handleDrawerClose }) {
                   sx={{
                     minWidth: 0,
                     justifyContent: "center",
-                    color: mode === "dark" ? "gold" : "green",
+                    color: mode === "dark" ? "#1a936f" : "green",
                   }}
                   style={{ paddingRight: "12px" }}
                 >

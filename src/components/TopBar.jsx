@@ -95,6 +95,9 @@ export default function TopBar({ open, handleDrawerOpen }) {
       handleSearch();
     }
   };
+  const handleNotificationsClick = () => {
+    navigate("/notifications");
+  };
 
   const handleSearch = () => {
     console.log("🔍 Searching for:", searchText);
@@ -107,7 +110,7 @@ export default function TopBar({ open, handleDrawerOpen }) {
       open={open}
       sx={{
         backgroundColor: mode === "dark" ? "" : "#107163",
-        color: mode === "dark" ? "gold" : "white",
+        color: mode === "dark" ? "#1a936f" : "white",
       }}
     >
       <Toolbar>
@@ -149,7 +152,7 @@ export default function TopBar({ open, handleDrawerOpen }) {
             <ShoppingCartOutlinedIcon />
           </IconButton>
           <Divider orientation="vertical" flexItem></Divider>
-          <IconButton color="inherit">
+          <IconButton onClick={handleNotificationsClick} color="inherit">
             <NotificationsIcon />
           </IconButton>
           <LanguageSwitcher />

@@ -28,6 +28,7 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
+
 import { 
   KeyboardArrowDown, 
   KeyboardArrowUp, 
@@ -78,7 +79,12 @@ function PurchasesListView() {
 
       const purchasesWithNames = purchasesRes.data.map((p) => ({
         ...p,
+        supplierName:
+          suppliersMap[p.supplierId ?? p.supplierID] ||
+          `#${p.supplierId ?? p.supplierID}`,
+
         supplierName: suppliersMapTemp[p.supplierId ?? p.supplierID] || `#${p.supplierId ?? p.supplierID}`,
+
       }));
 
       setPurchases(purchasesWithNames);
@@ -96,7 +102,9 @@ function PurchasesListView() {
 
     const purchase = purchases[idx];
     try {
-      const res = await axios.get(`http://localhost:5200/api/Purchase/${purchase.purchaseID}`);
+      const res = await axios.get(
+        `http://localhost:5200/api/Purchase/${purchase.purchaseID}`
+      );
       const detailedPurchase = res.data;
 
       setPurchases((prev) => {
@@ -266,7 +274,9 @@ function PurchasesListView() {
     if (!purchaseToDelete) return;
 
     try {
-      await axios.delete(`http://localhost:5200/api/Purchase/${purchaseToDelete.purchaseID}`);
+      await axios.delete(
+        `http://localhost:5200/api/Purchase/${purchaseToDelete.purchaseID}`
+      );
 
       // حذف الفاتورة محلياً
       setPurchases((prev) => prev.filter((_, i) => i !== purchaseToDelete.idx));
@@ -300,20 +310,39 @@ function PurchasesListView() {
       )}
 
       {purchases.map((purchase, idx) => (
+        // <Paper
+        //   key={idx}
+        //   elevation={3}
+        //   sx={{
+        //     mb: 3,
+        //     p: 2,
+        //     borderRadius: 2,
+        //     bgcolor: theme.palette.mode === "light" ? "white" : "gray",
+        //     direction: "rtl",
+        //   }}
+
+        // >
         <Paper
           key={idx}
           elevation={3}
-          sx={{
+          sx={(theme) => ({
             mb: 3,
             p: 2,
             borderRadius: 2,
-            bgcolor: "#f9f9f9",
             direction: "rtl",
-          }}
+            bgcolor: theme.palette.mode === "light" ? "white" : "gray",
+          })}
         >
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Typography variant="h6">
-              فاتورة #{purchase.purchaseID ?? idx + 1} - المورد: {purchase.supplierName}
+              فاتورة #{purchase.purchaseID ?? idx + 1} - المورد:{" "}
+              {purchase.supplierName}
             </Typography>
 
             <Box sx={{ display: "flex", gap: 1 }}>
@@ -341,7 +370,9 @@ function PurchasesListView() {
                 variant="outlined"
                 size="small"
                 onClick={() => toggleDetails(idx)}
-                endIcon={openIndexes[idx] ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                endIcon={
+                  openIndexes[idx] ? <KeyboardArrowUp /> : <KeyboardArrowDown />
+                }
               >
                 {openIndexes[idx] ? "إخفاء التفاصيل" : "عرض التفاصيل"}
               </Button>
@@ -349,12 +380,20 @@ function PurchasesListView() {
           </Box>
 
           <Typography sx={{ mt: 1 }}>
-            التاريخ: {purchase.purchaseDate ? new Date(purchase.purchaseDate).toLocaleDateString() : "-"}
+            التاريخ:{" "}
+            {purchase.purchaseDate
+              ? new Date(purchase.purchaseDate).toLocaleDateString()
+              : "-"}
           </Typography>
           <Typography>الخصم: {purchase.discount ?? 0}</Typography>
           <Typography>المجموع: {purchase.totalAmount ?? 0}</Typography>
 
-          <Collapse in={openIndexes[idx]} timeout="auto" unmountOnExit sx={{ mt: 2 }}>
+          <Collapse
+            in={openIndexes[idx]}
+            timeout="auto"
+            unmountOnExit
+            sx={{ mt: 2 }}
+          >
             <Box>
               <Typography variant="subtitle1" gutterBottom>
                 المنتجات:
@@ -376,18 +415,30 @@ function PurchasesListView() {
                     <React.Fragment key={i}>
                       <TableRow>
                         <TableCell align="center">{item.productID}</TableCell>
+<<<<<<< HEAD:src/screens/barChart/BarChart.jsx
                         <TableCell align="center">{productsMap[item.productID] || "-"}</TableCell>
                         <TableCell align="center">{item.quantity}</TableCell>
                         <TableCell align="center">{item.price}</TableCell>
+=======
+>>>>>>> c6a61cd232f3a60cc5f8fd2929e883f447248887:src/screens/invoiceList/InvoiceList.jsx
                         <TableCell align="center">
-                          {item.batchResponses?.length > 0 ? item.batchResponses[0].batchNumber : "-"}
-                        </TableCell>
-                        <TableCell align="center">
-                          {item.batchResponses?.length > 0 ? item.batchResponses[0].barcode : "-"}
+                          {productsMap[item.productID] || "-"}
                         </TableCell>
                         <TableCell align="center">
                           {item.batchResponses?.length > 0
-                            ? item.batchResponses[0].expirationDate?.split("T")[0] || "-"
+                            ? item.batchResponses[0].batchNumber
+                            : "-"}
+                        </TableCell>
+                        <TableCell align="center">
+                          {item.batchResponses?.length > 0
+                            ? item.batchResponses[0].barcode
+                            : "-"}
+                        </TableCell>
+                        <TableCell align="center">
+                          {item.batchResponses?.length > 0
+                            ? item.batchResponses[0].expirationDate?.split(
+                                "T"
+                              )[0] || "-"
                             : "-"}
                         </TableCell>
                       </TableRow>
@@ -397,12 +448,25 @@ function PurchasesListView() {
                           <TableRow key={j}>
                             <TableCell />
                             <TableCell />
+<<<<<<< HEAD:src/screens/barChart/BarChart.jsx
                             <TableCell />
                             <TableCell />
+=======
+
+                            <TableCell align="center">
+                              {batch.batchNumber}
+                            </TableCell>
+                            <TableCell align="center">
+                              {batch.barcode}
+                            </TableCell>
+
+>>>>>>> c6a61cd232f3a60cc5f8fd2929e883f447248887:src/screens/invoiceList/InvoiceList.jsx
                             <TableCell align="center">{batch.batchNumber}</TableCell>
                             <TableCell align="center">{batch.barcode}</TableCell>
                             <TableCell align="center">
-                              {batch.expirationDate ? batch.expirationDate.split("T")[0] : "-"}
+                              {batch.expirationDate
+                                ? batch.expirationDate.split("T")[0]
+                                : "-"}
                             </TableCell>
                           </TableRow>
                         ))}

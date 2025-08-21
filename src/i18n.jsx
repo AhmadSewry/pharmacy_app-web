@@ -1,12 +1,9 @@
-// src/i18n.js
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
-// كل الترجمات ستكون هنا مباشرة (Frontend فقط)
 const resources = {
   en: {
     translation: {
-      Medicines: "Medicines",
       PharmaCore: "PharmaCore",
       "Our Products": "Our Products",
       "A smart platform for effortless drug and inventory management, built specifically for pharmacy owners and managers — full control, greater efficiency.":
@@ -90,9 +87,35 @@ const resources = {
       Print: "Print",
       "Your Cart": "Your Cart",
       Item: "Item",
-
       Remove: "Remove",
       Checkout: "Checkout",
+      "Contact Information": "Contact Information",
+      Address: "Address",
+      // New translations for FinancialPieChart
+      "Pharmacy Financial Reports": "Pharmacy Financial Reports",
+      "Daily Report": "Daily Report",
+      "Weekly Report": "Weekly Report",
+      "Monthly Report": "Monthly Report",
+      "Relative Sales Distribution": "Relative Sales Distribution",
+      "Analysis of sales distribution by category":
+        "Analysis of sales distribution by category",
+      "Last Updated": "Last Updated",
+      Medicines: "Medicines",
+      "Medical Supplies": "Medical Supplies",
+      Skincare: "Skincare",
+      "Baby Products": "Baby Products",
+      "Daily Sales": "Daily Sales",
+      "Weekly Sales": "Weekly Sales",
+      "Monthly Sales": "Monthly Sales",
+      "Daily Invoice Count": "Daily Invoice Count",
+      "Top Selling Products (Monthly)": "Top Selling Products (Monthly)",
+      "Product A": "Product A",
+      "Medicine B": "Medicine B",
+      "Sunscreen C": "Sunscreen C",
+      "Vitamin D": "Vitamin D",
+      "Baby Shampoo": "Baby Shampoo",
+      "Sales Summary": "Sales Summary",
+      "Financial Dashboard": "Financial Dashboard",
     },
   },
   ar: {
@@ -131,7 +154,6 @@ const resources = {
       Password: "كلمة المرور",
       "Username must be at least 3 characters":
         "يجب أن يحتوي اسم المستخدم على 3 أحرف على الأقل",
-
       "Phone must start with +963 or 00963 followed by 9 digits":
         "يجب أن يبدأ الرقم بـ +963 أو 00963 متبوعًا بـ 9 أرقام",
       "Enter LastName with at least 3 characters.":
@@ -140,7 +162,6 @@ const resources = {
       "Account created successfully": "تم إنشاء الحساب بنجاح",
       "First Name": "الاسم",
       "Certificate Number": "رقم الشهادة",
-
       "Enter a valid email address": "ادخل بريد الكتروني صحيح",
       "Password must be at least 3 characters":
         "كلمة المرور يجب ان تحتوي على الأقل 3 محارف",
@@ -182,21 +203,46 @@ const resources = {
       Print: "طباعة",
       "Your Cart": "سلة المشتريات",
       Item: "المنتج",
-
       Remove: "حذف",
       Checkout: "الدفع",
+      "Contact Information": "معلومات الاتصال",
+      Address: "العنوان",
+      // New translations for FinancialPieChart
+      "Pharmacy Financial Reports": "التقارير المالية للصيدلية",
+      "Daily Report": "تقرير يومي",
+      "Weekly Report": "تقرير أسبوعي",
+      "Monthly Report": "تقرير شهري",
+      "Relative Sales Distribution": "التوزيع النسبي للمبيعات",
+      "Analysis of sales distribution by category":
+        "تحليل توزيع المبيعات حسب الأقسام",
+      "Last Updated": "آخر تحديث",
+      Medicines: "أدوية",
+      "Medical Supplies": "مستلزمات طبية",
+      Skincare: "العناية بالبشرة",
+      "Baby Products": "مستلزمات الأطفال",
+      "Daily Sales": "المبيعات اليومية",
+      "Weekly Sales": "المبيعات الأسبوعية",
+      "Monthly Sales": "المبيعات الشهرية",
+      "Daily Invoice Count": "عدد الفواتير اليومية",
+      "Top Selling Products (Monthly)": "المنتجات الأكثر مبيعاً (شهري)",
+      "Product A": "مستحضر A",
+      "Medicine B": "دواء B",
+      "Sunscreen C": "واقي شمس C",
+      "Vitamin D": "فيتامين D",
+      "Baby Shampoo": "شامبو أطفال",
+      "Sales Summary": "ملخص المبيعات",
+      "Financial Dashboard": "لوحة التحكم المالية",
     },
   },
 };
 
 i18n.use(initReactI18next).init({
-  resources, // نستخدم الموارد المضمنة
-  lng: "en", // اللغة الافتراضية
-  fallbackLng: "en", // اللغة الاحتياطية
+  resources,
+  lng: "en",
+  fallbackLng: "en",
   interpolation: {
     escapeValue: false,
   },
-  // لحفظ إعدادات اللغة
   detection: {
     order: ["localStorage"],
     caches: ["localStorage"],
