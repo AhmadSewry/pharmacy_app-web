@@ -151,12 +151,14 @@ function PurchasesListView() {
           purchaseItemID: item.purchaseItemID,
           productID: item.productID,
           price: item.price || 0,
+         //////////////////////////////
+          quantity :item.quantity,
           batchResponses: item.batchResponses?.map(batch => ({
             batchID: batch.batchID,
             batchNumber: batch.batchNumber || '',
             barcode: batch.barcode || '',
             expirationDate: batch.expirationDate ? batch.expirationDate.split('T')[0] : '',
-            quantity: batch.quantity || 1
+           // quantity: batch.quantity || 1
           })) || []
         })) || []
       });
@@ -222,12 +224,14 @@ function PurchasesListView() {
           purchaseItemID: item.purchaseItemID,
           productID: parseInt(item.productID),
           price: parseFloat(item.price) || 0,
+          ////////////////////////////
+          quantity: parseInt(item.quantity) || 1,
           batches: item.batchResponses.map(batch => ({
             batchID: batch.batchID,
             batchNumber: batch.batchNumber,
             barcode: batch.barcode,
             expirationDate: batch.expirationDate,
-            quantity: parseInt(batch.quantity) || 1
+            // quantity: parseInt(batch.quantity) || 1
           }))
         }))
       };
@@ -399,10 +403,10 @@ function PurchasesListView() {
                   <TableRow sx={{ bgcolor: "#e0f7fa" }}>
                     <TableCell align="center">معرّف المنتج</TableCell>
                     <TableCell align="center">اسم المنتج</TableCell>
-                    <TableCell align="center">رقم الباتش</TableCell>
-                    <TableCell align="center">الباركود</TableCell>
                     <TableCell align="center">الكمية</TableCell>
                     <TableCell align="center">السعر</TableCell>
+                    <TableCell align="center">رقم الباتش</TableCell>
+                    <TableCell align="center">الباركود</TableCell>
                     <TableCell align="center">تاريخ الانتهاء</TableCell>
                   </TableRow>
                 </TableHead>
@@ -411,6 +415,12 @@ function PurchasesListView() {
                     <React.Fragment key={i}>
                       <TableRow>
                         <TableCell align="center">{item.productID}</TableCell>
+<<<<<<< HEAD:src/screens/barChart/BarChart.jsx
+                        <TableCell align="center">{productsMap[item.productID] || "-"}</TableCell>
+                        <TableCell align="center">{item.quantity}</TableCell>
+                        <TableCell align="center">{item.price}</TableCell>
+=======
+>>>>>>> c6a61cd232f3a60cc5f8fd2929e883f447248887:src/screens/invoiceList/InvoiceList.jsx
                         <TableCell align="center">
                           {productsMap[item.productID] || "-"}
                         </TableCell>
@@ -425,10 +435,6 @@ function PurchasesListView() {
                             : "-"}
                         </TableCell>
                         <TableCell align="center">
-                          {item.batchResponses?.length > 0 ? item.batchResponses[0].quantity : "-"}
-                        </TableCell>
-                        <TableCell align="center">{item.price}</TableCell>
-                        <TableCell align="center">
                           {item.batchResponses?.length > 0
                             ? item.batchResponses[0].expirationDate?.split(
                                 "T"
@@ -442,6 +448,10 @@ function PurchasesListView() {
                           <TableRow key={j}>
                             <TableCell />
                             <TableCell />
+<<<<<<< HEAD:src/screens/barChart/BarChart.jsx
+                            <TableCell />
+                            <TableCell />
+=======
 
                             <TableCell align="center">
                               {batch.batchNumber}
@@ -450,10 +460,9 @@ function PurchasesListView() {
                               {batch.barcode}
                             </TableCell>
 
+>>>>>>> c6a61cd232f3a60cc5f8fd2929e883f447248887:src/screens/invoiceList/InvoiceList.jsx
                             <TableCell align="center">{batch.batchNumber}</TableCell>
                             <TableCell align="center">{batch.barcode}</TableCell>
-                            <TableCell align="center">{batch.quantity}</TableCell>
-                            <TableCell />
                             <TableCell align="center">
                               {batch.expirationDate
                                 ? batch.expirationDate.split("T")[0]
@@ -614,7 +623,7 @@ function PurchasesListView() {
                             />
                           </Grid>
                           
-                          <Grid item xs={12} md={2}>
+                          {/* <Grid item xs={12} md={2}>
                             <TextField
                               fullWidth
                               label="الكمية"
@@ -624,7 +633,7 @@ function PurchasesListView() {
                               inputProps={{ min: 1 }}
                               size="small"
                             />
-                          </Grid>
+                          </Grid> */}
                           
                           <Grid item xs={12} md={4}>
                             <TextField
