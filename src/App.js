@@ -36,6 +36,7 @@ import AddProduct from "./components/category/categories for products/AddProduct
 import PieChart from "./screens/pieChart/PieChart";
 import Sales from "./screens/sales/Sales.jsx";
 import PurchasesListView from "./screens/invoiceList/InvoiceList.jsx";
+import Notification from "./screens/notifications/Notification.jsx";
 
 function App() {
   document.title = "Pharmacy App";
@@ -69,6 +70,7 @@ function App() {
             <Route path="/cosmetics" element={<CosmeticsCategory />} />
             <Route path="medicine/pain-relief" element={<PainRelief />} />
             <Route path="medicine/cold-flu" element={<ColdFlu />} />
+            <Route path="/notifications" element={<Notification />} />
 
             <Route path="/sales" element={<Sales />} />
             <Route

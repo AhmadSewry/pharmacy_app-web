@@ -11,6 +11,7 @@ function Medicine() {
   };
 
   return (
+  
     <Card
       onClick={handleClick}
       sx={{
