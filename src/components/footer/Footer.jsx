@@ -51,13 +51,6 @@ export default function Footer() {
               />
             </a>
             <a
-              href="https://twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <TwitterIcon sx={{ mr: 1, color: "black", cursor: "pointer" }} />
-            </a>
-            <a
               href="https://t.me/pharmacy_app2025"
               target="_blank"
               rel="noopener noreferrer"
