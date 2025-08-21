@@ -29,12 +29,12 @@ import {
   AccordionDetails,
 } from "@mui/material";
 
-import { 
-  KeyboardArrowDown, 
-  KeyboardArrowUp, 
-  Delete, 
+import {
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+  Delete,
   Edit,
-  ExpandMore 
+  ExpandMore,
 } from "@mui/icons-material";
 
 function PurchasesListView() {
@@ -83,8 +83,9 @@ function PurchasesListView() {
           suppliersMap[p.supplierId ?? p.supplierID] ||
           `#${p.supplierId ?? p.supplierID}`,
 
-        supplierName: suppliersMapTemp[p.supplierId ?? p.supplierID] || `#${p.supplierId ?? p.supplierID}`,
-
+        supplierName:
+          suppliersMapTemp[p.supplierId ?? p.supplierID] ||
+          `#${p.supplierId ?? p.supplierID}`,
       }));
 
       setPurchases(purchasesWithNames);
@@ -138,31 +139,39 @@ function PurchasesListView() {
   // فتح نافذة التعديل
   const openEditDialog = async (purchaseID, idx) => {
     try {
-      const res = await axios.get(`http://localhost:5200/api/Purchase/${purchaseID}`);
+      const res = await axios.get(
+        `http://localhost:5200/api/Purchase/${purchaseID}`
+      );
       const purchaseData = res.data;
-      
+
       setEditFormData({
         purchaseID: purchaseData.purchaseID,
         supplierId: purchaseData.supplierId ?? purchaseData.supplierID,
-        purchaseDate: purchaseData.purchaseDate ? purchaseData.purchaseDate.split('T')[0] : '',
+        purchaseDate: purchaseData.purchaseDate
+          ? purchaseData.purchaseDate.split("T")[0]
+          : "",
         discount: purchaseData.discount ?? 0,
         totalAmount: purchaseData.totalAmount ?? 0,
-        purchaseItems: purchaseData.purchaseItems?.map(item => ({
-          purchaseItemID: item.purchaseItemID,
-          productID: item.productID,
-          price: item.price || 0,
-         //////////////////////////////
-          quantity :item.quantity,
-          batchResponses: item.batchResponses?.map(batch => ({
-            batchID: batch.batchID,
-            batchNumber: batch.batchNumber || '',
-            barcode: batch.barcode || '',
-            expirationDate: batch.expirationDate ? batch.expirationDate.split('T')[0] : '',
-           // quantity: batch.quantity || 1
-          })) || []
-        })) || []
+        purchaseItems:
+          purchaseData.purchaseItems?.map((item) => ({
+            purchaseItemID: item.purchaseItemID,
+            productID: item.productID,
+            price: item.price || 0,
+            //////////////////////////////
+            quantity: item.quantity,
+            batchResponses:
+              item.batchResponses?.map((batch) => ({
+                batchID: batch.batchID,
+                batchNumber: batch.batchNumber || "",
+                barcode: batch.barcode || "",
+                expirationDate: batch.expirationDate
+                  ? batch.expirationDate.split("T")[0]
+                  : "",
+                // quantity: batch.quantity || 1
+              })) || [],
+          })) || [],
       });
-      
+
       setPurchaseToEdit({ purchaseID, idx, fullData: purchaseData });
       setEditDialogOpen(true);
     } catch (error) {
@@ -180,34 +189,36 @@ function PurchasesListView() {
 
   // تحديث بيانات النموذج
   const handleEditFormChange = (field, value) => {
-    setEditFormData(prev => ({
+    setEditFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   // تحديث بيانات المنتج
   const handleItemChange = (itemIndex, field, value) => {
-    setEditFormData(prev => ({
+    setEditFormData((prev) => ({
       ...prev,
-      purchaseItems: prev.purchaseItems.map((item, idx) => 
+      purchaseItems: prev.purchaseItems.map((item, idx) =>
         idx === itemIndex ? { ...item, [field]: value } : item
-      )
+      ),
     }));
   };
 
   // تحديث بيانات الباتش
   const handleBatchChange = (itemIndex, batchIndex, field, value) => {
-    setEditFormData(prev => ({
+    setEditFormData((prev) => ({
       ...prev,
-      purchaseItems: prev.purchaseItems.map((item, idx) => 
-        idx === itemIndex ? {
-          ...item,
-          batchResponses: item.batchResponses.map((batch, bIdx) =>
-            bIdx === batchIndex ? { ...batch, [field]: value } : batch
-          )
-        } : item
-      )
+      purchaseItems: prev.purchaseItems.map((item, idx) =>
+        idx === itemIndex
+          ? {
+              ...item,
+              batchResponses: item.batchResponses.map((batch, bIdx) =>
+                bIdx === batchIndex ? { ...batch, [field]: value } : batch
+              ),
+            }
+          : item
+      ),
     }));
   };
 
@@ -220,36 +231,40 @@ function PurchasesListView() {
         purchaseDate: editFormData.purchaseDate,
         discount: parseFloat(editFormData.discount) || 0,
         totalAmount: parseFloat(editFormData.totalAmount) || 0,
-        purchaseItems: editFormData.purchaseItems.map(item => ({
+        purchaseItems: editFormData.purchaseItems.map((item) => ({
           purchaseItemID: item.purchaseItemID,
           productID: parseInt(item.productID),
           price: parseFloat(item.price) || 0,
           ////////////////////////////
           quantity: parseInt(item.quantity) || 1,
-          batches: item.batchResponses.map(batch => ({
+          batches: item.batchResponses.map((batch) => ({
             batchID: batch.batchID,
             batchNumber: batch.batchNumber,
             barcode: batch.barcode,
             expirationDate: batch.expirationDate,
             // quantity: parseInt(batch.quantity) || 1
-          }))
-        }))
+          })),
+        })),
       };
 
-      await axios.put(`http://localhost:5200/api/Purchase/${editFormData.purchaseID}`, updateData);
+      await axios.put(
+        `http://localhost:5200/api/Purchase/${editFormData.purchaseID}`,
+        updateData
+      );
 
       // تحديث البيانات محلياً
-      setPurchases(prev => {
+      setPurchases((prev) => {
         const updated = [...prev];
         updated[purchaseToEdit.idx] = {
           ...updated[purchaseToEdit.idx],
           supplierId: updateData.supplierId,
           supplierID: updateData.supplierId,
-          supplierName: suppliersMap[updateData.supplierId] || `#${updateData.supplierId}`,
+          supplierName:
+            suppliersMap[updateData.supplierId] || `#${updateData.supplierId}`,
           purchaseDate: updateData.purchaseDate,
           discount: updateData.discount,
           totalAmount: updateData.totalAmount,
-          purchaseItems: editFormData.purchaseItems
+          purchaseItems: editFormData.purchaseItems,
         };
         return updated;
       });
@@ -415,12 +430,13 @@ function PurchasesListView() {
                     <React.Fragment key={i}>
                       <TableRow>
                         <TableCell align="center">{item.productID}</TableCell>
-<<<<<<< HEAD:src/screens/barChart/BarChart.jsx
-                        <TableCell align="center">{productsMap[item.productID] || "-"}</TableCell>
+
+                        <TableCell align="center">
+                          {productsMap[item.productID] || "-"}
+                        </TableCell>
                         <TableCell align="center">{item.quantity}</TableCell>
                         <TableCell align="center">{item.price}</TableCell>
-=======
->>>>>>> c6a61cd232f3a60cc5f8fd2929e883f447248887:src/screens/invoiceList/InvoiceList.jsx
+
                         <TableCell align="center">
                           {productsMap[item.productID] || "-"}
                         </TableCell>
@@ -448,10 +464,9 @@ function PurchasesListView() {
                           <TableRow key={j}>
                             <TableCell />
                             <TableCell />
-<<<<<<< HEAD:src/screens/barChart/BarChart.jsx
+
                             <TableCell />
                             <TableCell />
-=======
 
                             <TableCell align="center">
                               {batch.batchNumber}
@@ -459,10 +474,12 @@ function PurchasesListView() {
                             <TableCell align="center">
                               {batch.barcode}
                             </TableCell>
-
->>>>>>> c6a61cd232f3a60cc5f8fd2929e883f447248887:src/screens/invoiceList/InvoiceList.jsx
-                            <TableCell align="center">{batch.batchNumber}</TableCell>
-                            <TableCell align="center">{batch.barcode}</TableCell>
+                            <TableCell align="center">
+                              {batch.batchNumber}
+                            </TableCell>
+                            <TableCell align="center">
+                              {batch.barcode}
+                            </TableCell>
                             <TableCell align="center">
                               {batch.expirationDate
                                 ? batch.expirationDate.split("T")[0]
@@ -494,15 +511,15 @@ function PurchasesListView() {
       </Dialog>
 
       {/* Dialog تعديل الفاتورة */}
-      <Dialog 
-        open={editDialogOpen} 
-        onClose={closeEditDialog} 
-        maxWidth="lg" 
+      <Dialog
+        open={editDialogOpen}
+        onClose={closeEditDialog}
+        maxWidth="lg"
         fullWidth
-        sx={{ '& .MuiDialog-paper': { height: '90vh' } }}
+        sx={{ "& .MuiDialog-paper": { height: "90vh" } }}
       >
         <DialogTitle>تعديل الفاتورة رقم {editFormData.purchaseID}</DialogTitle>
-        <DialogContent sx={{ overflow: 'auto' }}>
+        <DialogContent sx={{ overflow: "auto" }}>
           {/* بيانات الفاتورة الأساسية */}
           <Typography variant="h6" sx={{ mt: 2, mb: 2 }}>
             بيانات الفاتورة الأساسية
@@ -512,9 +529,11 @@ function PurchasesListView() {
               <FormControl fullWidth>
                 <InputLabel>المورد</InputLabel>
                 <Select
-                  value={editFormData.supplierId || ''}
+                  value={editFormData.supplierId || ""}
                   label="المورد"
-                  onChange={(e) => handleEditFormChange('supplierId', e.target.value)}
+                  onChange={(e) =>
+                    handleEditFormChange("supplierId", e.target.value)
+                  }
                 >
                   {Object.entries(suppliersMap).map(([id, name]) => (
                     <MenuItem key={id} value={parseInt(id)}>
@@ -524,36 +543,42 @@ function PurchasesListView() {
                 </Select>
               </FormControl>
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 label="تاريخ الشراء"
                 type="date"
-                value={editFormData.purchaseDate || ''}
-                onChange={(e) => handleEditFormChange('purchaseDate', e.target.value)}
+                value={editFormData.purchaseDate || ""}
+                onChange={(e) =>
+                  handleEditFormChange("purchaseDate", e.target.value)
+                }
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 label="الخصم"
                 type="number"
                 value={editFormData.discount || 0}
-                onChange={(e) => handleEditFormChange('discount', e.target.value)}
+                onChange={(e) =>
+                  handleEditFormChange("discount", e.target.value)
+                }
                 inputProps={{ min: 0, step: 0.01 }}
               />
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 label="المجموع الكلي"
                 type="number"
                 value={editFormData.totalAmount || 0}
-                onChange={(e) => handleEditFormChange('totalAmount', e.target.value)}
+                onChange={(e) =>
+                  handleEditFormChange("totalAmount", e.target.value)
+                }
                 inputProps={{ min: 0, step: 0.01 }}
               />
             </Grid>
@@ -569,10 +594,11 @@ function PurchasesListView() {
           {editFormData.purchaseItems?.map((item, itemIndex) => (
             <Accordion key={itemIndex} sx={{ mb: 2 }}>
               <AccordionSummary expandIcon={<ExpandMore />}>
-                <Typography sx={{ width: '50%', flexShrink: 0 }}>
-                  المنتج #{itemIndex + 1}: {productsMap[item.productID] || 'غير محدد'}
+                <Typography sx={{ width: "50%", flexShrink: 0 }}>
+                  المنتج #{itemIndex + 1}:{" "}
+                  {productsMap[item.productID] || "غير محدد"}
                 </Typography>
-                <Typography sx={{ color: 'text.secondary' }}>
+                <Typography sx={{ color: "text.secondary" }}>
                   السعر: {item.price}
                 </Typography>
               </AccordionSummary>
@@ -581,48 +607,69 @@ function PurchasesListView() {
                   {/* بيانات المنتج */}
                   <Grid item xs={12} md={6}>
                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      المنتج: {productsMap[item.productID] || 'غير محدد'}
+                      المنتج: {productsMap[item.productID] || "غير محدد"}
                     </Typography>
                   </Grid>
-                  
+
                   <Grid item xs={12} md={6}>
                     <TextField
                       fullWidth
                       label="السعر"
                       type="number"
                       value={item.price || 0}
-                      onChange={(e) => handleItemChange(itemIndex, 'price', e.target.value)}
+                      onChange={(e) =>
+                        handleItemChange(itemIndex, "price", e.target.value)
+                      }
                       inputProps={{ min: 0, step: 0.01 }}
                     />
                   </Grid>
 
                   {/* الباتشات */}
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1" sx={{ mb: 2 }}>الباتشات</Typography>
-                    
+                    <Typography variant="subtitle1" sx={{ mb: 2 }}>
+                      الباتشات
+                    </Typography>
+
                     {item.batchResponses?.map((batch, batchIndex) => (
-                      <Paper key={batchIndex} sx={{ p: 2, mb: 2, bgcolor: '#f5f5f5' }}>
+                      <Paper
+                        key={batchIndex}
+                        sx={{ p: 2, mb: 2, bgcolor: "#f5f5f5" }}
+                      >
                         <Grid container spacing={2} alignItems="center">
                           <Grid item xs={12} md={3}>
                             <TextField
                               fullWidth
                               label="رقم الباتش"
-                              value={batch.batchNumber || ''}
-                              onChange={(e) => handleBatchChange(itemIndex, batchIndex, 'batchNumber', e.target.value)}
+                              value={batch.batchNumber || ""}
+                              onChange={(e) =>
+                                handleBatchChange(
+                                  itemIndex,
+                                  batchIndex,
+                                  "batchNumber",
+                                  e.target.value
+                                )
+                              }
                               size="small"
                             />
                           </Grid>
-                          
+
                           <Grid item xs={12} md={3}>
                             <TextField
                               fullWidth
                               label="الباركود"
-                              value={batch.barcode || ''}
-                              onChange={(e) => handleBatchChange(itemIndex, batchIndex, 'barcode', e.target.value)}
+                              value={batch.barcode || ""}
+                              onChange={(e) =>
+                                handleBatchChange(
+                                  itemIndex,
+                                  batchIndex,
+                                  "barcode",
+                                  e.target.value
+                                )
+                              }
                               size="small"
                             />
                           </Grid>
-                          
+
                           {/* <Grid item xs={12} md={2}>
                             <TextField
                               fullWidth
@@ -634,14 +681,21 @@ function PurchasesListView() {
                               size="small"
                             />
                           </Grid> */}
-                          
+
                           <Grid item xs={12} md={4}>
                             <TextField
                               fullWidth
                               label="تاريخ الانتهاء"
                               type="date"
-                              value={batch.expirationDate || ''}
-                              onChange={(e) => handleBatchChange(itemIndex, batchIndex, 'expirationDate', e.target.value)}
+                              value={batch.expirationDate || ""}
+                              onChange={(e) =>
+                                handleBatchChange(
+                                  itemIndex,
+                                  batchIndex,
+                                  "expirationDate",
+                                  e.target.value
+                                )
+                              }
                               InputLabelProps={{ shrink: true }}
                               size="small"
                             />
