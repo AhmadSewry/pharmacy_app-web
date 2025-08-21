@@ -80,10 +80,6 @@ function PurchasesListView() {
       const purchasesWithNames = purchasesRes.data.map((p) => ({
         ...p,
         supplierName:
-          suppliersMap[p.supplierId ?? p.supplierID] ||
-          `#${p.supplierId ?? p.supplierID}`,
-
-        supplierName:
           suppliersMapTemp[p.supplierId ?? p.supplierID] ||
           `#${p.supplierId ?? p.supplierID}`,
       }));
@@ -157,7 +153,6 @@ function PurchasesListView() {
             purchaseItemID: item.purchaseItemID,
             productID: item.productID,
             price: item.price || 0,
-            //////////////////////////////
             quantity: item.quantity,
             batchResponses:
               item.batchResponses?.map((batch) => ({
@@ -167,7 +162,6 @@ function PurchasesListView() {
                 expirationDate: batch.expirationDate
                   ? batch.expirationDate.split("T")[0]
                   : "",
-                // quantity: batch.quantity || 1
               })) || [],
           })) || [],
       });
@@ -235,14 +229,12 @@ function PurchasesListView() {
           purchaseItemID: item.purchaseItemID,
           productID: parseInt(item.productID),
           price: parseFloat(item.price) || 0,
-          ////////////////////////////
           quantity: parseInt(item.quantity) || 1,
           batches: item.batchResponses.map((batch) => ({
             batchID: batch.batchID,
             batchNumber: batch.batchNumber,
             barcode: batch.barcode,
             expirationDate: batch.expirationDate,
-            // quantity: parseInt(batch.quantity) || 1
           })),
         })),
       };
@@ -325,18 +317,6 @@ function PurchasesListView() {
       )}
 
       {purchases.map((purchase, idx) => (
-        // <Paper
-        //   key={idx}
-        //   elevation={3}
-        //   sx={{
-        //     mb: 3,
-        //     p: 2,
-        //     borderRadius: 2,
-        //     bgcolor: theme.palette.mode === "light" ? "white" : "gray",
-        //     direction: "rtl",
-        //   }}
-
-        // >
         <Paper
           key={idx}
           elevation={3}
@@ -430,16 +410,11 @@ function PurchasesListView() {
                     <React.Fragment key={i}>
                       <TableRow>
                         <TableCell align="center">{item.productID}</TableCell>
-
                         <TableCell align="center">
                           {productsMap[item.productID] || "-"}
                         </TableCell>
                         <TableCell align="center">{item.quantity}</TableCell>
                         <TableCell align="center">{item.price}</TableCell>
-
-                        <TableCell align="center">
-                          {productsMap[item.productID] || "-"}
-                        </TableCell>
                         <TableCell align="center">
                           {item.batchResponses?.length > 0
                             ? item.batchResponses[0].batchNumber
@@ -464,16 +439,8 @@ function PurchasesListView() {
                           <TableRow key={j}>
                             <TableCell />
                             <TableCell />
-
                             <TableCell />
                             <TableCell />
-
-                            <TableCell align="center">
-                              {batch.batchNumber}
-                            </TableCell>
-                            <TableCell align="center">
-                              {batch.barcode}
-                            </TableCell>
                             <TableCell align="center">
                               {batch.batchNumber}
                             </TableCell>
@@ -669,18 +636,6 @@ function PurchasesListView() {
                               size="small"
                             />
                           </Grid>
-
-                          {/* <Grid item xs={12} md={2}>
-                            <TextField
-                              fullWidth
-                              label="الكمية"
-                              type="number"
-                              value={batch.quantity || 1}
-                              onChange={(e) => handleBatchChange(itemIndex, batchIndex, 'quantity', e.target.value)}
-                              inputProps={{ min: 1 }}
-                              size="small"
-                            />
-                          </Grid> */}
 
                           <Grid item xs={12} md={4}>
                             <TextField
