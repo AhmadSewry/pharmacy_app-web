@@ -3,7 +3,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
 import loginImage from "./assets/images/loginImage.jpg";
-
+import { host } from "../..";
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
@@ -14,19 +14,16 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      const response = await fetch(
-        "http://localhost:5200/api/Account/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userName: username,
-            password: password,
-          }),
-        }
-      );
+      const response = await fetch(host + "/api/Account/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userName: username,
+          password: password,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Login failed");
@@ -37,7 +34,7 @@ const Login = () => {
       if (data.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("refreshToken", data.refreshToken);
-        localStorage.setItem("role",data.role);
+        localStorage.setItem("role", data.role);
 
         navigate("/home");
       } else {
@@ -101,7 +98,7 @@ export const refreshToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
 
   try {
-    const response = await fetch("http://localhost:5200/api/Account", {
+    const response = await fetch(host + "/api/Account", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
