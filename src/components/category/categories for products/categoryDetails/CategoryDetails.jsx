@@ -38,7 +38,7 @@ const CategoryDetails = () => {
   const fetchCategory = () => {
     //console.log(category);
     axios
-      .get(`http://localhost:5200/api/MedicineCategory`)
+      .get(`http://localhost:5000/api/MedicineCategory`)
       .then((response) => {
         //console.log(response.data);
         setCategories(response.data);
@@ -66,7 +66,7 @@ const CategoryDetails = () => {
     if (selectedCategory) {
       axios
         .delete(
-          `http://localhost:5200/api/MedicineCategory/${selectedCategory.cateogryID}`
+          `http://localhost:5000/api/MedicineCategory/${selectedCategory.cateogryID}`
         )
         .then(() => {
           setCategories((prev) =>

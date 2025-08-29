@@ -23,6 +23,7 @@ function Sales() {
   const [saleItems, setSaleItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
 
+
   const [employeeName, setEmployeeName] = useState("");
   const [saleDate] = useState(new Date().toISOString());
 
@@ -58,10 +59,108 @@ function Sales() {
       console.error("Error parsing token:", err);
     }
 
-    return null;
-  };
 
-  const employeeId = getEmployeeId();
+  const [employeeName, setEmployeeName] = useState(""); 
+
+  const [personName, setpersonName] = useState(""); 
+
+  const [saleDate] = useState(new Date().toISOString());
+  const [saleImage, setSaleImage] = useState(null);
+
+  // جلب معرف الموظف من localStorage أو من token
+   // جلب معرف الموظف من الـ token مباشرة
+   // جلب معرف الموظف من الـ token
+// جلب معرف الموظف من الـ token
+const getEmployeeId = () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+    return localStorage.getItem("employeeID");
+  } catch (err) {
+    console.error("Error parsing token:", err);
+
+    return null;
+  }
+};
+
+
+const employeeId = getEmployeeId();
+useEffect(() => {
+  // جلب اسم الشخص من localStorage
+  const storedPersonName = localStorage.getItem("personName");
+  if (storedPersonName) {
+    setpersonName(storedPersonName);
+    console.log("تم جلب personName من localStorage:", storedPersonName);
+  } else {
+    console.log("لم يتم العثور على personName في localStorage");
+    if (employeeName) {
+      setpersonName(employeeName);
+    }
+  }
+}, [employeeName]);
+
+
+// جلب اسم الموظف عن طريق employeeId
+// useEffect(() => {
+//   const fetchEmployeeName = async () => {
+//     if (!employeeId) {
+//       setEmployeeName("admin"); // إذا ما فيه ID
+//       return;
+//     }
+
+//     try {
+//       const token = localStorage.getItem("token");
+//       const config = { headers: { Authorization: `Bearer ${token}` } };
+
+//       const res = await axios.get(
+//         `http://localhost:5000/api/Employee/by-user-id/${employeeId}`,
+//         config
+//       );
+
+//       const emp = res.data;
+
+//       // احفظ الـ personName
+//       setEmployeeName(emp.personName || "موظف");
+//     } catch (err) {
+//       console.error("Error fetching employee:", err);
+//       setEmployeeName("admin"); // إذا حصل خطأ
+//     }
+//   };
+
+//   fetchEmployeeName();
+// }, [employeeId]);
+
+
+// // جلب اسم الموظف عن طريق employeeId
+// useEffect(() => {
+//   const fetchEmployeeName = async () => {
+//     if (!employeeId) {
+//       setEmployeeName("admin"); // إذا ما فيه ID
+//       return;
+//     }
+
+//     try {
+//       const token = localStorage.getItem("token");
+//       const config = { headers: { Authorization: `Bearer ${token}` } };
+
+//       const res = await axios.get(
+//         `http://localhost:5000/api/Employee/by-id/${employeeId}`,
+//         config
+//       );
+
+//       const emp = res.data;
+
+//       // احفظ الـ personName
+//       setEmployeeName(emp.personName || "موظف");
+//     } catch (err) {
+//       console.error("Error fetching employee:", err);
+//       setEmployeeName("admin"); // إذا حصل خطأ
+//     }
+//   };
+
+//   fetchEmployeeName();
+// }, [employeeId]);
+
 
   // جلب اسم الموظف الحالي
   useEffect(() => {
@@ -74,10 +173,15 @@ function Sales() {
             employeeId: localStorage.getItem("employeeId"),
             userId: localStorage.getItem("userId"),
             user_id: localStorage.getItem("user_id"),
+            personName :localStorage.getItem("personName"),
             id: localStorage.getItem("id"),
             token: localStorage.getItem("token") ? "exists" : "missing",
           });
+
           setEmployeeName("غير محدد");
+
+          setEmployeeName("Admin "); 
+
           return;
         }
 
@@ -96,10 +200,15 @@ function Sales() {
           },
         };
 
+
         const res = await axios.get(
           `http://localhost:5200/api/Employee/by-id/${employeeId}`,
           config
         );
+
+  
+        const res = await axios.get(`http://localhost:5000/api/Employee/by-user-id/${employeeId}`, config);
+
         const emp = res.data;
 
         console.log("Employee data received:", emp);
@@ -133,10 +242,14 @@ function Sales() {
           },
         };
 
+
         const res = await axios.get(
           "http://localhost:5200/api/Product",
           config
         );
+
+        const res = await axios.get("http://localhost:5000/api/Product", config);
+
         setProducts(res.data || []);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -229,7 +342,10 @@ function Sales() {
       const payload = {
         employeeId: parseInt(employeeId, 10),
         saleDate,
-        totalAmount, // إضافة التوتال المحسوب
+        totalAmount,
+        employeeName: personName || employeeName || "موظف", // 🔹 إضافة اسم الموظف هنا
+
+        //personName :localStorage.getItem("personName"),
         saleItems: saleItems.map((item) => ({
           productId: item.productId,
           quantity: item.quantity,
@@ -248,11 +364,16 @@ function Sales() {
         },
       };
 
+
       const res = await axios.post(
         "http://localhost:5200/api/Sale",
         payload,
         config
       );
+
+
+      const res = await axios.post("http://localhost:5000/api/Sale", payload, config);
+      
 
       // إعادة تعيين الحقول بعد البيع الناجح
       setSaleItems([]);
@@ -369,6 +490,26 @@ function Sales() {
               {t("Clear All")}
             </Button>
           </Box>
+
+
+          <Box sx={{ mt: 2 }}>
+  <Button variant="contained" component="label">
+    {t("Upload Sale Image")}
+    <input
+      type="file"
+      hidden
+      accept="image/*"
+      onChange={(e) => setSaleImage(e.target.files[0])}
+    />
+  </Button>
+
+  {saleImage && (
+    <Typography variant="body2" sx={{ mt: 1 }}>
+      {t("Selected File")}: {saleImage.name}
+    </Typography>
+  )}
+</Box>
+
 
           {saleItems.map((item, index) => (
             <Box key={index}>
@@ -489,12 +630,11 @@ function Sales() {
           {t("Sale Information")}
         </Typography>
         <Stack spacing={1}>
-          <Typography variant="body1" sx={{ fontWeight: "medium" }}>
-            {t("Employee")}: <strong>{employeeName}</strong>
+         
+           <Typography variant="body1" sx={{ fontWeight: "medium" }}>
+            {t("Employee")}: <strong>{personName}</strong>
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {t("Employee ID")}: {employeeId || "غير محدد"}
-          </Typography>
+        
           <Typography variant="body2" color="text.secondary">
             {t("Date")}: {new Date(saleDate).toLocaleDateString("ar-SA")}
           </Typography>
