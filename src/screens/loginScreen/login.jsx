@@ -3,7 +3,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
 import loginImage from "./assets/images/loginImage.jpg";
-
+import { host } from "../..";
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
@@ -14,6 +14,17 @@ const Login = () => {
     event.preventDefault();
 
     try {
+      const response = await fetch(host + "/api/Account/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userName: username,
+          password: password,
+        }),
+      });
+
       const response = await fetch(
         "http://localhost:5000/api/Account/login",
         {
@@ -28,6 +39,7 @@ const Login = () => {
         }
       );
 
+
       if (!response.ok) {
         throw new Error("Login failed");
       }
@@ -38,6 +50,7 @@ const Login = () => {
         localStorage.setItem("token", data.token);
         localStorage.setItem("refreshToken", data.refreshToken);
         localStorage.setItem("role", data.role);
+
       
         // 👇 نفرض أن الـ API بيرجع userId مع بيانات تسجيل الدخول
         const userId = data.id;
@@ -61,6 +74,7 @@ const Login = () => {
             
             );
             console.log("data", data);
+
 
       
             if (!empResponse.ok) throw new Error("Failed to fetch employee");
@@ -142,7 +156,11 @@ export const refreshToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
 
   try {
+
+    const response = await fetch(host + "/api/Account", {
+
     const response = await fetch("http://localhost:5000/api/Account", {
+
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -23,6 +23,43 @@ function Sales() {
   const [saleItems, setSaleItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
 
+
+  const [employeeName, setEmployeeName] = useState("");
+  const [saleDate] = useState(new Date().toISOString());
+
+  // جلب معرف الموظف من localStorage أو من token
+  const getEmployeeId = () => {
+    // محاولة جلب الـ ID من أماكن مختلفة في localStorage
+    const possibleKeys = [
+      "employeeID",
+      "employeeId",
+      "userId",
+      "user_id",
+      "id",
+    ];
+
+    for (const key of possibleKeys) {
+      const value = localStorage.getItem(key);
+      if (value && value !== "null" && value !== "undefined") {
+        return value;
+      }
+    }
+
+    // إذا ما لقينا ID، نجرب نستخرجه من الـ token
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        // فك تشفير الـ JWT token للحصول على الـ user ID
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        return (
+          payload.nameid || payload.id || payload.userId || payload.employeeId
+        );
+      }
+    } catch (err) {
+      console.error("Error parsing token:", err);
+    }
+
+
   const [employeeName, setEmployeeName] = useState(""); 
 
   const [personName, setpersonName] = useState(""); 
@@ -41,6 +78,7 @@ const getEmployeeId = () => {
     return localStorage.getItem("employeeID");
   } catch (err) {
     console.error("Error parsing token:", err);
+
     return null;
   }
 };
@@ -132,14 +170,18 @@ useEffect(() => {
           console.error("No employee ID found");
           console.log("Checking localStorage keys:", {
             employeeID: localStorage.getItem("employeeID"),
-            employeeId: localStorage.getItem("employeeId"), 
+            employeeId: localStorage.getItem("employeeId"),
             userId: localStorage.getItem("userId"),
             user_id: localStorage.getItem("user_id"),
             personName :localStorage.getItem("personName"),
             id: localStorage.getItem("id"),
-            token: localStorage.getItem("token") ? "exists" : "missing"
+            token: localStorage.getItem("token") ? "exists" : "missing",
           });
+
+          setEmployeeName("غير محدد");
+
           setEmployeeName("Admin "); 
+
           return;
         }
 
@@ -157,12 +199,20 @@ useEffect(() => {
             Authorization: `Bearer ${token}`,
           },
         };
+
+
+        const res = await axios.get(
+          `http://localhost:5200/api/Employee/by-id/${employeeId}`,
+          config
+        );
+
   
         const res = await axios.get(`http://localhost:5000/api/Employee/by-user-id/${employeeId}`, config);
+
         const emp = res.data;
 
         console.log("Employee data received:", emp);
-  
+
         if (emp.role === "Admin") {
           setEmployeeName("Super Admin");
         } else {
@@ -173,11 +223,11 @@ useEffect(() => {
         if (err.response?.status === 404) {
           setEmployeeName(`موظف غير موجود (ID: ${employeeId})`);
         } else {
-          setEmployeeName("خطأ في جلب البيانات"); 
+          setEmployeeName("خطأ في جلب البيانات");
         }
       }
     };
-  
+
     fetchEmployee();
   }, [employeeId]);
 
@@ -192,7 +242,14 @@ useEffect(() => {
           },
         };
 
+
+        const res = await axios.get(
+          "http://localhost:5200/api/Product",
+          config
+        );
+
         const res = await axios.get("http://localhost:5000/api/Product", config);
+
         setProducts(res.data || []);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -203,7 +260,10 @@ useEffect(() => {
 
   // حساب التوتال تلقائياً كلما تغيرت saleItems
   useEffect(() => {
-    const calculatedTotal = saleItems.reduce((sum, item) => sum + item.subtotal, 0);
+    const calculatedTotal = saleItems.reduce(
+      (sum, item) => sum + item.subtotal,
+      0
+    );
     setTotalAmount(calculatedTotal);
   }, [saleItems]);
 
@@ -221,13 +281,17 @@ useEffect(() => {
     if (!selectedProduct) return;
 
     // التحقق من وجود المنتج مسبقاً في القائمة
-    const existingItemIndex = saleItems.findIndex(item => item.productId === selectedProduct.productId);
-    
+    const existingItemIndex = saleItems.findIndex(
+      (item) => item.productId === selectedProduct.productId
+    );
+
     if (existingItemIndex !== -1) {
       // إذا كان المنتج موجود، تحديث الكمية
       const updatedItems = [...saleItems];
       updatedItems[existingItemIndex].quantity += parseInt(quantity, 10);
-      updatedItems[existingItemIndex].subtotal = updatedItems[existingItemIndex].sellPrice * updatedItems[existingItemIndex].quantity;
+      updatedItems[existingItemIndex].subtotal =
+        updatedItems[existingItemIndex].sellPrice *
+        updatedItems[existingItemIndex].quantity;
       setSaleItems(updatedItems);
     } else {
       // إضافة منتج جديد
@@ -254,7 +318,7 @@ useEffect(() => {
   // تعديل كمية المنتج
   const handleQuantityChange = (index, newQuantity) => {
     if (newQuantity <= 0) return;
-    
+
     const updatedItems = [...saleItems];
     updatedItems[index].quantity = newQuantity;
     updatedItems[index].subtotal = updatedItems[index].sellPrice * newQuantity;
@@ -300,14 +364,23 @@ useEffect(() => {
         },
       };
 
+
+      const res = await axios.post(
+        "http://localhost:5200/api/Sale",
+        payload,
+        config
+      );
+
+
       const res = await axios.post("http://localhost:5000/api/Sale", payload, config);
       
+
       // إعادة تعيين الحقول بعد البيع الناجح
       setSaleItems([]);
       setTotalAmount(0);
       setQuantity("");
       setSelectedProductId("");
-      
+
       alert("تمت عملية البيع بنجاح ✅");
     } catch (err) {
       console.error("Error submitting sale:", err);
@@ -326,7 +399,7 @@ useEffect(() => {
   // مسح جميع العناصر
   const handleClearAll = () => {
     if (saleItems.length === 0) return;
-    
+
     if (window.confirm("هل أنت متأكد من مسح جميع العناصر؟")) {
       setSaleItems([]);
       setTotalAmount(0);
@@ -336,8 +409,21 @@ useEffect(() => {
   };
 
   return (
-    <Box sx={{ width: "100%", maxWidth: 800, mx: "auto", mt: 4, display: "flex", flexDirection: "column", gap: 2 }}>
-      <Typography variant="h4" sx={{ textAlign: "center", fontWeight: "bold", mb: 2 }}>
+    <Box
+      sx={{
+        width: "100%",
+        maxWidth: 800,
+        mx: "auto",
+        mt: 4,
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
+      <Typography
+        variant="h4"
+        sx={{ textAlign: "center", fontWeight: "bold", mb: 2 }}
+      >
         {t("Sale Receipt")}
       </Typography>
 
@@ -346,7 +432,7 @@ useEffect(() => {
         <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
           {t("Add Product")}
         </Typography>
-        
+
         <FormControl variant="filled" fullWidth>
           <InputLabel>{t("Select Product")}</InputLabel>
           <Select
@@ -371,8 +457,8 @@ useEffect(() => {
           inputProps={{ min: "1", step: "1" }}
         />
 
-        <Button 
-          variant="contained" 
+        <Button
+          variant="contained"
           onClick={handleAddProduct}
           size="large"
           disabled={!selectedProductId || !quantity}
@@ -384,19 +470,28 @@ useEffect(() => {
       {/* عرض الفاتورة */}
       {saleItems.length > 0 && (
         <Card sx={{ p: 3, display: "flex", flexDirection: "column", gap: 2 }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               {t("Sale Items")} ({saleItems.length})
             </Typography>
-            <Button 
-              variant="outlined" 
-              color="error" 
+            <Button
+              variant="outlined"
+              color="error"
               size="small"
               onClick={handleClearAll}
             >
               {t("Clear All")}
             </Button>
           </Box>
+
+
           <Box sx={{ mt: 2 }}>
   <Button variant="contained" component="label">
     {t("Upload Sale Image")}
@@ -414,6 +509,7 @@ useEffect(() => {
     </Typography>
   )}
 </Box>
+
 
           {saleItems.map((item, index) => (
             <Box key={index}>
@@ -438,7 +534,12 @@ useEffect(() => {
                   value={item.quantity}
                   variant="filled"
                   sx={{ minWidth: 100 }}
-                  onChange={(e) => handleQuantityChange(index, parseInt(e.target.value, 10) || 1)}
+                  onChange={(e) =>
+                    handleQuantityChange(
+                      index,
+                      parseInt(e.target.value, 10) || 1
+                    )
+                  }
                   inputProps={{ min: "1", step: "1" }}
                 />
                 <TextField
@@ -448,9 +549,9 @@ useEffect(() => {
                   sx={{ minWidth: 140 }}
                   InputProps={{ readOnly: true }}
                 />
-                <Button 
-                  variant="outlined" 
-                  color="error" 
+                <Button
+                  variant="outlined"
+                  color="error"
                   size="small"
                   onClick={() => handleRemoveProduct(index)}
                   sx={{ minWidth: 80 }}
@@ -463,7 +564,7 @@ useEffect(() => {
           ))}
 
           <Divider sx={{ my: 2 }} />
-          
+
           {/* ملخص الفاتورة */}
           <Box sx={{ backgroundColor: "grey.50", p: 2, borderRadius: 1 }}>
             <Stack spacing={1}>
@@ -474,10 +575,16 @@ useEffect(() => {
                 </Typography>
               </Box>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography variant="h6" sx={{ fontWeight: "bold", color: "primary.main" }}>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: "bold", color: "primary.main" }}
+                >
                   {t("Total Amount")}:
                 </Typography>
-                <Typography variant="h6" sx={{ fontWeight: "bold", color: "primary.main" }}>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: "bold", color: "primary.main" }}
+                >
                   ${totalAmount.toFixed(2)}
                 </Typography>
               </Box>
@@ -485,19 +592,19 @@ useEffect(() => {
           </Box>
 
           <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-            <Button 
+            <Button
               variant="outlined"
               size="large"
-              sx={{ flex: 1 }} 
+              sx={{ flex: 1 }}
               onClick={handleClearAll}
             >
               {t("Cancel")}
             </Button>
-            <Button 
-              variant="contained" 
-              color="primary" 
+            <Button
+              variant="contained"
+              color="primary"
               size="large"
-              sx={{ flex: 2 }} 
+              sx={{ flex: 2 }}
               onClick={handleSubmitSale}
             >
               {t("Confirm Sale")}
@@ -507,8 +614,19 @@ useEffect(() => {
       )}
 
       {/* بيانات إضافية */}
-      <Box sx={{ textAlign: "center", mt: 2, p: 2, backgroundColor: "grey.50", borderRadius: 2 }}>
-        <Typography variant="h6" sx={{ mb: 1, fontWeight: "bold", color: "primary.main" }}>
+      <Box
+        sx={{
+          textAlign: "center",
+          mt: 2,
+          p: 2,
+          backgroundColor: "grey.50",
+          borderRadius: 2,
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{ mb: 1, fontWeight: "bold", color: "primary.main" }}
+        >
           {t("Sale Information")}
         </Typography>
         <Stack spacing={1}>
@@ -528,7 +646,14 @@ useEffect(() => {
 
       {/* رسالة إرشادية */}
       {saleItems.length === 0 && (
-        <Card sx={{ p: 3, textAlign: "center", backgroundColor: "info.light", color: "info.contrastText" }}>
+        <Card
+          sx={{
+            p: 3,
+            textAlign: "center",
+            backgroundColor: "info.light",
+            color: "info.contrastText",
+          }}
+        >
           <Typography variant="body1" sx={{ mb: 1 }}>
             💡 {t("Start by selecting a product and adding it to your sale")}
           </Typography>
