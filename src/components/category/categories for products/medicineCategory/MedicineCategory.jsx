@@ -32,7 +32,7 @@ const MedicineCategory = () => {
 
   const fetchCategories = () => {
     axios
-      .get("http://localhost:5200/api/MedicineCategory")
+      .get("http://localhost:5000/api/MedicineCategory")
       .then((response) => {
         setCategories(response.data);
       })
@@ -59,7 +59,7 @@ const MedicineCategory = () => {
     if (selectedCategory) {
       axios
         .delete(
-          `http://localhost:5200/api/MedicineCategory/${selectedCategory.cateogryID}`
+          `http://localhost:5000/api/MedicineCategory/${selectedCategory.cateogryID}`
         )
         .then(() => {
           setCategories((prev) =>

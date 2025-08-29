@@ -21,6 +21,7 @@ function Purchase() {
   const [date, setDate] = useState("");
   const [discount, setDiscount] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [totalQuantity, setTotalQuantity] = useState("");
   const [purchaseItems, setPurchaseItems] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -29,7 +30,7 @@ function Purchase() {
   useEffect(() => {
     const fetchSuppliers = async () => {
       try {
-        const res = await axios.get("http://localhost:5200/api/Supplier");
+        const res = await axios.get("http://localhost:5000/api/Supplier");
         setSuppliers(res.data || []);
       } catch (err) {
         console.error("Error fetching suppliers:", err);
@@ -67,11 +68,11 @@ function Purchase() {
       totalAmount: parseFloat(totalAmount) || 0,
       purchaseItems: purchaseItems.map((p) => ({
         productID: p.productId,
-        quantity: p.quantity,
+        quantity: totalQuantity,
         price: p.price,
         batches: [
           {
-            quantity: 0,
+            quantity: p.quantity,
             barcode: p.barcode || "",
             batchNumber: p.batchNumber || "",
             expirationDate: p.expirationDate || new Date().toISOString(),
@@ -81,7 +82,7 @@ function Purchase() {
     };
 
     try {
-      const res = await axios.post("http://localhost:5200/api/Purchase", payload);
+      const res = await axios.post("http://localhost:5000/api/Purchase", payload);
       console.log("Purchase Added:", res.data);
 
       setSnackbarMessage("تمت إضافة الفاتورة بنجاح");
@@ -92,6 +93,7 @@ function Purchase() {
       setDate("");
       setDiscount(0);
       setTotalAmount(0);
+      setTotalQuantity(0);
       setPurchaseItems([]);
     } catch (err) {
       console.error("Error adding purchase:", err);
@@ -153,6 +155,13 @@ function Purchase() {
         clearOnEscape
         sx={{ mt: 1 }}
       />
+       <TextField
+          label="Total quantity"
+          variant="filled"
+          type="number"
+          value={totalQuantity}
+          onChange={(e) => setTotalQuantity(e.target.value)}
+        />
 
       <PurchaseItem onAddProduct={handleAddProduct} />
 

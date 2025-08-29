@@ -105,7 +105,7 @@ export default function Sidebar({ open, handleDrawerClose }) {
 
   const secondaryItems = [
     { text: "Profile Form", icon: <PersonOutline />, path: "/form" },
-    { text: "Calendar", icon: <CalendarTodayOutlined />, path: "/calendar" },
+    { text: "Invoice Sales List", icon: <CalendarTodayOutlined />, path: "/Invoice-sales-list" },
     {
       text: "Purshase Page",
       icon: <AttachMoneyIcon sx={{ fontSize: 30 }} />,
@@ -123,13 +123,16 @@ export default function Sidebar({ open, handleDrawerClose }) {
   async function handleLogout() {
     try {
       const token = localStorage.getItem("token");
-      await axios.get("http://localhost:5200/api/Account/logout", {
+      await axios.get("http://localhost:5000/api/Account/logout", {
         headers: { Authorization: "Bearer " + token },
       });
 
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       localStorage.removeItem("refreshToken");
+      localStorage.removeItem("personName");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("employeeID");
       navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);

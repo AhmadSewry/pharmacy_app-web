@@ -43,7 +43,7 @@ function PainRelief() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:5200/api/Product");
+        const response = await axios.get("http://localhost:5000/api/Product");
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -117,7 +117,7 @@ function PainRelief() {
         }
 
         const response = await axios.post(
-          "http://localhost:5200/api/Product",
+          "http://localhost:5000/api/Product",
           formData,
           {
             headers: {

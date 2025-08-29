@@ -15,7 +15,7 @@ const Login = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5200/api/Account/login",
+        "http://localhost:5000/api/Account/login",
         {
           method: "POST",
           headers: {
@@ -37,9 +37,50 @@ const Login = () => {
       if (data.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("refreshToken", data.refreshToken);
-        localStorage.setItem("role",data.role);
+        localStorage.setItem("role", data.role);
+      
+        // 👇 نفرض أن الـ API بيرجع userId مع بيانات تسجيل الدخول
+        const userId = data.id;
+      
+        console.log("cccccccc",userId);
+        
+        if (userId) {
+          console.log("hi");
+          try {
+            const empResponse = await fetch(
+              `http://localhost:5000/api/Employee/by-user-id/${userId}`,
+              {
+                headers: {
+                  "Authorization": `Bearer ${data.token}`,
+                  
+                  "Content-Type": "application/json",
+                },
+                
+              }
+              
+            
+            );
+            console.log("data", data);
 
+      
+            if (!empResponse.ok) throw new Error("Failed to fetch employee");
+      
+            const empData = await empResponse.json();
+      
+            // 👇 حفظ الاسم في localStorage
+            localStorage.setItem("personName", empData.personName);
+            localStorage.setItem("userId", userId);
+            localStorage.setItem("employeeID", empData.employeeID);
+            //localStorage.setItem("employeName", empData.employeNmae);
+
+          } catch (err) {
+            console.error("Error fetching employee:", err);
+          }
+        }
+      
         navigate("/home");
+      
+      
       } else {
         alert("Invalid credentials. Please try again.");
       }
@@ -101,7 +142,7 @@ export const refreshToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
 
   try {
-    const response = await fetch("http://localhost:5200/api/Account", {
+    const response = await fetch("http://localhost:5000/api/Account", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

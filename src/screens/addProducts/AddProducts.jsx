@@ -42,7 +42,7 @@ const AddProductForm = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5200/api/Category",
+        "http://localhost:5000/api/Category",
         payload
       );
       console.log("✅ Category created:", res.data);
