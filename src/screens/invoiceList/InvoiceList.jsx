@@ -27,6 +27,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  useTheme, // Add this import to get the current theme
 } from "@mui/material";
 
 import {
@@ -38,6 +39,9 @@ import {
 } from "@mui/icons-material";
 
 function PurchasesListView() {
+  // Use the useTheme hook to access the current theme
+  const theme = useTheme();
+
   const [purchases, setPurchases] = useState([]);
   const [productsMap, setProductsMap] = useState({});
   const [suppliersMap, setSuppliersMap] = useState({});
@@ -325,6 +329,7 @@ function PurchasesListView() {
             p: 2,
             borderRadius: 2,
             direction: "rtl",
+            // The paper background is already set correctly.
             bgcolor: theme.palette.mode === "light" ? "white" : "gray",
           })}
         >
@@ -393,9 +398,25 @@ function PurchasesListView() {
               <Typography variant="subtitle1" gutterBottom>
                 المنتجات:
               </Typography>
-              <Table size="small" sx={{ bgcolor: "white", borderRadius: 1 }}>
+              <Table
+                size="small"
+                sx={{
+                  borderRadius: 1,
+                  // Change table background to be dynamic
+                  bgcolor:
+                    theme.palette.mode === "light"
+                      ? "white"
+                      : "rgba(255, 255, 255, 0.05)",
+                }}
+              >
                 <TableHead>
-                  <TableRow sx={{ bgcolor: "#e0f7fa" }}>
+                  <TableRow
+                    sx={{
+                      // Change header background color to be dynamic
+                      bgcolor:
+                        theme.palette.mode === "light" ? "#e0f7fa" : "#2d3748",
+                    }}
+                  >
                     <TableCell align="center">معرّف المنتج</TableCell>
                     <TableCell align="center">اسم المنتج</TableCell>
                     <TableCell align="center">الكمية</TableCell>
@@ -600,7 +621,15 @@ function PurchasesListView() {
                     {item.batchResponses?.map((batch, batchIndex) => (
                       <Paper
                         key={batchIndex}
-                        sx={{ p: 2, mb: 2, bgcolor: "#f5f5f5" }}
+                        sx={{
+                          p: 2,
+                          mb: 2,
+                          // Change paper background to be dynamic
+                          bgcolor:
+                            theme.palette.mode === "light"
+                              ? "#f5f5f5"
+                              : "#3e424c",
+                        }}
                       >
                         <Grid container spacing={2} alignItems="center">
                           <Grid item xs={12} md={3}>
