@@ -55,7 +55,7 @@ const Category = () => {
 
   const fetchCategories = () => {
     axios
-      .get("http://localhost:5200/api/ProductCategory", {
+      .get("http://localhost:5000/api/ProductCategory", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -88,7 +88,7 @@ const Category = () => {
 
   const confirmDelete = () => {
     axios
-      .delete(`http://localhost:5200/api/ProductCategory/${selectedCategory.cateogryID}`, {
+      .delete(`http://localhost:5000/api/ProductCategory/${selectedCategory.cateogryID}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -131,7 +131,7 @@ const Category = () => {
 
     axios
       .put(
-        `http://localhost:5200/api/ProductCategory/${selectedCategory.cateogryID}`,
+        `http://localhost:5000/api/ProductCategory/${selectedCategory.cateogryID}`,
         formData,
         {
           headers: {
@@ -163,7 +163,7 @@ const Category = () => {
     if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
       return imagePath;
     }
-    return `http://localhost:5200/${imagePath}`;
+    return `http://localhost:5000/${imagePath}`;
   };
 
   return (

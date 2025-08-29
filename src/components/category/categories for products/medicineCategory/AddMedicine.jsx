@@ -73,7 +73,7 @@ const handleCloseSnackbar = () => {
     if (!productToDelete?.productId) return;
   
     try {
-      await axios.delete(`http://localhost:5200/api/Product/${productToDelete.productId}`);
+      await axios.delete(`http://localhost:5000/api/Product/${productToDelete.productId}`);
       await fetchProducts(); // إعادة تحميل البيانات
       handleCloseDeleteDialog();
       alert("تم حذف المنتج بنجاح");
@@ -158,7 +158,7 @@ const handleCloseSnackbar = () => {
   //     }
 
   //     const response = await axios.put(
-  //       `http://localhost:5200/api/Product/${productToEdit.productId}`,
+  //       `http://localhost:5000/api/Product/${productToEdit.productId}`,
   //       formData,
   //       { headers: { "Content-Type": "multipart/form-data" } }
   //     );
@@ -206,7 +206,7 @@ const handleCloseSnackbar = () => {
       }
   
       const response = await axios.put(
-        `http://localhost:5200/api/Product/${productToEdit.productId}`,
+        `http://localhost:5000/api/Product/${productToEdit.productId}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -242,7 +242,7 @@ const handleCloseSnackbar = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5200/api/MedicineCategory/${categoryIdFromState}`
+        `http://localhost:5000/api/MedicineCategory/${categoryIdFromState}`
       );
       console.log("Fetched products:", response.data);
       setProducts(response.data.medicineResponses || []);
@@ -324,7 +324,7 @@ const handleCloseSnackbar = () => {
 
         formData.append("MedicineAddRequest.Manufacturer", newProduct.manufacturer);
         formData.append("MedicineAddRequest.ActiveIngredient", newProduct.activeIngredient);
-        formData.append("MedicineAddRequest.IsRequiredDescription", "true");
+        formData.append("MedicineAddRequest.IsRequiredDescription", "false");
         formData.append("MedicineAddRequest.CategoryID", newProduct.categoryId);
         formData.append("MedicineAddRequest.MedicineTypeId", newProduct.medicineTypeId);
 
@@ -333,7 +333,7 @@ const handleCloseSnackbar = () => {
         }
 
         const response = await axios.post(
-          "http://localhost:5200/api/Product",
+          "http://localhost:5000/api/Product",
           formData,
           {
             headers: {
@@ -361,7 +361,7 @@ const handleCloseSnackbar = () => {
       <TableContainer component={Paper}>
         <Box sx={{ p: 2, textAlign: "center" }}>
           <Typography variant="h5" fontWeight="bold">
-            Pain Relief Products
+            Pain Relief Productsmnmnn
           </Typography>
         </Box>
         <Table sx={{ minWidth: 800 }}>

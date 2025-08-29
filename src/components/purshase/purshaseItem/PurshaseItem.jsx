@@ -23,7 +23,7 @@ function PurshaseItem({ onAddProduct }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:5200/api/Product");
+        const res = await axios.get("http://localhost:5000/api/Product");
         setProducts(res.data || []);
       } catch (err) {
         console.error("Error fetching products:", err);

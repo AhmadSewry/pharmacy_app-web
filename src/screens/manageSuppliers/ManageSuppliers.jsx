@@ -66,7 +66,7 @@ function ManageSuppliers() {
 
   const loadSuppliers = async () => {
     try {
-      const response = await axios.get("http://localhost:5200/api/Supplier");
+      const response = await axios.get("http://localhost:5000/api/Supplier");
       setSuppliers(response.data);
     } catch (error) {
       console.error("Error fetching suppliers:", error);
@@ -82,7 +82,7 @@ function ManageSuppliers() {
   // إنشاء مورد جديد
   const onSubmit = async (data) => {
     try {
-      await axios.post("http://localhost:5200/api/Supplier", data);
+      await axios.post("http://localhost:5000/api/Supplier", data);
       await loadSuppliers();
       reset();
       setOpenSuccess(true);
@@ -115,7 +115,7 @@ function ManageSuppliers() {
     };
 
     try {
-      await axios.put(`http://localhost:5200/api/Supplier/${supplierToEdit.supplierId}`, payload);
+      await axios.put(`http://localhost:5000/api/Supplier/${supplierToEdit.supplierId}`, payload);
       await loadSuppliers();
       setEditDialogOpen(false);
       setSupplierToEdit(null);
@@ -139,7 +139,7 @@ function ManageSuppliers() {
     if (!supplierToDelete) return;
 
     try {
-      await axios.delete(`http://localhost:5200/api/Supplier/${supplierToDelete.supplierId}`);
+      await axios.delete(`http://localhost:5000/api/Supplier/${supplierToDelete.supplierId}`);
       await loadSuppliers();
       setDeleteDialogOpen(false);
       setSupplierToDelete(null);

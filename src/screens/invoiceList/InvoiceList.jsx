@@ -59,9 +59,9 @@ function PurchasesListView() {
   const fetchData = async () => {
     try {
       const [purchasesRes, suppliersRes, productsRes] = await Promise.all([
-        axios.get("http://localhost:5200/api/Purchase"),
-        axios.get("http://localhost:5200/api/Supplier"),
-        axios.get("http://localhost:5200/api/Product"),
+        axios.get("http://localhost:5000/api/Purchase"),
+        axios.get("http://localhost:5000/api/Supplier"),
+        axios.get("http://localhost:5000/api/Product"),
       ]);
 
       const suppliersMapTemp = {};
@@ -100,7 +100,7 @@ function PurchasesListView() {
     const purchase = purchases[idx];
     try {
       const res = await axios.get(
-        `http://localhost:5200/api/Purchase/${purchase.purchaseID}`
+        `http://localhost:5000/api/Purchase/${purchase.purchaseID}`
       );
       const detailedPurchase = res.data;
 
@@ -136,7 +136,7 @@ function PurchasesListView() {
   const openEditDialog = async (purchaseID, idx) => {
     try {
       const res = await axios.get(
-        `http://localhost:5200/api/Purchase/${purchaseID}`
+        `http://localhost:5000/api/Purchase/${purchaseID}`
       );
       const purchaseData = res.data;
 
@@ -157,6 +157,7 @@ function PurchasesListView() {
             batchResponses:
               item.batchResponses?.map((batch) => ({
                 batchID: batch.batchID,
+                remainQuantity: batch.remainQuantity,
                 batchNumber: batch.batchNumber || "",
                 barcode: batch.barcode || "",
                 expirationDate: batch.expirationDate
@@ -232,6 +233,7 @@ function PurchasesListView() {
           quantity: parseInt(item.quantity) || 1,
           batches: item.batchResponses.map((batch) => ({
             batchID: batch.batchID,
+            remainQuantity: parseInt(batch.remainQuantity) || 1,
             batchNumber: batch.batchNumber,
             barcode: batch.barcode,
             expirationDate: batch.expirationDate,
@@ -240,7 +242,7 @@ function PurchasesListView() {
       };
 
       await axios.put(
-        `http://localhost:5200/api/Purchase/${editFormData.purchaseID}`,
+        `http://localhost:5000/api/Purchase/${editFormData.purchaseID}`,
         updateData
       );
 
@@ -282,7 +284,7 @@ function PurchasesListView() {
 
     try {
       await axios.delete(
-        `http://localhost:5200/api/Purchase/${purchaseToDelete.purchaseID}`
+        `http://localhost:5000/api/Purchase/${purchaseToDelete.purchaseID}`
       );
 
       // حذف الفاتورة محلياً
@@ -398,8 +400,9 @@ function PurchasesListView() {
                   <TableRow sx={{ bgcolor: "#e0f7fa" }}>
                     <TableCell align="center">معرّف المنتج</TableCell>
                     <TableCell align="center">اسم المنتج</TableCell>
-                    <TableCell align="center">الكمية</TableCell>
+                    <TableCell align="center">الكمية الكلية</TableCell>
                     <TableCell align="center">السعر</TableCell>
+                    <TableCell align="center">الكمية المتبقية  ضمن الدفعة</TableCell>
                     <TableCell align="center">رقم الباتش</TableCell>
                     <TableCell align="center">الباركود</TableCell>
                     <TableCell align="center">تاريخ الانتهاء</TableCell>
@@ -415,6 +418,11 @@ function PurchasesListView() {
                         </TableCell>
                         <TableCell align="center">{item.quantity}</TableCell>
                         <TableCell align="center">{item.price}</TableCell>
+                        <TableCell align="center">
+                          {item.batchResponses?.length > 0
+                            ? item.batchResponses[0].remainQuantity
+                            : "-"}
+                        </TableCell>
                         <TableCell align="center">
                           {item.batchResponses?.length > 0
                             ? item.batchResponses[0].batchNumber
@@ -441,6 +449,9 @@ function PurchasesListView() {
                             <TableCell />
                             <TableCell />
                             <TableCell />
+                            <TableCell align="center">
+                              {batch.remainQuantity}
+                            </TableCell>
                             <TableCell align="center">
                               {batch.batchNumber}
                             </TableCell>
@@ -603,7 +614,25 @@ function PurchasesListView() {
                         sx={{ p: 2, mb: 2, bgcolor: "#f5f5f5" }}
                       >
                         <Grid container spacing={2} alignItems="center">
-                          <Grid item xs={12} md={3}>
+                          <Grid item xs={12} md={2}>
+                            <TextField
+                              fullWidth
+                              label="الكمية"
+                              type="number"
+                              value={batch.remainQuantity || ""}
+                              onChange={(e) =>
+                                handleBatchChange(
+                                  itemIndex,
+                                  batchIndex,
+                                  "remainQuantity",
+                                  e.target.value
+                                )
+                              }
+                              size="small"
+                            />
+                          </Grid>
+
+                          <Grid item xs={12} md={2}>
                             <TextField
                               fullWidth
                               label="رقم الباتش"
@@ -637,7 +666,7 @@ function PurchasesListView() {
                             />
                           </Grid>
 
-                          <Grid item xs={12} md={4}>
+                          <Grid item xs={12} md={3}>
                             <TextField
                               fullWidth
                               label="تاريخ الانتهاء"

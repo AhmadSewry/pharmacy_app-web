@@ -45,7 +45,7 @@ function ManageTeam() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:5200/api/Employee");
+      const response = await axios.get("http://localhost:5000/api/Employee");
       setRows(response.data);
     } catch (error) {
       console.error("فشل جلب البيانات:", error);
@@ -89,7 +89,7 @@ function ManageTeam() {
   const confirmDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:5200/api/Employee/${employeeToDelete.employeeID}`
+        `http://localhost:5000/api/Employee/${employeeToDelete.employeeID}`
       );
       setOpenDeleteDialog(false);
       setEmployeeToDelete(null);
@@ -111,7 +111,7 @@ function ManageTeam() {
         role: selectedEmployee.role,
       };
       await axios.put(
-        `http://localhost:5200/api/Employee/${selectedEmployee.employeeID}`,
+        `http://localhost:5000/api/Employee/${selectedEmployee.employeeID}`,
         updatedData
       );
       setOpenEdit(false);
@@ -134,7 +134,7 @@ function ManageTeam() {
         password: selectedEmployee.password, // أرسلها ضمن الجسم الأساسي
       };
       await axios.put(
-        `http://localhost:5200/api/Employee/${selectedEmployee.employeeID}`,
+        `http://localhost:5000/api/Employee/${selectedEmployee.employeeID}`,
         updatedData
       );
       setOpenEdit(false);
