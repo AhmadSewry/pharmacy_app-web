@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { host } from "../../App";
 
 function ProfileForm() {
   const [selectedRole, setSelectedRole] = useState("");
@@ -57,7 +58,7 @@ function ProfileForm() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/Employee",
+        host+"/api/Employee",
         requestPayload
       );
       console.log("✅ تم إنشاء المستخدم:", response.data);

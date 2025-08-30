@@ -10,6 +10,7 @@ import {
   Button,
 } from "@mui/material";
 import axios from "axios";
+import { host } from "../../../App";
 
 function PurshaseItem({ onAddProduct }) {
   const [selectedMedicine, setSelectedMedicine] = useState("");
@@ -23,7 +24,7 @@ function PurshaseItem({ onAddProduct }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/Product");
+        const res = await axios.get(host+"/api/Product");
         setProducts(res.data || []);
       } catch (err) {
         console.error("Error fetching products:", err);

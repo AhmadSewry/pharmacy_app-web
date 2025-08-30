@@ -14,6 +14,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import PurchaseItem from "../../components/purshase/purshaseItem/PurshaseItem";
+import { host } from "../../App";
 
 function Purchase() {
   const [selectedSupplier, setSelectedSupplier] = useState(null);
@@ -30,7 +31,7 @@ function Purchase() {
   useEffect(() => {
     const fetchSuppliers = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/Supplier");
+        const res = await axios.get(host+"/api/Supplier");
         setSuppliers(res.data || []);
       } catch (err) {
         console.error("Error fetching suppliers:", err);
@@ -82,7 +83,7 @@ function Purchase() {
     };
 
     try {
-      const res = await axios.post("http://localhost:5000/api/Purchase", payload);
+      const res = await axios.post(host+"/api/Purchase", payload);
       console.log("Purchase Added:", res.data);
 
       setSnackbarMessage("تمت إضافة الفاتورة بنجاح");

@@ -19,6 +19,7 @@ import Button from "@mui/material/Button";
 import AddMedicineCategoryComponentForm from "../medicineCategory/MedicineCategoryScreens/AddMedicineCategoryComponentForm";
 import { useLocation } from "react-router-dom";
 import AddMedicineCategoryComponent from "../medicineCategory/MedicineCategoryScreens/AddMedicineCategoryComponent";
+import { host } from "../../../../App";
 
 const CategoryDetails = () => {
   // const location = useLocation();
@@ -38,7 +39,7 @@ const CategoryDetails = () => {
   const fetchCategory = () => {
     //console.log(category);
     axios
-      .get(`http://localhost:5000/api/MedicineCategory`)
+      .get(host+`/api/MedicineCategory`)
       .then((response) => {
         //console.log(response.data);
         setCategories(response.data);
@@ -66,7 +67,7 @@ const CategoryDetails = () => {
     if (selectedCategory) {
       axios
         .delete(
-          `http://localhost:5000/api/MedicineCategory/${selectedCategory.cateogryID}`
+          host+`/api/MedicineCategory/${selectedCategory.cateogryID}`
         )
         .then(() => {
           setCategories((prev) =>

@@ -17,6 +17,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import AddMedicineCategoryComponent from "./MedicineCategoryScreens/AddMedicineCategoryComponent";
+import { host } from "../../../../App";
 
 const MedicineCategory = () => {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ const MedicineCategory = () => {
 
   const fetchCategories = () => {
     axios
-      .get("http://localhost:5000/api/MedicineCategory")
+      .get(host+"/api/MedicineCategory")
       .then((response) => {
         setCategories(response.data);
       })
@@ -59,7 +60,7 @@ const MedicineCategory = () => {
     if (selectedCategory) {
       axios
         .delete(
-          `http://localhost:5000/api/MedicineCategory/${selectedCategory.cateogryID}`
+          host+`/api/MedicineCategory/${selectedCategory.cateogryID}`
         )
         .then(() => {
           setCategories((prev) =>

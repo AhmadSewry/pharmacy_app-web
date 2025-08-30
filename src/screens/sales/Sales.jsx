@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import { host } from "../../App";
 
 function Sales() {
   const { t } = useTranslation();
@@ -75,7 +76,7 @@ useEffect(() => {
 //       const config = { headers: { Authorization: `Bearer ${token}` } };
 
 //       const res = await axios.get(
-//         `http://localhost:5000/api/Employee/by-user-id/${employeeId}`,
+//         host+`/api/Employee/by-user-id/${employeeId}`,
 //         config
 //       );
 
@@ -106,7 +107,7 @@ useEffect(() => {
 //       const config = { headers: { Authorization: `Bearer ${token}` } };
 
 //       const res = await axios.get(
-//         `http://localhost:5000/api/Employee/by-id/${employeeId}`,
+//         host+`/api/Employee/by-id/${employeeId}`,
 //         config
 //       );
 
@@ -158,7 +159,7 @@ useEffect(() => {
           },
         };
   
-        const res = await axios.get(`http://localhost:5000/api/Employee/by-user-id/${employeeId}`, config);
+        const res = await axios.get(host+`/api/Employee/by-user-id/${employeeId}`, config);
         const emp = res.data;
 
         console.log("Employee data received:", emp);
@@ -192,7 +193,7 @@ useEffect(() => {
           },
         };
 
-        const res = await axios.get("http://localhost:5000/api/Product", config);
+        const res = await axios.get(host+"/api/Product", config);
         setProducts(res.data || []);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -300,7 +301,7 @@ useEffect(() => {
         },
       };
 
-      const res = await axios.post("http://localhost:5000/api/Sale", payload, config);
+      const res = await axios.post(host+"/api/Sale", payload, config);
       
       // إعادة تعيين الحقول بعد البيع الناجح
       setSaleItems([]);

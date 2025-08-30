@@ -31,6 +31,7 @@ import {
 } from "@mui/icons-material";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
+import { host } from "../../App";
 
 function ManageTeam() {
   const theme = useTheme();
@@ -45,7 +46,7 @@ function ManageTeam() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/Employee");
+      const response = await axios.get(host+"/api/Employee");
       setRows(response.data);
     } catch (error) {
       console.error("فشل جلب البيانات:", error);
@@ -89,7 +90,7 @@ function ManageTeam() {
   const confirmDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/Employee/${employeeToDelete.employeeID}`
+        host+`/api/Employee/${employeeToDelete.employeeID}`
       );
       setOpenDeleteDialog(false);
       setEmployeeToDelete(null);
@@ -111,7 +112,7 @@ function ManageTeam() {
         role: selectedEmployee.role,
       };
       await axios.put(
-        `http://localhost:5000/api/Employee/${selectedEmployee.employeeID}`,
+        host+`/api/Employee/${selectedEmployee.employeeID}`,
         updatedData
       );
       setOpenEdit(false);
@@ -134,7 +135,7 @@ function ManageTeam() {
         password: selectedEmployee.password, // أرسلها ضمن الجسم الأساسي
       };
       await axios.put(
-        `http://localhost:5000/api/Employee/${selectedEmployee.employeeID}`,
+        host+`/api/Employee/${selectedEmployee.employeeID}`,
         updatedData
       );
       setOpenEdit(false);

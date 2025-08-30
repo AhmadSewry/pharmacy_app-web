@@ -39,6 +39,9 @@ import PurchasesListView from "./screens/invoiceList/InvoiceList.jsx";
 import Notification from "./screens/notifications/Notification.jsx";
 import InvoiceSalesList from "./screens/invoice-sales-list/InvoiceSalesList.jsx";
 
+
+export const host= "http://localhost:5000";
+
 function App() {
   document.title = "Pharmacy App";
   return (

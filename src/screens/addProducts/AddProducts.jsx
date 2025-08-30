@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { host } from "../../App";
 
 const categoryOptions = ["Medicines", "Baby Care", "Cosmetics", "Vitamins"]; // Add your real parent categories
 
@@ -42,7 +43,7 @@ const AddProductForm = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/Category",
+        host+"/api/Category",
         payload
       );
       console.log("✅ Category created:", res.data);

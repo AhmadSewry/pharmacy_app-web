@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import { host } from "../App";
 
 function Localization() {
   const { t, i18n } = useTranslation();

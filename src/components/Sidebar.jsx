@@ -34,6 +34,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Cookies } from "react-cookie";
 import Sales from "../screens/sales/Sales";
+import { host } from "../App";
 
 const drawerWidth = 240;
 
@@ -87,43 +88,62 @@ export default function Sidebar({ open, handleDrawerClose }) {
 
   // ✅ قراءة الدور من التخزين المحلي وتحويله لحروف صغيرة
   const role = localStorage.getItem("role")?.toLowerCase();
+  const personName =localStorage.getItem("personName")
   console.log("Current role:", role);
 
   // ✅ القائمة الأساسية
-  const menuItems = [
-    { text: "Dashboard", icon: <HomeOutlined />, path: "/home" },
-    ...(role === "admin"
-      ? [{ text: "Manage Team", icon: <PeopleAltOutlined />, path: "/team" }]
-      : []),
-    {
-      text: "Manage Suppliers",
-      icon: <LocalShipping />,
-      path: "/manageSuppliers",
-    },
-    { text: "Invoices Balances", icon: <ReceiptOutlined />, path: "/invoices" },
-  ];
+  const menuItems =
+  role === "admin"
+    ? [
+        { text: "Dashboard", icon: <HomeOutlined />, path: "/home" },
+        { text: "Manage Team", icon: <PeopleAltOutlined />, path: "/team" },
+        {
+          text: "Manage Suppliers",
+          icon: <LocalShipping />,
+          path: "/manageSuppliers",
+        },
+        {
+          text: "Invoices Balances",
+          icon: <ReceiptOutlined />,
+          path: "/invoices",
+        },
+      ]
+    : [];
 
-  const secondaryItems = [
-    { text: "Profile Form", icon: <PersonOutline />, path: "/form" },
-    { text: "Invoice Sales List", icon: <CalendarTodayOutlined />, path: "/Invoice-sales-list" },
-    {
-      text: "Purshase Page",
-      icon: <AttachMoneyIcon sx={{ fontSize: 30 }} />,
-      path: "/purshase",
-    },
-  ];
+const secondaryItems =
+  role === "admin"
+    ? [
+        { text: "Profile Form", icon: <PersonOutline />, path: "/form" },
+        {
+          text: "Invoice Sales List",
+          icon: <CalendarTodayOutlined />,
+          path: "/Invoice-sales-list",
+        },
+        {
+          text: "Purshase Page",
+          icon: <AttachMoneyIcon sx={{ fontSize: 30 }} />,
+          path: "/purshase",
+        },
+      ]
+    : [];
 
-  const chartItems = [
-    { text: "Invoices List", icon: <ListIcon />, path: "/invoice-list" },
-    { text: "Pie Chart", icon: <PieChartOutlineOutlined />, path: "/pie" },
-    { text: "Sales", icon: <PointOfSaleIcon />, path: "/sales" },
-    { text: "Logout", icon: <Logout />, action: handleLogout },
-  ];
+const chartItems =
+  role === "admin"
+    ? [
+        { text: "Invoices List", icon: <ListIcon />, path: "/invoice-list" },
+        { text: "Pie Chart", icon: <PieChartOutlineOutlined />, path: "/pie" },
+        // { text: "Sales", icon: <PointOfSaleIcon />, path: "/sales" },
+        { text: "Logout", icon: <Logout />, action: handleLogout },
+      ]
+    : [
+        { text: "Sales", icon: <PointOfSaleIcon />, path: "/sales" },
+        { text: "Logout", icon: <Logout />, action: handleLogout },
+      ];
 
   async function handleLogout() {
     try {
       const token = localStorage.getItem("token");
-      await axios.get("http://localhost:5000/api/Account/logout", {
+      await axios.get(host+"/api/Account/logout", {
         headers: { Authorization: "Bearer " + token },
       });
 
@@ -171,7 +191,7 @@ export default function Sidebar({ open, handleDrawerClose }) {
           align="center"
           sx={{ fontSize: open ? 15 : 0, transition: "1s" }}
         >
-          Ahmed
+          {personName}
         </Typography>
         <Typography
           align="center"

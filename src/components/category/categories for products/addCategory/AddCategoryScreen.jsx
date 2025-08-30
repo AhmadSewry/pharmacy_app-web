@@ -76,7 +76,7 @@ const AddCategoryForm = ({ open, onClose,onCategoryAdded  }) => {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/ProductCategory",
+        host+"/api/ProductCategory",
         formData,
         {
           headers: {

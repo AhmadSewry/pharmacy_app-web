@@ -36,6 +36,7 @@ import {
   Edit,
   ExpandMore,
 } from "@mui/icons-material";
+import { host } from "../../App";
 
 function SalesListView() {
   const [sales, setSales] = useState([]);
@@ -67,9 +68,9 @@ function SalesListView() {
       const config = { headers: { Authorization: `Bearer ${token}` } };
 
       const [salesRes, employeesRes, productsRes] = await Promise.all([
-        axios.get("http://localhost:5000/api/Sale", config),
-        axios.get("http://localhost:5000/api/Employee", config),
-        axios.get("http://localhost:5000/api/Product", config),
+        axios.get(host+"/api/Sale", config),
+        axios.get(host+"/api/Employee", config),
+        axios.get(host+"/api/Product", config),
       ]);
 
       const employeesMapTemp = {};
@@ -107,7 +108,7 @@ function SalesListView() {
       const token = localStorage.getItem("token");
       const config = { headers: { Authorization: `Bearer ${token}` } };
       const res = await axios.get(
-        `http://localhost:5000/api/Sale/${sale.id}`,
+        host+`/api/Sale/${sale.id}`,
         config
       );
       const detailedSale = res.data;
@@ -143,7 +144,7 @@ function SalesListView() {
       const token = localStorage.getItem("token");
       const config = { headers: { Authorization: `Bearer ${token}` } };
       const res = await axios.get(
-        `http://localhost:5000/api/Sale/${saleID}`,
+        host+`/api/Sale/${saleID}`,
         config
       );
       const saleData = res.data;
@@ -211,7 +212,7 @@ function SalesListView() {
       };
 
       await axios.put(
-        `http://localhost:5000/api/Sale/${editFormData.saleID}`,
+        host+`/api/Sale/${editFormData.saleID}`,
         updateData,
         config
       );
@@ -246,7 +247,7 @@ function SalesListView() {
       const config = { headers: { Authorization: `Bearer ${token}` } };
 
       await axios.delete(
-        `http://localhost:5000/api/Sale/${saleToDelete.saleID}`,
+        host+`/api/Sale/${saleToDelete.saleID}`,
         config
       );
 

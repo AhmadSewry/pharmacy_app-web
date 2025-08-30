@@ -24,6 +24,7 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { host } from "../../App";
 
 function ManageSuppliers() {
   const [suppliers, setSuppliers] = useState([]);
@@ -66,7 +67,7 @@ function ManageSuppliers() {
 
   const loadSuppliers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/Supplier");
+      const response = await axios.get(host+"/api/Supplier");
       setSuppliers(response.data);
     } catch (error) {
       console.error("Error fetching suppliers:", error);
@@ -82,7 +83,7 @@ function ManageSuppliers() {
   // إنشاء مورد جديد
   const onSubmit = async (data) => {
     try {
-      await axios.post("http://localhost:5000/api/Supplier", data);
+      await axios.post(host+"/api/Supplier", data);
       await loadSuppliers();
       reset();
       setOpenSuccess(true);
@@ -115,7 +116,7 @@ function ManageSuppliers() {
     };
 
     try {
-      await axios.put(`http://localhost:5000/api/Supplier/${supplierToEdit.supplierId}`, payload);
+      await axios.put(host+`/api/Supplier/${supplierToEdit.supplierId}`, payload);
       await loadSuppliers();
       setEditDialogOpen(false);
       setSupplierToEdit(null);
@@ -139,7 +140,7 @@ function ManageSuppliers() {
     if (!supplierToDelete) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/Supplier/${supplierToDelete.supplierId}`);
+      await axios.delete(host+`/api/Supplier/${supplierToDelete.supplierId}`);
       await loadSuppliers();
       setDeleteDialogOpen(false);
       setSupplierToDelete(null);

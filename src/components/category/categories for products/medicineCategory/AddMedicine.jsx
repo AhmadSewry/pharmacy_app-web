@@ -22,6 +22,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Snackbar, Alert } from "@mui/material";
 
 import { useLocation } from "react-router-dom";
+import { host } from "../../../../App";
 
 function AddMedicine() {
   const [products, setProducts] = useState([]);
@@ -73,7 +74,7 @@ const handleCloseSnackbar = () => {
     if (!productToDelete?.productId) return;
   
     try {
-      await axios.delete(`http://localhost:5000/api/Product/${productToDelete.productId}`);
+      await axios.delete(host+`/api/Product/${productToDelete.productId}`);
       await fetchProducts(); // إعادة تحميل البيانات
       handleCloseDeleteDialog();
       alert("تم حذف المنتج بنجاح");
@@ -158,7 +159,7 @@ const handleCloseSnackbar = () => {
   //     }
 
   //     const response = await axios.put(
-  //       `http://localhost:5000/api/Product/${productToEdit.productId}`,
+  //       host+`/api/Product/${productToEdit.productId}`,
   //       formData,
   //       { headers: { "Content-Type": "multipart/form-data" } }
   //     );
@@ -206,7 +207,7 @@ const handleCloseSnackbar = () => {
       }
   
       const response = await axios.put(
-        `http://localhost:5000/api/Product/${productToEdit.productId}`,
+        host+`/api/Product/${productToEdit.productId}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -242,7 +243,7 @@ const handleCloseSnackbar = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/MedicineCategory/${categoryIdFromState}`
+        host+`/api/MedicineCategory/${categoryIdFromState}`
       );
       console.log("Fetched products:", response.data);
       setProducts(response.data.medicineResponses || []);
@@ -333,7 +334,7 @@ const handleCloseSnackbar = () => {
         }
 
         const response = await axios.post(
-          "http://localhost:5000/api/Product",
+          host+"/api/Product",
           formData,
           {
             headers: {

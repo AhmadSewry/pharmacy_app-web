@@ -25,6 +25,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useLocation } from "react-router-dom";
+import { host } from "../../../App";
 
 function AddProduct() {
   const location = useLocation();
@@ -72,7 +73,7 @@ function AddProduct() {
       // إذا عندك ProductType ضيفه هنا
       // formData.append("ProductType", editProduct.productType);
   
-      await axios.put(`http://localhost:5000/api/Product/${editProduct.productId}`, formData, {
+      await axios.put(host+`/api/Product/${editProduct.productId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -124,7 +125,7 @@ const token = localStorage.getItem("token");
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/ProductCategory/${categoryIdFromState}`,{
+          host+`/api/ProductCategory/${categoryIdFromState}`,{
           headers: {
             Authorization: `Bearer ${token}`,
           },}
@@ -191,7 +192,7 @@ const token = localStorage.getItem("token");
         formData.append("ProductType", newProduct.productType);
 
         const response = await axios.post(
-          "http://localhost:5000/api/Product",
+          host+"/api/Product",
           formData,
           {
             headers: {
@@ -220,7 +221,7 @@ const token = localStorage.getItem("token");
 
   const handleDelete = async (productId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/Product/${productId}`);
+      await axios.delete(host+`/api/Product/${productId}`);
       setProducts(products.filter((p) => p.productId !== productId));
       setSnackbar({
         open: true,

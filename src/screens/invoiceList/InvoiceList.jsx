@@ -36,6 +36,7 @@ import {
   Edit,
   ExpandMore,
 } from "@mui/icons-material";
+import { host } from "../../App";
 
 function PurchasesListView() {
   const [purchases, setPurchases] = useState([]);
@@ -59,9 +60,9 @@ function PurchasesListView() {
   const fetchData = async () => {
     try {
       const [purchasesRes, suppliersRes, productsRes] = await Promise.all([
-        axios.get("http://localhost:5000/api/Purchase"),
-        axios.get("http://localhost:5000/api/Supplier"),
-        axios.get("http://localhost:5000/api/Product"),
+        axios.get(host+"/api/Purchase"),
+        axios.get(host+"/api/Supplier"),
+        axios.get(host+"/api/Product"),
       ]);
 
       const suppliersMapTemp = {};
@@ -100,7 +101,7 @@ function PurchasesListView() {
     const purchase = purchases[idx];
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/Purchase/${purchase.purchaseID}`
+        host+`/api/Purchase/${purchase.purchaseID}`
       );
       const detailedPurchase = res.data;
 
@@ -136,7 +137,7 @@ function PurchasesListView() {
   const openEditDialog = async (purchaseID, idx) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/Purchase/${purchaseID}`
+        host+`/api/Purchase/${purchaseID}`
       );
       const purchaseData = res.data;
 
@@ -242,7 +243,7 @@ function PurchasesListView() {
       };
 
       await axios.put(
-        `http://localhost:5000/api/Purchase/${editFormData.purchaseID}`,
+        host+`/api/Purchase/${editFormData.purchaseID}`,
         updateData
       );
 
@@ -284,7 +285,7 @@ function PurchasesListView() {
 
     try {
       await axios.delete(
-        `http://localhost:5000/api/Purchase/${purchaseToDelete.purchaseID}`
+        host+`/api/Purchase/${purchaseToDelete.purchaseID}`
       );
 
       // حذف الفاتورة محلياً

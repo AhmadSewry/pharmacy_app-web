@@ -24,6 +24,7 @@ import Button from "@mui/material/Button";
 import AddCategory from "./categories for products/addCategory/AddCategoryComponent";
 import { useTranslation } from "react-i18next";
 import Medicine from "./categories for products/categoryDetails/Medicine";
+import { host } from "../../App";
 
 const Category = () => {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ const Category = () => {
 
   const fetchCategories = () => {
     axios
-      .get("http://localhost:5000/api/ProductCategory", {
+      .get(host+"/api/ProductCategory", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -88,7 +89,7 @@ const Category = () => {
 
   const confirmDelete = () => {
     axios
-      .delete(`http://localhost:5000/api/ProductCategory/${selectedCategory.cateogryID}`, {
+      .delete(host+`/api/ProductCategory/${selectedCategory.cateogryID}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -131,7 +132,7 @@ const Category = () => {
 
     axios
       .put(
-        `http://localhost:5000/api/ProductCategory/${selectedCategory.cateogryID}`,
+        host+`/api/ProductCategory/${selectedCategory.cateogryID}`,
         formData,
         {
           headers: {
@@ -163,7 +164,7 @@ const Category = () => {
     if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
       return imagePath;
     }
-    return `http://localhost:5000/${imagePath}`;
+    return host+`/${imagePath}`;
   };
 
   return (

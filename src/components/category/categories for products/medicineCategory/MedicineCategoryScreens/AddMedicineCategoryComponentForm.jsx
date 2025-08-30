@@ -68,7 +68,7 @@ const AddMedicineCategoryComponentForm = ({ open, onClose }) => {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/MedicineCategory",
+        host+"/api/MedicineCategory",
         formData,
         {
           headers: {

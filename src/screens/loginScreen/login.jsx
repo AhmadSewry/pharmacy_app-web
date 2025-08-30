@@ -3,6 +3,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
 import loginImage from "./assets/images/loginImage.jpg";
+import { host } from "../../App";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,7 +16,7 @@ const Login = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/Account/login",
+        host+"/api/Account/login",
         {
           method: "POST",
           headers: {
@@ -48,7 +49,7 @@ const Login = () => {
           console.log("hi");
           try {
             const empResponse = await fetch(
-              `http://localhost:5000/api/Employee/by-user-id/${userId}`,
+              host+`/api/Employee/by-user-id/${userId}`,
               {
                 headers: {
                   "Authorization": `Bearer ${data.token}`,
@@ -142,7 +143,7 @@ export const refreshToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
 
   try {
-    const response = await fetch("http://localhost:5000/api/Account", {
+    const response = await fetch(host+"/api/Account", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
